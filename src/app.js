@@ -9,9 +9,11 @@ const port = process.env.PORT;
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-  connectToMongo();
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+    connectToMongo();
+  });
+}
 
 module.exports = app;

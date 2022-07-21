@@ -9,8 +9,9 @@
   "author": "Ammar-64",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/app.js",
-    "test": "yarn validate && jest --passWithNoTests",
+    "start": "export NODE_ENV=dev && nodemon src/app.js",
+    "start_prod": "export NODE_ENV=production && nodemon src/app.js",
+    "test": "export NODE_ENV=test && yarn validate && jest --passWithNoTests",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
     "validate": "yarn format && yarn lint",
