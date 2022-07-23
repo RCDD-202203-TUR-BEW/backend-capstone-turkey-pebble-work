@@ -204,7 +204,7 @@ const organization = mongoose.Schema({
 // virtual
 organization.virtual('rate').get(function () {
     if (!this.rates.length) return 0
-    return this.rates.reduce((acc, curr) => acc + curr, 0) / rate.length
+    return this.rates.reduce((acc, curr) => acc + curr, 0) / this.rates.length
 });
 
 const Organization = BaseUser.discriminator("Organization", organization)
