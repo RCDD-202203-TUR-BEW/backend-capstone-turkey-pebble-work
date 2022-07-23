@@ -2,79 +2,87 @@ const { sum } = require('lodash');
 
 const mongoose = require('mongoose');
 
-const fundSchema = mongoose.Schema({
-  puplisherId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'BaseUser',
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  content: {
-    type: String,
-    required: true,
-  },
-  category: {
-    type: String,
-    enum: [
-      'No Poverty',
-      'Zero Hunger',
-      'Good Health and Wellbeing',
-      'Quality Education',
-      'Gender Equality',
-      'Clean Water and sanitation',
-      'Affordable and Clean Energy',
-      'Decent Work and Economic Growth',
-      'Industry, Innovation, and Infrastructure',
-      'Reduced Inequalities',
-      'Sustainable Cities and Communities',
-      'Responsible Consumption/ Production',
-      'Life Below Water',
-      'Life on Land',
-      'Peace, Justice and Strong Institutions',
-      'Climate Action',
-    ],
-    required: true,
-  },
-  targetFund: {
-    type: Number,
-    required: true,
-  },
-  donations: [
-    {
-      donorId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+const fundSchema = mongoose.Schema(
+  {
+    puplisherId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'BaseUser',
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      enum: [
+        'No Poverty',
+        'Zero Hunger',
+        'Good Health and Wellbeing',
+        'Quality Education',
+        'Gender Equality',
+        'Clean Water and sanitation',
+        'Affordable and Clean Energy',
+        'Decent Work and Economic Growth',
+        'Industry, Innovation, and Infrastructure',
+        'Reduced Inequalities',
+        'Sustainable Cities and Communities',
+        'Responsible Consumption/ Production',
+        'Life Below Water',
+        'Life on Land',
+        'Peace, Justice and Strong Institutions',
+        'Climate Action',
+      ],
+      required: true,
+    },
+    targetFund: {
+      type: Number,
+      required: true,
+    },
+    donations: [
+      {
+        donorId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'user',
+        },
+        amount: {
+          type: Number,
+          required: true,
+        },
       },
-      amount: {
-        type: Number,
+    ],
+    address: {
+      city: {
+        type: String,
+        required: true,
+      },
+      country: {
+        type: String,
+        required: true,
+      },
+      addressLine: {
+        type: String,
         required: true,
       },
     },
-  ],
-  address: {
-    city: {
-      type: String,
-      required: true,
-    },
-    country: {
-      type: String,
-      required: true,
-    },
-    addressLine: {
-      type: String,
-      required: true,
-    },
   },
-});
+  { toJSON: { virtuals: true } },
+  { toObject: { virtuals: true } }
+);
 
 fundSchema.virtual('gatheredFund').get(function () {
-  return sum(this.donations[0].amount);
+  let sum;
+  donations.forEach((donation) => {
+    sum += donation.amount;
+  });
+  return sum;
 });
 
 fundSchema.virtual('remainingFund').get(function () {
-  return this.targetFund - this.donations[0].amount;
+  return this.targetFund - this.gatheredFund;
 });
 
 module.exports = mongoose.model('Fund', fundSchema);
