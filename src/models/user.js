@@ -101,7 +101,7 @@ const user = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Organization",
     }]
-}]
+})
 
     user.virtual('fullName').get(function () {
         return this.firstName + ' ' + this.lastName;
