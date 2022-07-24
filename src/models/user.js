@@ -1,9 +1,6 @@
 const mongoose = require('mongoose')
 const variables = require('./variables')
 
-const cities = variables.CITIES
-const listOfCategories = variables.CATEGORIES
-
 const rate = mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -74,11 +71,11 @@ const user = mongoose.Schema({
     },
     preferredCities: [{
         type: string,
-        enum: cities
+        enum: variables.CITIES
     }],
     interests: [{
         type: string,
-        enum: listOfCategories,
+        enum: variables.CATEGORIES,
         required: true
     }],
     gender: {
@@ -122,7 +119,7 @@ const organization = mongoose.Schema({
     },
     categories: [{
         type: string,
-        enum: listOfCategories
+        enum: variables.CATEGORIES
     }],
     city: {
         type: string,
