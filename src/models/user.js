@@ -137,7 +137,7 @@ organization.virtual('rate').get(function () {
     return this.rates.reduce((acc, curr) => acc + curr.rate, 0) / this.rates.length
 });
 
-const BaseUser = mongoose.model("baseUser", baseUser)
+const BaseUser = mongoose.model("BaseUser", baseUser)
 const User = BaseUser.discriminator("User", user)
 const Organization = BaseUser.discriminator("Organization", organization)
 
