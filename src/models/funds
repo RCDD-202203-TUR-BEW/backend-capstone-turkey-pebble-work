@@ -75,7 +75,7 @@ const fundSchema = mongoose.Schema(
 
 fundSchema.virtual('gatheredFund').get(function () {
   let sum;
-  donations.forEach((donation) => {
+  this.donations.forEach((donation) => {
     sum += donation.amount;
   });
   return sum;
