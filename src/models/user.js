@@ -1,52 +1,8 @@
 const mongoose = require('mongoose')
+const variables = require('./variables')
 
-const cities = ['Adana', 'Kocaeli', 'Adiyaman', 'Konya'
-    , 'Afyonkarahisar', 'Kutahya'
-    , 'Agri', 'Malatya'
-    , 'Amasya', 'Manisa'
-    , 'Ankara', 'Kahramanmaras'
-    , 'Antalya', 'Mardin'
-    , 'Artviin', 'Mugla'
-    , 'Aydin', 'Mus'
-    , 'Balikesir', 'Nevsehir'
-    , 'Bilecik', 'Nigde'
-    , 'Bingol', 'Ordu'
-    , 'Bitlis', 'Rize'
-    , 'Bolu', 'Sakarya'
-    , 'Burdur', 'Samsun'
-    , 'Bursa', 'Siirt'
-    , 'Canakkale', 'Sinop'
-    , 'Cankiri', 'Sivas'
-    , 'Corum', 'Tekirdag'
-    , 'Denizli', 'Tokat'
-    , 'Diyarbakir', 'Trabzon'
-    , 'Edirne', 'Tunceli'
-    , 'Elazig', 'Sanliurfa'
-    , 'Erzincan', 'Usak'
-    , 'Erzurum', 'Van'
-    , 'Eskisehir', 'Yozgat'
-    , 'Gaziantep', 'Zonguldak'
-    , 'Giresun', 'Aksaray'
-    , 'Gumushane', 'Bayburt'
-    , 'Hakkari', 'Karaman'
-    , 'Hatay', 'Kirikkale'
-    , 'Isparta', 'Batman'
-    , 'Mersin', 'Sirnak'
-    , 'Istanbul', 'Bartin'
-    , 'Izmir', 'Ardahan'
-    , 'Kars', 'Igdir'
-    , 'Kastamonu', 'Yalova'
-    , 'Kayseri', 'Karabuk'
-    , 'Kirklareli', 'Kilis'
-    , 'Kirsehir', 'Osmaniye'
-    , 'Duzce'
-]
-
-const listOfCategories = ['No Poverty', 'Zero Hunger', 'Good Health And Well-Being',
-    'Quality Education', 'Gender Equality', 'Clean Water And Sanitation',
-    'Affordable And Clean Energy', 'Animals', 'Oceans', 'Nature',
-    'Reduced Inequalities', 'Sustainable Cities And Communities', 'Responsible Consumption And Production',
-    'Climate Action', 'Life Below Water', 'Life On Land', 'Peace', 'Youth', 'Justice']
+const cities = variables.CITIES
+const listOfCategories = variables.CATEGORIES
 
 const rate = mongoose.Schema({
     userId: {
@@ -87,7 +43,6 @@ const baseUser = mongoose.Schema({
     createdEvents: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Event",
-
     }],
     followers: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -100,11 +55,8 @@ const baseUser = mongoose.Schema({
 
 }, { toJSON: { virtuals: true } }, { toObject: { virtuals: true } });
 
-const BaseUser = mongoose.model("User", baseUser);
-
 
 const user = mongoose.Schema({
-
     firstName: {
         type: string,
         required: true
@@ -114,7 +66,6 @@ const user = mongoose.Schema({
         required: true
     },
     // fullname: virtual property
-
     profileImage: {
         type: string,
     },
@@ -126,7 +77,6 @@ const user = mongoose.Schema({
         type: string,
         enum: cities
     }],
-
     interests: [{
         type: string,
         enum: listOfCategories,
@@ -139,7 +89,6 @@ const user = mongoose.Schema({
     followedEvents: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Event",
-
     }],
     followedFunds: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -152,22 +101,12 @@ const user = mongoose.Schema({
     followedOrganizations: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Organization",
-
     }]
-
 }]
 
-
-
-// virtual
-user.virtual('fullName').get(function () {
-    return this.firstName + ' ' + this.lastName;
-});
-
-const User = BaseUser.discriminator("User", user);
-
-
-
+    user.virtual('fullName').get(function () {
+        return this.firstName + ' ' + this.lastName;
+    });
 
 const organization = mongoose.Schema({
     name: {
@@ -181,7 +120,6 @@ const organization = mongoose.Schema({
     coverImage: {
         type: string,
         required: true
-
     },
     categories: [{
         type: string,
@@ -190,29 +128,23 @@ const organization = mongoose.Schema({
     city: {
         type: string,
         required: true
-
     },
     rates: [rate],
     // rate : virtual property
     websiteUrl: {
         type: string,
     }
-
-
 });
 
-// virtual
 organization.virtual('rate').get(function () {
     if (!this.rates.length) return 0
     return this.rates.reduce((acc, curr) => acc + curr.rate, 0) / this.rates.length
 });
 
+const BaseUser = mongoose.model("User", baseUser)
+const User = BaseUser.discriminator("User", user)
 const Organization = BaseUser.discriminator("Organization", organization)
 
-
-
-
-
 module.exports = {
-    BaseUser, User, Organization
+    User, Organization
 }
