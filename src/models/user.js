@@ -55,7 +55,6 @@ const baseUser = mongoose.Schema({
 
 }, { toJSON: { virtuals: true } }, { toObject: { virtuals: true } });
 
-
 const user = mongoose.Schema({
     firstName: {
         type: string,
