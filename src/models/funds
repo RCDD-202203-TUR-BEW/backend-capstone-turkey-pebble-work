@@ -1,5 +1,5 @@
 const { sum } = require('lodash');
-
+const variable = require('../utility/variables');
 const mongoose = require('mongoose');
 
 const fundSchema = mongoose.Schema(
@@ -18,24 +18,7 @@ const fundSchema = mongoose.Schema(
     },
     category: {
       type: String,
-      enum: [
-        'No Poverty',
-        'Zero Hunger',
-        'Good Health and Wellbeing',
-        'Quality Education',
-        'Gender Equality',
-        'Clean Water and sanitation',
-        'Affordable and Clean Energy',
-        'Decent Work and Economic Growth',
-        'Industry, Innovation, and Infrastructure',
-        'Reduced Inequalities',
-        'Sustainable Cities and Communities',
-        'Responsible Consumption/ Production',
-        'Life Below Water',
-        'Life on Land',
-        'Peace, Justice and Strong Institutions',
-        'Climate Action',
-      ],
+      enum: variable.CATEGORIES,
       required: true,
     },
     targetFund: {
