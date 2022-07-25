@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const variables = require('./variables')
+const variables = require('../utility/variables')
 
 const rate = mongoose.Schema({
     userId: {
