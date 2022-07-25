@@ -1,6 +1,6 @@
 const { sum } = require('lodash');
-const variable = require('../utility/variables');
 const mongoose = require('mongoose');
+const variable = require('../utility/variables');
 
 const fundSchema = mongoose.Schema(
   {

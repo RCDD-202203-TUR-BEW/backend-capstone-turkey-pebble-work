@@ -1,5 +1,5 @@
-const variable = require('../utility/variables');
 const mongoose = require('mongoose');
+const variable = require('../utility/variables');
 
 const eventSchema = mongoose.Schema({
   puplisherId: {
