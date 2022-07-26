@@ -9,16 +9,19 @@ if (process.env.NODE_ENV === 'test') url = urlTest;
 if (process.env.NODE_ENV === 'production') url = urlProd;
 
 const connectToMongo = () => {
-  console.log(process.env.NODE_ENV);
-  mongoose
-    .connect(url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then(() => {
-      console.log(`MongoDB Connected…`);
-    })
-    .catch((err) => console.log('Database connection error: ', err));
+    mongoose
+        .connect(url, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        })
+        .then(() => {
+            // TODO: replace this with a logger
+            // console.log(`MongoDB Connected…`);
+        })
+        .catch((err) => {
+            // TODO: replace this with a logger
+            // console.log('Database connection error: ', err);
+        });
 };
 
 module.exports = connectToMongo;
