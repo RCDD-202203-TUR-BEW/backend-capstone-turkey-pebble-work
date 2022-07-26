@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 
-const urlDev = process.env.MONGODB_URI_dev;
-const urlTest = process.env.MONGODB_URI_test;
-const urlProd = process.env.MONGODB_URI_prod;
-
-let url = urlDev;
-if (process.env.NODE_ENV === 'test') url = urlTest;
-if (process.env.NODE_ENV === 'production') url = urlProd;
+const url = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@pebble-work-capstone.umzdwjg.mongodb.net/${process.env.NODE_ENV}?retryWrites=true&w=majority`;
 
 const connectToMongo = () => {
     mongoose
