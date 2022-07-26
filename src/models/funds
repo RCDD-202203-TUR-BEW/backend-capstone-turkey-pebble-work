@@ -1,6 +1,6 @@
 const { sum } = require('lodash');
 const mongoose = require('mongoose');
-const variable = require('../utility/variables');
+const variables = require('../utility/variables');
 
 const fundSchema = mongoose.Schema(
   {
@@ -18,7 +18,7 @@ const fundSchema = mongoose.Schema(
     },
     category: {
       type: String,
-      enum: variable.CATEGORIES,
+      enum: variables.CATEGORIES,
       required: true,
     },
     targetFund: {

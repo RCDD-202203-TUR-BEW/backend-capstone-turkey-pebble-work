@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const variable = require('../utility/variables');
+const variables = require('../utility/variables');
 
 const eventSchema = mongoose.Schema({
   puplisherId: {
@@ -24,7 +24,7 @@ const eventSchema = mongoose.Schema({
   },
   category: {
     type: String,
-    enum: variable.CATEGORIES,
+    enum: variables.CATEGORIES,
     required: true,
   },
   confirmedVolunteers: [
