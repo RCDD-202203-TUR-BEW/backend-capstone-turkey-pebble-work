@@ -11,6 +11,7 @@ app.use(express.json());
 
 if (process.env.NODE_ENV !== 'test') {
     app.listen(port, () => {
+        // TODO replace this with a logger
         // console.log(`Server listening on port ${port}`);
         connectToMongo();
     });
