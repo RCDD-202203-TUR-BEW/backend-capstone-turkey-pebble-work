@@ -81,6 +81,7 @@ const CITIES = [
   'Osmaniye',
   'Duzce',
 ];
+
 const CATEGORIES = [
   'No Poverty',
   'Zero Hunger',
