@@ -11,7 +11,7 @@
     "scripts": {
         "start": "export NODE_ENV=dev && nodemon src/app.js",
         "start_prod": "export NODE_ENV=production && nodemon src/app.js",
-        "test": "export NODE_ENV=test && yarn validate && jest --passWithNoTests",
+        "test": "export NODE_ENV=test && jest --passWithNoTests --forceExit",
         "lint": "eslint --ignore-path .gitignore .",
         "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
         "validate": "yarn format && yarn lint",
@@ -37,6 +37,7 @@
         "mongodb": "^4.8.0",
         "mongoose": "^6.4.6",
         "morgan": "^1.10.0",
+        "nodemailer": "^6.7.7",
         "passport": "^0.6.0",
         "passport-google-oauth20": "^2.0.0",
         "supertest": "^6.2.4",
@@ -70,5 +71,8 @@
         "url": "https://github.com/ReCoded-Org/backend-capstone-template/issues"
     },
     "homepage": "https://github.com/ReCoded-Org/backend-capstone-template#readme",
-    "keywords": []
+    "keywords": [],
+    "engines": {
+        "node": ">=8.3.0"
+    }
 }
