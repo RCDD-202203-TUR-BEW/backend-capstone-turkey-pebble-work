@@ -6,6 +6,7 @@ const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
 const { authMiddleware } = require('./middleware');
+const { connectToStorage } = require('./db/storage');
 
 const app = express();
 const port = process.env.PORT;

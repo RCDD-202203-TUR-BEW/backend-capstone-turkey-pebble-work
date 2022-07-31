@@ -3,6 +3,10 @@ const request = require('supertest');
 const app = require('../../app');
 const { User, Organization, BaseUser, Token } = require('../../models/user');
 const connectToMongo = require('../../db/connection');
+const storage = require('../../db/storage');
+
+const TEST_IMAGE_PATH = `${__dirname}/test_image.jpg`;
+const PDF_PATH = `${__dirname}/invalid_image.pdf`;
 
 beforeAll(async () => {
     // connect to test database
@@ -24,8 +28,6 @@ const validUser = {
     gender: 'male',
     interests: ['No Poverty', 'Zero Hunger'],
     preferredCities: ['Adana', 'Kocaeli'],
-    // TODO: handle adding images to the databse
-    // profileImage: ...,
 };
 
 const validOrga = {
@@ -36,21 +38,24 @@ const validOrga = {
     city: 'Adana',
     categories: ['No Poverty', 'Zero Hunger'],
     websiteUrl: 'www.nurorga.com',
-    // TODO: handle adding images to the databse
-    // coverImage: ...,
 };
 
 let newUser = null;
 let newToken = null;
 let jwtToken = null;
 
+// mocking the uploadImage function to avoid uploading images to the cloud while testing
+const mockUploadImage = jest.spyOn(storage, 'uploadImage');
+mockUploadImage.mockReturnValue(Promise.resolve('https://test.com/test.jpg'));
+
+jest.setTimeout(30000);
+
 describe('Sign up a new user', () => {
     it('POST /api/auth/user/signup should return a token in a cookie', (done) => {
         request(app)
             .post('/api/auth/user/signup')
-            // TODO: this should change to multipart/form-data when we add images
-            .set('Content-Type', 'application/json')
-            .send(validUser)
+            .field(validUser)
+            .attach('profileImage', TEST_IMAGE_PATH)
             .expect('Content-Type', /json/)
             .expect(200, (err, res) => {
                 if (err) return done(err);
@@ -71,19 +76,18 @@ describe('Sign up a new user', () => {
         expect(user.firstName).toBe(validUser.firstName);
         expect(user.lastName).toBe(validUser.lastName);
         expect(user.dateOfBirth).toBe(validUser.dateOfBirth);
-        expect(user.gender).toBe(validUser.gender);
         expect(user.interests).toEqual(validUser.interests);
         expect(user.preferredCities).toEqual(validUser.preferredCities);
-        // TODO: check if a image url is there
-        // TODO: check if profile image is added to the databse
+        expect(user.profileImage).toBeDefined();
+        expect(user.profileImage).toBeTruthy();
+        expect(user.gender).toBe(validUser.gender);
     });
 
     it('POST /api/auth/user/signup should return an error when signing up with a used email', (done) => {
         request(app)
             .post('/api/auth/user/signup')
-            // TODO: this should change to multipart/form-data when we add images
-            .set('Content-Type', 'application/json')
-            .send(validUser)
+            .field(validUser)
+            .attach('profileImage', TEST_IMAGE_PATH)
             .expect('Content-Type', /json/)
             .expect(400, (err, res) => {
                 if (err) return done(err);
@@ -111,9 +115,7 @@ describe('Sign up a new user', () => {
         ];
         request(app)
             .post('/api/auth/user/signup')
-            // TODO: this should change to multipart/form-data when we add images
-            .set('Content-Type', 'application/json')
-            .send({})
+            .field({})
             .expect('Content-Type', /json/)
             .expect(422, (err, res) => {
                 if (err) return done(err);
@@ -128,21 +130,15 @@ describe('Sign up a new user', () => {
     });
 
     it('POST /api/auth/user/signup should return an error when signing up with invalid optional fields', (done) => {
-        const optionalFields = [
-            // TODO: 'profileImage'
-            'preferredCities',
-            'interests',
-        ];
+        const optionalFields = ['profileImage', 'preferredCities', 'interests'];
         const invalidOpitionalFields = {
             preferredCities: ['Adana', 'Kocaeli', 'Some invalid city'],
             interests: ['No Poverty', 'Some invalid interest'],
         };
-
         request(app)
             .post('/api/auth/user/signup')
-            // TODO: this should change to multipart/form-data when we add images
-            .set('Content-Type', 'application/json')
-            .send(invalidOpitionalFields)
+            .field(invalidOpitionalFields)
+            .attach('profileImage', PDF_PATH)
             .expect('Content-Type', /json/)
             .expect(422, (err, res) => {
                 if (err) return done(err);
@@ -161,9 +157,8 @@ describe('Sign up an organization', () => {
     it('POST /api/auth/organization/signup should return a token in a cookie', (done) => {
         request(app)
             .post('/api/auth/organization/signup')
-            // TODO: this should change to multipart/form-data when we add images
-            .set('Content-Type', 'application/json')
-            .send(validOrga)
+            .field(validOrga)
+            .attach('coverImage', TEST_IMAGE_PATH)
             .expect('Content-Type', /json/)
             .expect(200, (err, res) => {
                 if (err) return done(err);
@@ -189,16 +184,15 @@ describe('Sign up an organization', () => {
         expect(orga.city).toBe(validOrga.city);
         expect(orga.categories).toEqual(validOrga.categories); // deep equality
         expect(orga.website).toBe(validOrga.website);
-        // TODO: check if a image url is there
-        // TODO: check if coverImage is added to the databse
+        expect(orga.coverImage).toBeDefined();
+        expect(orga.coverImage).toBeTruthy();
     });
 
     it('POST /api/auth/organization/signup should return an error when signing up with a used email', (done) => {
         request(app)
             .post('/api/auth/organization/signup')
-            // TODO: this should change to multipart/form-data when we add images
-            .set('Content-Type', 'application/json')
-            .send(validOrga)
+            .field(validOrga)
+            .attach('coverImage', TEST_IMAGE_PATH)
             .expect('Content-Type', /json/)
             .expect(400, (err, res) => {
                 if (err) return done(err);
@@ -225,9 +219,7 @@ describe('Sign up an organization', () => {
         ];
         request(app)
             .post('/api/auth/organization/signup')
-            // TODO: this should change to multipart/form-data when we add images
-            .set('Content-Type', 'application/json')
-            .send({})
+            .field({})
             .expect('Content-Type', /json/)
             .expect(422, (err, res) => {
                 if (err) return done(err);
@@ -242,21 +234,17 @@ describe('Sign up an organization', () => {
     });
 
     it('POST /api/auth/organization/signup should return an error when signing up with invalid optional fields', (done) => {
-        const optionalFields = [
-            // TODO: 'coverImage'
-            'categories',
-            'websiteUrl',
-        ];
+        const optionalFields = ['coverImage', 'categories', 'websiteUrl'];
         const invalidOpitionalFields = {
             categories: ['No Poverty', 'Some invalid category'],
-            websiteUrl: 123,
+            // website must be a string not an array
+            websiteUrl: ['https://www.google.com', 'Some invalid website'],
         };
 
         request(app)
             .post('/api/auth/organization/signup')
-            // TODO: this should change to multipart/form-data when we add images
-            .set('Content-Type', 'application/json')
-            .send(invalidOpitionalFields)
+            .field(invalidOpitionalFields)
+            .attach('coverImage', PDF_PATH)
             .expect('Content-Type', /json/)
             .expect(422, (err, res) => {
                 if (err) return done(err);
@@ -327,7 +315,6 @@ describe('Sign in a user/organization', () => {
         const requiredFields = ['email', 'password'];
         request(app)
             .post('/api/auth/signin')
-            // TODO: this should change to multipart/form-data when we add images
             .set('Content-Type', 'application/json')
             .send({})
             .expect('Content-Type', /json/)
@@ -345,7 +332,7 @@ describe('Sign in a user/organization', () => {
 });
 
 describe('Verify user', () => {
-    it('POST /api/auth/verify/:id/:token should return an error if passed invalid id', (done) => {
+    it('GET /api/auth/verify/:id/:token should return an error if passed invalid id', (done) => {
         const invalidId = '123';
         const randomToken = '123';
         request(app)
@@ -361,7 +348,7 @@ describe('Verify user', () => {
             });
     });
 
-    it('POST /api/auth/verify/:id/:token should return an error if passed valid but wrong id', (done) => {
+    it('GET /api/auth/verify/:id/:token should return an error if passed valid but wrong id', (done) => {
         const validButWrongId = '62e2738e99c12c5a84ceb43f';
         const randomToken = '123';
         request(app)
@@ -375,7 +362,7 @@ describe('Verify user', () => {
             });
     });
 
-    it('POST /api/auth/verify/:id/:token should return an error if passed valid id but wrong token', (done) => {
+    it('GET /api/auth/verify/:id/:token should return an error if passed valid id but wrong token', (done) => {
         BaseUser.findOne({ email: validUser.email }).then((user) => {
             const randomToken = '123';
             request(app)
@@ -390,7 +377,7 @@ describe('Verify user', () => {
         });
     });
 
-    it('POST /api/auth/verify/:id/:token should verify the signed up user', (done) => {
+    it('GET /api/auth/verify/:id/:token should verify the signed up user', (done) => {
         request(app)
             .get(`/api/auth/verify/${newUser.id}/${newToken.token}`)
             .set('Content-Type', 'application/json')
@@ -402,7 +389,7 @@ describe('Verify user', () => {
             });
     });
 
-    it('POST /api/auth/verify/:id/:token should return an error if user already verified', (done) => {
+    it('GET /api/auth/verify/:id/:token should return an error if user already verified', (done) => {
         request(app)
             .get(`/api/auth/verify/${newUser.id}/${newToken.token}`)
             .set('Content-Type', 'application/json')
@@ -416,7 +403,7 @@ describe('Verify user', () => {
 });
 
 describe('Sign out user', () => {
-    it('POST /api/auth/signout should return an error if user is not signed in', (done) => {
+    it('GET /api/auth/signout should return an error if user is not signed in', (done) => {
         request(app)
             .post('/api/auth/signout')
             .set('Content-Type', 'application/json')
@@ -431,7 +418,7 @@ describe('Sign out user', () => {
             });
     });
 
-    it('POST /api/auth/signout should sign user out', (done) => {
+    it('GET /api/auth/signout should sign user out', (done) => {
         request(app)
             .get('/api/auth/signout')
             .set('Content-Type', 'application/json')

@@ -4,6 +4,7 @@ const publicRoutes = [
     '/api/auth/user/signup',
     '/api/auth/organization/signup',
     '/api/auth/signin',
+    '/api/auth/image',
     // we can't use /api/auth/verify/:id/:token directly
     // this is a regex, so it will match any path similar to /api/auth/verify/324/123456789
     /^\/api\/auth\/verify\/(?:([^/]+?))\/(?:([^/]+?))\/?$/i,

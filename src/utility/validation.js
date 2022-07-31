@@ -1,7 +1,9 @@
-const { validationResult, param, query, body } = require('express-validator');
-const { isString } = require('lodash');
+const { validationResult, param, body, check } = require('express-validator');
+const { isString, inRange } = require('lodash');
 const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
+
+const MAX_IMAGE_SIZE = 1024 * 1024 * 10; // 10MB
 
 const BASE_USER_VALIDATION_RULES = [
     body('email').exists().isEmail().withMessage('email is required'),
@@ -20,15 +22,23 @@ const BASE_USER_VALIDATION_RULES = [
         ),
 ];
 
-// TODO: somehow validate porfile image
 const USER_SIGNUP_VALIDATION_RULES = [
     ...BASE_USER_VALIDATION_RULES,
     body('firstName').exists().isString().withMessage('firstName is required'),
     body('lastName').exists().isString().withMessage('lastName is required'),
     body('profileImage')
-        .optional()
-        .isString()
-        .withMessage('profileImage is required'),
+        .custom((value, { req }) => {
+            // image is optional
+            if (!req.file) return true;
+            if (
+                req.file.mimetype.split('/')[0] !== 'image' ||
+                req.file.size > MAX_IMAGE_SIZE
+            ) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage('profileImage must be an image less than 10MB'),
     body('dateOfBirth')
         .exists()
         .isDate() // example: '2000-01-01'
@@ -62,7 +72,6 @@ const USER_SIGNUP_VALIDATION_RULES = [
         .withMessage('gender must be a valid string'),
 ];
 
-// TODO: somehow validate porfile image
 const ORGANIZATION_SIGNUP_VALIDATION_RULES = [
     ...BASE_USER_VALIDATION_RULES,
     body('name').exists().isString().withMessage('name is required'),
@@ -70,7 +79,19 @@ const ORGANIZATION_SIGNUP_VALIDATION_RULES = [
         .exists()
         .isString()
         .withMessage('description is required'),
-    body('coverImage').optional().isString().withMessage('logo is required'),
+    body('coverImage')
+        .custom((value, { req }) => {
+            // image is optional
+            if (!req.file) return true;
+            if (
+                req.file.mimetype.split('/')[0] !== 'image' ||
+                req.file.size > MAX_IMAGE_SIZE
+            ) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage('coverImage must be an image less than 10MB'),
     body('categories')
         .optional()
         .isArray({ min: 1 })

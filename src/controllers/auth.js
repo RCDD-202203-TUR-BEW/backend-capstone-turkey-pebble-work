@@ -4,10 +4,14 @@ const crypto = require('crypto');
 
 const { User, Organization, BaseUser, Token } = require('../models/user');
 const { sendEmail } = require('../utility/mail');
+const storage = require('../db/storage');
+const { getFileExtension } = require('../utility/utils');
 
 const HASH_ROUNDS = 10;
 const FOURTEEN_DAYS_MILLISECONDS = 1000 * 60 * 60 * 24 * 14; // 14 days
 const FOURTEEN_DAYS_STRING = '14d'; // 14 days
+const PROFILE_IMAGE_DIR = 'profileImages';
+const COVER_IMAGE_DIR = 'coverImages';
 
 async function sendVerificationEmail(user, token) {
     const verificationLink = `${process.env.BASE_URL}/api/auth/verify/${user.id}/${token.token}`;
@@ -36,25 +40,42 @@ async function signUp(req, res) {
                 hashedPassword,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
-                // profileImage: 'test', // TODO: add profile image
                 dateOfBirth: req.body.dateOfBirth,
                 preferredCities: req.body.preferredCities,
                 interests: req.body.interests,
                 gender: req.body.gender,
             }).save();
+
+            // image is optional
+            if (req.file) {
+                const imgUrl = await storage.uploadImage(
+                    req.file,
+                    `${PROFILE_IMAGE_DIR}/${newBaseUser.id}.${getFileExtension(
+                        req.file.originalname
+                    )}`
+                );
+                newBaseUser.profileImage = imgUrl;
+            }
         } else {
             newBaseUser = await new Organization({
                 email: req.body.email,
                 hashedPassword,
                 name: req.body.name,
                 description: req.body.description,
-                // coverImage: 'test', // TODO: add profile image
                 city: req.body.city,
                 categories: req.body.categories,
             }).save();
+            if (req.file) {
+                const imgUrl = await storage.uploadImage(
+                    req.file,
+                    `${COVER_IMAGE_DIR}/${newBaseUser.id}.${getFileExtension(
+                        req.file.originalname
+                    )}`
+                );
+                newBaseUser.coverImage = imgUrl;
+            }
         }
-
-        // TODO: upload profile image
+        await newBaseUser.save();
 
         // create token
         const payload = {
