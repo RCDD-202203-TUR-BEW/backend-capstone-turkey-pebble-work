@@ -10,9 +10,9 @@ const {
     handleValidation,
 } = require('../utility/validation');
 
-const MAX_IMAGE_SIZE = 1024 * 1024 * 10; // 10MB
-
 const router = express.Router();
+const { MAX_IMAGE_SIZE } = require('../utility/variables');
+
 const multer = Multer({
     storage: Multer.memoryStorage(),
     limits: {
@@ -20,35 +20,49 @@ const multer = Multer({
     },
 });
 
-router.post(
-    '/organization/signup',
-    multer.single('coverImage'),
-    ORGANIZATION_SIGNUP_VALIDATION_RULES,
-    handleValidation,
-    authController.signUp
-);
+const APIs = [
+    {
+        route: '/organization/signup',
+        method: 'post',
+        multer: multer.single('coverImage'),
+        controller: authController.signUp,
+        validation: ORGANIZATION_SIGNUP_VALIDATION_RULES,
+    },
+    {
+        route: '/user/signup',
+        method: 'post',
+        multer: multer.single('profileImage'),
+        controller: authController.signUp,
+        validation: USER_SIGNUP_VALIDATION_RULES,
+    },
+    {
+        route: '/verify/:id/:token',
+        method: 'get',
+        controller: authController.verifyBaseUserEmail,
+        validation: VERIFY_VALIDATION_RULES,
+    },
+    {
+        route: '/signin',
+        method: 'post',
+        controller: authController.signIn,
+        validation: SIGNIN_VALIDATION_RULES,
+    },
+    {
+        route: '/signout',
+        method: 'get',
+        controller: authController.signOut,
+    },
+];
 
-router.post(
-    '/user/signup',
-    multer.single('profileImage'),
-    USER_SIGNUP_VALIDATION_RULES,
-    handleValidation,
-    authController.signUp
-);
-
-router.get(
-    '/verify/:id/:token',
-    VERIFY_VALIDATION_RULES,
-    handleValidation,
-    authController.verifyBaseUserEmail
-);
-
-router.post(
-    '/signin',
-    SIGNIN_VALIDATION_RULES,
-    handleValidation,
-    authController.signIn
-);
+APIs.forEach((api) => {
+    router[api.method](
+        api.route,
+        api.multer || ((req, res, next) => next()),
+        api.validation || [],
+        handleValidation,
+        api.controller
+    );
+});
 
 router.get('/signout', authController.signOut);
 

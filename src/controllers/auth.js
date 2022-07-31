@@ -7,26 +7,32 @@ const { sendEmail } = require('../utility/mail');
 const storage = require('../db/storage');
 const { getFileExtension } = require('../utility/utils');
 
-const HASH_ROUNDS = 10;
-const FOURTEEN_DAYS_MILLISECONDS = 1000 * 60 * 60 * 24 * 14; // 14 days
-const FOURTEEN_DAYS_STRING = '14d'; // 14 days
-const PROFILE_IMAGE_DIR = 'profileImages';
-const COVER_IMAGE_DIR = 'coverImages';
+const {
+    HASH_ROUNDS,
+    FOURTEEN_DAYS_MILLISECONDS,
+    FOURTEEN_DAYS_STRING,
+    PROFILE_IMAGE_DIR,
+    COVER_IMAGE_DIR,
+    EMAIL_VERIFY_SUBJECT,
+} = require('../utility/variables');
 
 async function sendVerificationEmail(user, token) {
     const verificationLink = `${process.env.BASE_URL}/api/auth/verify/${user.id}/${token.token}`;
     const text = `Hello ${user.fullName},\n\nPlease verify your account by clicking the link below:\n${verificationLink}`;
-    const subject = 'Verify your account';
+    const subject = EMAIL_VERIFY_SUBJECT;
     return sendEmail(user.email, subject, text);
 }
 
 async function signUp(req, res) {
     try {
-        // check if baseUser already exists
-        const oldUser = await BaseUser.findOne({ email: req.body.email });
-        if (oldUser) {
+        const alreadyExistingUser = await BaseUser.findOne({
+            email: req.body.email,
+        });
+
+        if (alreadyExistingUser) {
             return res.status(400).json({ message: 'Email already used' });
         }
+
         const hashedPassword = await bcrypt.hash(
             req.body.password,
             HASH_ROUNDS
@@ -75,20 +81,20 @@ async function signUp(req, res) {
                 newBaseUser.coverImage = imgUrl;
             }
         }
+
         await newBaseUser.save();
 
-        // create token
         const payload = {
             id: newBaseUser.id,
             email: newBaseUser.email,
             // if organization, fullName is the same as name
             fullName: newBaseUser.fullName,
         };
+
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
             expiresIn: FOURTEEN_DAYS_STRING,
         });
 
-        // set cookie
         res.cookie('auth_token', token, {
             httpOnly: true, // only accessible by server
             signed: true,
@@ -96,7 +102,6 @@ async function signUp(req, res) {
             secure: process.env.NODE_ENV === 'production',
         });
 
-        // send verification email
         const verificationToken = await new Token({
             userId: newBaseUser.id,
             token: crypto.randomBytes(32).toString('hex'),

@@ -3,7 +3,7 @@ const { isString } = require('lodash');
 const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
 
-const MAX_IMAGE_SIZE = 1024 * 1024 * 10; // 10MB
+const { MAX_IMAGE_SIZE } = require('./variables');
 
 const BASE_USER_VALIDATION_RULES = [
     body('email').exists().isEmail().withMessage('email is required'),
