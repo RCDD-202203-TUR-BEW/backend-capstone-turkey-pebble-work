@@ -7,10 +7,7 @@ const fundSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'BaseUser',
         },
-        title: {
-            type: String,
-            required: true,
-        },
+        title: { type: String, required: true },
         content: {
             type: String,
             required: true,

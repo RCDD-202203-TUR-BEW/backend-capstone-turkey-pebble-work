@@ -1,0 +1,35 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0",
+        "title": "tytul",
+        "contact": {
+            "name": "mario",
+            "email": "a@b.com"
+        }
+    },
+    "host": "localhost:3003",
+    "basePath": "/",
+    "schemes": ["http"],
+    "paths": {
+        "/funds": {
+            "get": {
+                "description": "Main Desc",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "some name",
+                        "description": "desc",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "some desc"
+                    }
+                }
+            }
+        }
+    }
+}
