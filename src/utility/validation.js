@@ -1,5 +1,5 @@
-const { validationResult, param, body, check } = require('express-validator');
-const { isString, inRange } = require('lodash');
+const { validationResult, param, body } = require('express-validator');
+const { isString } = require('lodash');
 const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
 
