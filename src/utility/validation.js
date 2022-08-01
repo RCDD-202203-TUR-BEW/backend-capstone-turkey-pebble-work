@@ -4,17 +4,16 @@ const variables = require('./variables');
 
 const VERIFY_VALIDATION_FUND = [
     query('baseUserId').optional().isString(),
-    query('category')
-        .optional()
-        .isArray({ min: 1 })
-        .withMessage('interests must be an unempty array')
-        .custom((array) =>
-            array.every(
-                (category) =>
-                    isString(category) &&
-                    variables.CATEGORIES.includes(category)
-            )
-        ),
+    query('category').optional(),
+    // .isArray({ min: 1 })
+    // .withMessage('interests must be an unempty array')
+    // .custom((array) =>
+    //     array.every(
+    //         (category) =>
+    //             isString(category) &&
+    //             variables.CATEGORIES.includes(category)
+    //     )
+    // ),
     query('lastDate')
         .optional()
         .isDate() // example: '2000-01-01'

@@ -17,17 +17,27 @@ module.exports = {
             if (lastDate && currentDate) {
                 filter.createdAt = { $gte: currentDate, $lte: lastDate };
             }
+            // if (publisherId && category) {
+            //     filteredItem = await Funds.find({
+            //         $and: [
+            //             { publisherId: req.query.publisherId },
+            //             { category: { $in: category } },
+            //         ],
+            //     });
+            //     return res.status(200).json(filteredItem);
+            // }
 
-            const filteredItem = await Funds.find(filter);
+            const filteredItem = await Funds.find(filter).populate(
+                'publisherId'
+            );
             if (!filteredItem) {
-                return res.status(400).res.json({
-                    error: 'enter a valid query!',
+                return res.status(500).json({
+                    success: false,
                 });
             }
-            res.status(200);
-            res.json(filteredItem);
+            res.status(200).json(filteredItem);
         } catch (err) {
-            res.json(err.msg);
+            return res.status(400);
         }
     },
 };

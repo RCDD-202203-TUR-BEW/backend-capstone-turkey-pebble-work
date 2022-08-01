@@ -16,12 +16,7 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use('/funds', fundsRoutes);
-
-app.get('/', (req, res) => {
-    // console.log('Here');
-    res.end();
-});
+app.use('/api/funds', fundsRoutes);
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
