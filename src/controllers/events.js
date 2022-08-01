@@ -3,7 +3,6 @@ const { uploadImage } = require('../db/storage')
 const { getFileExtension } = require('../utility/utils');
 
 const createEvent = (req, res) => {
-
     try {
         const imageUrl = await uploadImage(
             req.file,
