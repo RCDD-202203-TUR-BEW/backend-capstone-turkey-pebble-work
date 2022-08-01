@@ -129,6 +129,34 @@ const SIGNIN_VALIDATION_RULES = [
     body('password').exists().isString().withMessage('password is required'),
 ];
 
+const CREATE_EVENT_VALIDATION_RULES = [
+    body('title').exists().isString().isLength({ max: 50 }).withMessage('title is required'),
+    body('content').exists().isString().isLength({ max: 1000 }).withMessage(' content is required'),
+    body('coverImage')
+        .custom((value, { req }) => {
+            if (!req.file) return false;
+            if (
+                req.file.mimetype.split('/')[0] !== 'image' ||
+                req.file.size > MAX_IMAGE_SIZE
+            ) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage('coverImage must be an image less than 10MB'),
+    body('date').exists().isDate().withMessage('date is required'),
+    body('category').exists().isString()
+        .custom((category) => variables.CATEGORIES.includes(category))
+        .withMessage('category is required'),
+    body('city').exists().isString()
+        .custom((city) => variables.CITIES.includes(city))
+        .withMessage('city is required'),
+    body('country').exists().isString().isLength({ max: 20 }).withMessage('country is required'),
+    body('addressLine').exists().isString().isLength({ max: 50 }).withMessage('addressLine is required'),
+    body('lat').exists().isDecimal().withMessage('lat is required'),
+    body('long').exists().isDecimal().withMessage('long is required')
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -145,4 +173,5 @@ module.exports = {
     VERIFY_VALIDATION_RULES,
     SIGNIN_VALIDATION_RULES,
     handleValidation,
+    CREATE_EVENT_VALIDATION_RULES
 };

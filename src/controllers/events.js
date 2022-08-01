@@ -1,4 +1,5 @@
 const Event = require('../models/event')
+const uploadImage = require('../db/storage')
 
 
 const createEvent = (req, res) => {
@@ -7,10 +8,10 @@ const createEvent = (req, res) => {
 
         const event = await new Event({
 
-            puplisherId: req.id,
+            puplisherId: req.user.id,
             title: req.body.title,
             content: req.body.content,
-            coverImage: req.location,
+            coverImage: imageUrl,
             date: req.body.date,
             category: req.body.category,
 
@@ -19,7 +20,7 @@ const createEvent = (req, res) => {
                 country: req.body.country,
                 addressLine: req.body.addressLine
             },
-       
+
             location: {
                 lat: req.body.lat,
                 log: req.body.long
@@ -31,7 +32,7 @@ const createEvent = (req, res) => {
         res.status(201).json({ message: 'Event succesfully created' })
 
     } catch (err) {
-        console.error(err)
+        res.status(400).json({ message: 'Bad Request' })
     }
 
 
