@@ -29,6 +29,15 @@ async function getEvents(req, res) {
 
         let events = [];
 
+        // Which fields to populate from the user model
+        const requiredUserField = [
+            'id',
+            'firstName',
+            'lastName',
+            'email',
+            'profileImage',
+        ];
+
         // due to the validation, we are sure that "from" and "to" are defined togheter
         if (req.query.from) {
             const limit = _.parseInt(req.query.to) - _.parseInt(req.query.from);
@@ -36,9 +45,16 @@ async function getEvents(req, res) {
             events = await Event.find(filter)
                 .sort({ date: 1 })
                 .limit(limit)
-                .skip(skip);
+                .skip(skip)
+                .populate('publisherId', requiredUserField.join(' '))
+                .populate('confirmedVolunteers', requiredUserField.join(' '))
+                .populate('invitedVolunteers', requiredUserField.join(' '));
         } else {
-            events = await Event.find(filter).sort({ date: 1 });
+            events = await Event.find(filter)
+                .sort({ date: 1 })
+                .populate('publisherId', requiredUserField.join(' '))
+                .populate('confirmedVolunteers', requiredUserField.join(' '))
+                .populate('invitedVolunteers', requiredUserField.join(' '));
         }
 
         return res.status(200).json(events);
