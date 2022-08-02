@@ -2,7 +2,7 @@ const Event = require('../models/event')
 const { uploadImage } = require('../db/storage')
 const { getFileExtension } = require('../utility/utils');
 
-const createEvent = (req, res) => {
+const createEvent = async (req, res) => {
     try {
         const imageUrl = await uploadImage(
             req.file,
