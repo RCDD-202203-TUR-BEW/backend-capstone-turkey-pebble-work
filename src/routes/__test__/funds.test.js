@@ -25,7 +25,7 @@ const funds = [
 ];
 
 describe('Funds ', () => {
-    it('GET /api/funds should fetch all funds', (done) => {
+    it('GET /api/funds should get all funds', (done) => {
         request(app)
             .get('/api/funds')
             .expect('Content-Type', /json/)
