@@ -26,7 +26,7 @@ module.exports = {
             }
             res.status(200).json(filteredItem);
         } catch (err) {
-            return res.status(err);
+            return res.sendStatus(500);
         }
     },
 };
