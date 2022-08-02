@@ -47,6 +47,8 @@
         "supertest": "^6.2.4",
         "swagger": "^0.7.5",
         "swagger-editor": "^4.2.10",
+        "swagger-jsdoc": "^6.2.1",
+        "swagger-ui-express": "^4.5.0",
         "yarn": "^1.22.19",
         "yarn-upgrade-all": "^0.7.1"
     },
