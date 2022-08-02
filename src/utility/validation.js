@@ -1,9 +1,16 @@
 const { validationResult, query } = require('express-validator');
 const { isString } = require('lodash');
+const mongoose = require('mongoose');
 const variables = require('./variables');
 
 const VERIFY_VALIDATION_FUND = [
-    query('baseUserId').optional().isString(),
+    query('publisherId')
+        .optional()
+        .isString()
+        .custom((value) => {
+            console.log(mongoose.Types.ObjectId.isValid(value));
+            return mongoose.Types.ObjectId.isValid(value);
+        }),
     query('category').optional(),
     // .isArray({ min: 1 })
     // .withMessage('interests must be an unempty array')
