@@ -8,7 +8,7 @@ beforeAll(async () => {
     // connect to test database
     await connectToMongo();
 });
-
+jest.setTimeout(10000);
 const funds = [
     {
         _id: '62e054bc598fb3f77c7e8af6',
