@@ -60,8 +60,9 @@ describe('Get and filter events', () => {
         expect(response.status).toBe(200);
         expect(response.body).toBeDefined();
         response.body.forEach((event) => {
-            expect(event.publisherId).toBe(
-                existingEvent.publisherId.toString()
+            // null since the publisherId could be just a placeholder, and when populated, it will null
+            expect([existingEvent.publisherId.toString(), null]).toContain(
+                event.publisherId
             );
         });
     });
