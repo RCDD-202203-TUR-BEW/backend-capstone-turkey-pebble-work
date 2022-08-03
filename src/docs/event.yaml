@@ -1,0 +1,39 @@
+tags:
+ - name: create a new event
+    description: create a new event
+paths:
+  /api/events:
+    post:
+      tags:
+        - event
+      summary: create a new event
+      description: create a new event
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/newEvent"
+      responses:
+        201:
+          description: Authenticated user succesfully created event.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email already used
+        500:
+          description: Internal server error
