@@ -9,7 +9,7 @@ const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
-const eventsRoutes = require('./routes/evets')
+const eventsRoutes = require('./routes/events')
 
 const app = express();
 const port = process.env.PORT;
