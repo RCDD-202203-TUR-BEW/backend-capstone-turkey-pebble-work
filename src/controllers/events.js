@@ -1,6 +1,7 @@
 const Event = require('../models/event')
 const { uploadImage } = require('../db/storage')
 const { getFileExtension } = require('../utility/utils');
+const {COVER_IMAGE_DIR} = require('../utility/variables')
 
 const createEvent = async (req, res) => {
     try {
