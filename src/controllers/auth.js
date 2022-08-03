@@ -94,7 +94,7 @@ async function signUp(req, res) {
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
             expiresIn: FOURTEEN_DAYS_STRING,
         });
-
+        console.log(token);
         res.cookie('auth_token', token, {
             httpOnly: true, // only accessible by server
             signed: true,
