@@ -4,7 +4,7 @@ const Event = require('../models/event');
 const { addDummyEventData } = require('../utility/utils');
 
 async function getEvents(req, res) {
-    // await addDummyEventData(10);
+    // await addDummyEventData();
     try {
         // between filter options there is an implicit AND operator
         const filter = {};

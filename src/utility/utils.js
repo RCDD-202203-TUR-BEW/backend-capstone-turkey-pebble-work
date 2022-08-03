@@ -7,10 +7,10 @@ function getFileExtension(fileName) {
     return fileName.split('.').pop();
 }
 
-async function addDummyEventData(numOfEvents) {
+async function addDummyEventData() {
     const mockEvents = [];
     // eslint-disable-next-line no-plusplus
-    for (let i = 1; i < numOfEvents + 1; i++) {
+    for (let i = 1; i < 10 + 1; i++) {
         mockEvents.push({
             publisherId: mongoose.Types.ObjectId(),
             title: `Event ${i}`,

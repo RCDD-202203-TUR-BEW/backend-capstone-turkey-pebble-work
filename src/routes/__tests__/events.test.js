@@ -5,13 +5,11 @@ const Event = require('../../models/event');
 const connectToMongo = require('../../db/connection');
 const { addDummyEventData } = require('../../utility/utils');
 
-const numDummyEvents = 10;
-
 beforeAll(async () => {
     // connect to test database
     await connectToMongo();
     // add dummy data
-    await addDummyEventData(numDummyEvents);
+    await addDummyEventData();
 });
 
 afterAll(async () => {
