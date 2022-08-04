@@ -1,5 +1,5 @@
-const { validationResult, param, body } = require('express-validator');
-const { isString } = require('lodash');
+const { validationResult, param, body, query } = require('express-validator');
+const { isString, parseInt } = require('lodash');
 const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
 
@@ -129,6 +129,68 @@ const SIGNIN_VALIDATION_RULES = [
     body('password').exists().isString().withMessage('password is required'),
 ];
 
+const GET_EVENTS_VALIDATION_RULES = [
+    query('categories')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    query('city')
+        .optional()
+        .isString()
+        .withMessage('city must be a string')
+        .custom((city) => variables.CITIES.includes(city))
+        .withMessage('valid city is required'),
+    query('from')
+        .optional()
+        .isInt({ min: 0 })
+        .withMessage('"from" must be an integer')
+        .custom((value, { req }) => req.query.to) // false if 'to' is not set
+        .withMessage('cannot set "from" without "to"')
+        .custom((value, { req }) => parseInt(value) < parseInt(req.query.to))
+        .withMessage('"from" must be less than "to"'),
+    query('to')
+        .optional()
+        .isInt({ min: 1 })
+        .withMessage('"to" must be an integer')
+        .custom((value, { req }) => req.query.to)
+        .withMessage('cannot set "to" without "from"')
+        .custom((value, { req }) => parseInt(value) > parseInt(req.query.from))
+        .withMessage('"to" must be greater than "from"'),
+    query('fromDate')
+        .optional()
+        .isDate()
+        .withMessage('fromDate must be a valid date')
+        .custom((value, { req }) => req.query.toDate)
+        .withMessage('cannot set "fromDate" without "toDate"')
+        .custom(
+            (value, { req }) => new Date(value) <= new Date(req.query.toDate)
+        )
+        .withMessage('"fromDate" must be less than or equal to "toDate"'),
+    query('toDate')
+        .optional()
+        .isDate()
+        .withMessage('toDate must be a valid date')
+        .custom((value, { req }) => req.query.toDate)
+        .withMessage('cannot set "toDate" without "fromDate"')
+        .custom(
+            (value, { req }) => new Date(value) >= new Date(req.query.fromDate)
+        )
+        .withMessage('"toDate" must be greater than or equal to "fromDate"'),
+    query('publisherId')
+        .optional()
+        .isString()
+        .custom((publisherId) => mongoose.Types.ObjectId.isValid(publisherId))
+        .withMessage('publisherId must be a valid id'),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -144,5 +206,6 @@ module.exports = {
     ORGANIZATION_SIGNUP_VALIDATION_RULES,
     VERIFY_VALIDATION_RULES,
     SIGNIN_VALIDATION_RULES,
+    GET_EVENTS_VALIDATION_RULES,
     handleValidation,
 };

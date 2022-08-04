@@ -35,7 +35,6 @@ const baseUser = mongoose.Schema(
         },
         hashedPassword: {
             type: String,
-            required: true,
         },
         provider: {
             type: String,
