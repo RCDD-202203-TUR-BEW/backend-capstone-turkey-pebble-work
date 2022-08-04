@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const variables = require('../utility/variables');
 
 const eventSchema = mongoose.Schema({
-    puplisherId: {
+    publisherId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'BaseUser',
     },
