@@ -1,13 +1,13 @@
 const Event = require('../models/event')
 const { uploadImage } = require('../db/storage')
 const { getFileExtension } = require('../utility/utils');
-const {COVER_IMAGE_DIR} = require('../utility/variables')
+const {EVENT_IMAGE_DIR} = require('../utility/variables')
 
 const createEvent = async (req, res) => {
     try {
         const imageUrl = await uploadImage(
             req.file,
-            `${COVER_IMAGE_DIR}/${Date.now()}.${getFileExtension(
+            `${EVENT_IMAGE_DIR}/${Date.now()}.${getFileExtension(
                 req.file.originalname
             )}`
         );
@@ -30,7 +30,7 @@ const createEvent = async (req, res) => {
         }).save()
         res.status(201).json(event)
     } catch (err) {
-        res.status(400).json({ message: err.message })
+        res.status(500).json({ message: err.message })
     }
 };
 
