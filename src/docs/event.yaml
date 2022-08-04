@@ -34,7 +34,6 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Email already used
         500:
           description: Internal server error
 components:
@@ -167,7 +166,6 @@ components:
             - Kirsehir
             - Osmaniye
             - Duzce
-          example: Adana
         country:
           type: string
         addressLine:
