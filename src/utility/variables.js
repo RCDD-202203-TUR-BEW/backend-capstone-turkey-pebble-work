@@ -102,7 +102,7 @@ const CATEGORIES = [
     'Youth',
     'Justice',
 ];
-const OPTIONS = {
+const SWAGGER_OPTIONS = {
     definition: {
         openapi: '3.0.0',
         info: {
@@ -130,5 +130,5 @@ const OPTIONS = {
 module.exports = {
     CITIES,
     CATEGORIES,
-    OPTIONS,
+    SWAGGER_OPTIONS,
 };
