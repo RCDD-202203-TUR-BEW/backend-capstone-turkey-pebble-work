@@ -11,8 +11,6 @@ async function getFunds(req, res) {
             }
             if (publisherId) {
                 filter.publisherId = mongoose.Types.ObjectId(publisherId);
-
-                // mongoose.Types.ObjectId()
             }
             if (lastDate && currentDate) {
                 filter.createdAt = { $gte: currentDate, $lte: lastDate };
