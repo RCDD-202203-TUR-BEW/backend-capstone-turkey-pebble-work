@@ -2,8 +2,7 @@
 const mongoose = require('mongoose');
 const Funds = require('../models/fund');
 
-module.exports = {
-    getFunds: async (req, res) => {
+async function getFunds(req, res) {
         try {
             const { category, publisherId, lastDate, currentDate } = req.query;
             const filter = {};
@@ -24,4 +23,8 @@ module.exports = {
             return res.sendStatus(500);
         }
     },
+};
+
+module.exports = {
+    getFunds,
 };
