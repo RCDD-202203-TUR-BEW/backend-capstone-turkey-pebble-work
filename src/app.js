@@ -20,7 +20,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const swaggerSpec = swaggerJsdoc(SWAGGER_OPTIONS);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, { explorer: true })
+);
 
 app.use(authMiddleware);
 
