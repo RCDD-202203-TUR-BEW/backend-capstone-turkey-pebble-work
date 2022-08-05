@@ -4,7 +4,7 @@ tags:
 
 paths:
   /api/event/:
-    post:
+    get:
       tags:
         - Event
       summary: Filter events
@@ -166,6 +166,28 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Event"
+        401:
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: boolean
+                    example: true
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        403:
+          description: This status is returned when the user is not authorized to perform the operation.
+        500:
+          description: Internal server error
 
 components:
   schemas:
