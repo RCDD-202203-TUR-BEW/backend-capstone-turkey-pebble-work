@@ -5,7 +5,6 @@ const app = require('../../app');
 const connectToMongo = require('../../db/connection');
 
 beforeAll(async () => {
-    // connect to test database
     await connectToMongo();
 });
 jest.setTimeout(10000);
