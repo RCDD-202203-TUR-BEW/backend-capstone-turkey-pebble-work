@@ -102,6 +102,15 @@ const CATEGORIES = [
     'Youth',
     'Justice',
 ];
+
+const MAX_IMAGE_SIZE = 1024 * 1024 * 10; // 10MB
+const HASH_ROUNDS = 10;
+const FOURTEEN_DAYS_MILLISECONDS = 1000 * 60 * 60 * 24 * 14; // 14 days
+const FOURTEEN_DAYS_STRING = '14d'; // 14 days
+const PROFILE_IMAGE_DIR = 'profileImages';
+const COVER_IMAGE_DIR = 'coverImages';
+const EMAIL_VERIFY_SUBJECT = 'Verify your email';
+
 const SWAGGER_OPTIONS = {
     definition: {
         openapi: '3.0.0',
@@ -116,6 +125,7 @@ const SWAGGER_OPTIONS = {
             contact: {
                 name: 'PebbleWork',
                 url: 'https://github.com/RCDD-202203-TUR-BEW/backend-capstone-turkey-pebble-work',
+                email: process.env.EMAIL,
             },
         },
         servers: [
@@ -125,10 +135,18 @@ const SWAGGER_OPTIONS = {
         ],
         host: process.env.BASE_URL,
     },
-    apis: ['./src/docs/*/.yaml'],
+    apis: ['./src/docs/**/*.yaml'],
 };
+
 module.exports = {
     CITIES,
     CATEGORIES,
+    MAX_IMAGE_SIZE,
+    HASH_ROUNDS,
+    FOURTEEN_DAYS_MILLISECONDS,
+    FOURTEEN_DAYS_STRING,
+    PROFILE_IMAGE_DIR,
+    COVER_IMAGE_DIR,
+    EMAIL_VERIFY_SUBJECT,
     SWAGGER_OPTIONS,
 };

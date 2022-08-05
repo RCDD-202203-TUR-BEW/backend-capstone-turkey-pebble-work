@@ -1,6 +1,18 @@
 const mongoose = require('mongoose');
 const variables = require('../utility/variables');
 
+const tokenSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'BaseUser',
+        required: true,
+    },
+    token: {
+        type: String,
+        required: true,
+    },
+});
+
 const rate = mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -23,7 +35,6 @@ const baseUser = mongoose.Schema(
         },
         hashedPassword: {
             type: String,
-            required: true,
         },
         provider: {
             type: String,
@@ -37,25 +48,38 @@ const baseUser = mongoose.Schema(
         isVerified: {
             type: Boolean,
             required: true,
+            default: false,
         },
-        createdEvents: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Event',
-            },
-        ],
-        followers: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-            },
-        ],
-        createdFunds: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Fund',
-            },
-        ],
+        createdEvents: {
+            type: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Event',
+                    required: true,
+                },
+            ],
+            default: [],
+        },
+        followers: {
+            type: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true,
+                },
+            ],
+            default: [],
+        },
+        createdFunds: {
+            type: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Fund',
+                    required: true,
+                },
+            ],
+            default: [],
+        },
     },
     { toJSON: { virtuals: true } },
     { toObject: { virtuals: true } }
@@ -78,47 +102,71 @@ const user = mongoose.Schema({
         type: String,
         required: true,
     },
-    preferredCities: [
-        {
-            type: String,
-            enum: variables.CITIES,
-        },
-    ],
-    interests: [
-        {
-            type: String,
-            enum: variables.CATEGORIES,
-            required: true,
-        },
-    ],
+    preferredCities: {
+        type: [
+            {
+                type: String,
+                enum: variables.CITIES,
+                required: true,
+            },
+        ],
+        default: [],
+    },
+    interests: {
+        type: [
+            {
+                type: String,
+                enum: variables.CATEGORIES,
+                required: true,
+            },
+        ],
+        default: [],
+    },
     gender: {
         type: String,
         enum: ['male', 'female', 'other'],
+        required: true,
     },
-    followedEvents: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Event',
-        },
-    ],
-    followedFunds: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Fund',
-        },
-    ],
-    followedUsers: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-        },
-    ],
-    followedOrganizations: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Organization',
-        },
-    ],
+    followedEvents: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Event',
+                required: true,
+            },
+        ],
+        default: [],
+    },
+    followedFunds: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Fund',
+                required: true,
+            },
+        ],
+        default: [],
+    },
+    followedUsers: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                required: true,
+            },
+        ],
+        default: [],
+    },
+    followedOrganizations: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Organization',
+                required: true,
+            },
+        ],
+        default: [],
+    },
 });
 
 user.virtual('fullName').get(function () {
@@ -136,23 +184,34 @@ const organization = mongoose.Schema({
     },
     coverImage: {
         type: String,
-        required: true,
     },
-    categories: [
-        {
-            type: String,
-            enum: variables.CATEGORIES,
-        },
-    ],
+    categories: {
+        type: [
+            {
+                type: String,
+                enum: variables.CATEGORIES,
+                required: true,
+            },
+        ],
+        default: [],
+    },
     city: {
         type: String,
         required: true,
+        enum: variables.CITIES,
     },
-    rates: [rate],
+    rates: {
+        type: [rate],
+        default: [],
+    },
     // rate : virtual property
     websiteUrl: {
         type: String,
     },
+});
+
+organization.virtual('fullName').get(function () {
+    return this.name;
 });
 
 organization.virtual('rate').get(function () {
@@ -165,8 +224,11 @@ organization.virtual('rate').get(function () {
 const BaseUser = mongoose.model('BaseUser', baseUser);
 const User = BaseUser.discriminator('User', user);
 const Organization = BaseUser.discriminator('Organization', organization);
+const Token = mongoose.model('Token', tokenSchema);
 
 module.exports = {
+    BaseUser,
     User,
     Organization,
+    Token,
 };

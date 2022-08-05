@@ -9,12 +9,10 @@ const connectToMongo = () => {
             useUnifiedTopology: true,
         })
         .then(() => {
-            // TODO: replace this with a logger
-            // console.log(`MongoDB Connected…`);
+            console.log(`MongoDB Connected…`);
         })
         .catch((err) => {
-            // TODO: replace this with a logger
-            // console.log('Database connection error: ', err);
+            console.log('Database connection error: ', err);
         });
 };
 module.exports = connectToMongo;
