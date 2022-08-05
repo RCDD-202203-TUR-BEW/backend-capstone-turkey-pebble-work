@@ -18,7 +18,7 @@ app.use(express.json());
 
 app.use('/api/funds', fundsRoutes);
 
-const specs = swaggerJsdoc(variables.OPTIONS);
+const specs = swaggerJsdoc(variables.SWAGGER_OPTIONS);
 app.use(
     '/api-docs',
     swaggerUi.serve,
