@@ -20,7 +20,7 @@ module.exports = {
             }
             const filteredItem = await Funds.find(filter);
             if (filteredItem.length === 0) {
-                return res.status(500).json({
+                return res.status(404).json({
                     success: false,
                 });
             }
