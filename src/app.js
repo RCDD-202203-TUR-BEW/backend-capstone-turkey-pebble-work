@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const connectToMongo = require('./db/connection');
-// const swaggerDoc = require('./swagger.json');
 const fundsRoutes = require('./routes/funds');
 
 const app = express();
@@ -62,7 +61,7 @@ app.get('/', (req, res) => {
 if (process.env.NODE_ENV !== 'test') {
     app.listen(port, () => {
         // TODO replace this with a logger
-        // console.log(`Server listening on port ${port}`);
+        console.log(`Server listening on port ${port}`);
         connectToMongo();
     });
 }
