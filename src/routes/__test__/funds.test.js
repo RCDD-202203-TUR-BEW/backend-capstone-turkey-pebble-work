@@ -24,7 +24,7 @@ const funds = [
     },
 ];
 
-describe('Funds ', () => {
+describe('Get and filter funds ', () => {
     it('GET /api/funds should get all funds', (done) => {
         request(app)
             .get('/api/funds')
