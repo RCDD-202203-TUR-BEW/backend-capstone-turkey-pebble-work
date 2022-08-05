@@ -19,11 +19,6 @@ module.exports = {
                 filter.createdAt = { $gte: currentDate, $lte: lastDate };
             }
             const filteredItem = await Funds.find(filter);
-            if (filteredItem.length === 0) {
-                return res.status(404).json({
-                    success: false,
-                });
-            }
             res.status(200).json(filteredItem);
         } catch (err) {
             return res.sendStatus(500);
