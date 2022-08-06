@@ -1,7 +1,6 @@
 const { expressjwt: jwt } = require('express-jwt');
 
 const publicRoutes = [
-    '/api/auth/google',
     '/api/auth/user/signup',
     '/api/auth/organization/signup',
     '/api/auth/signin',

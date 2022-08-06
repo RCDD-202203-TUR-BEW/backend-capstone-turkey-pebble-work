@@ -100,7 +100,7 @@ const user = mongoose.Schema({
     },
     dateOfBirth: {
         type: String,
-        required: true,
+        required: false,
     },
     preferredCities: {
         type: [
@@ -125,7 +125,7 @@ const user = mongoose.Schema({
     gender: {
         type: String,
         enum: ['male', 'female', 'other'],
-        required: true,
+        required: false,
     },
     followedEvents: {
         type: [

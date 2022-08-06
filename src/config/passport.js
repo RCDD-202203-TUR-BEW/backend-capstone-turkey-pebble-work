@@ -1,6 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../models/user');
+const { User } = require('../models/user');
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -20,23 +20,21 @@ passport.use(
         },
         async (accessToken, refreshToken, profile, cb) => {
             try {
-                let user = await User.findOne({
-                    providerId: `google-${profile.id}`,
-                });
-                if (!user) {
-                    user = await User.create({
-                        email: profile.emails[0].value,
-                        fullName: `${
-                            profile.name.familyName + profile.name.givenName
-                        }_${Math.floor(Math.random() * 89998 + 10000)}`,
-                        firstName: profile.name.givenName,
-                        lastName: profile.name.familyName,
-                        profileImage: profile.photos[0].value,
-                        provider: 'Google',
-                        providerId: `google-${profile.id}`,
-                    });
-                }
-                cb(null, user);
+                // const user = await User.findOne({
+                //     providerId: `google-${profile.id}`,
+                // });
+                // console.log();
+                // if (!user) {
+                //     user = await User.create({
+                //         email: profile.emails[0].value,
+                //         firstName: profile.name.givenName,
+                //         lastName: profile.name.familyName,
+                //         profileImage: profile.photos[0].value,
+                //         provider: 'google',
+                //         providerId: `google-${profile.id}`,
+                //     });
+                // }
+                cb(null, profile);
             } catch (err) {
                 cb(err, null);
             }
