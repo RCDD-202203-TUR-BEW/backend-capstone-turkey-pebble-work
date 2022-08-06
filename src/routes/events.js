@@ -8,7 +8,7 @@ const router = express.Router();
 const eventController = require('../controllers/events');
 
 router.post(
-    '/:id/join',
+    '/:id/volunteer',
     EVENT_VALIDATION_RULES,
     handleValidation,
     eventController.joinedVoulnteers
