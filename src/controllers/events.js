@@ -1,7 +1,9 @@
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const Event = require('../models/event');
+const { User } = require('../models/user');
 const { addDummyEventData } = require('../utility/utils');
+const { sendEmail } = require('../utility/mail');
 
 async function getEvents(req, res) {
     const { categories, city, publisherId, fromDate, toDate, to, from } =
@@ -65,6 +67,47 @@ async function getEvents(req, res) {
     }
 }
 
+async function deleteEvent(req, res) {
+    try {
+        const { id: eventId } = req.params;
+        const userId = req.user.id;
+
+        const event = await Event.findById(eventId).populate(
+            'confirmedVolunteers'
+        );
+
+        // delete all references to the event in the user's collections
+        await event.confirmedVolunteers.forEach(async (volunteer) => {
+            volunteer.followedEvents.pull(eventId);
+            await volunteer.save();
+            await sendEmail(
+                volunteer.email,
+                'Event deleted', // subject
+                `Unfortunately, the event ${event.title} that you were planning to participate in has been deleted.` // text
+            );
+        });
+
+        await User.findByIdAndUpdate(userId, {
+            $pull: {
+                createdEvents: eventId,
+            },
+        });
+
+        await Event.findByIdAndDelete(eventId);
+
+        return res.status(204).json({ message: 'Event deleted' });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function updateEvent(req, res) {
+    return res.status(200).json({ message: 'Event updated' });
+}
+
 module.exports = {
     getEvents,
+    deleteEvent,
+    updateEvent,
 };

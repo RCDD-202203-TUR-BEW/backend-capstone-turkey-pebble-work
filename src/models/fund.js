@@ -3,7 +3,7 @@ const variables = require('../utility/variables');
 
 const fundSchema = mongoose.Schema(
     {
-        puplisherId: {
+        publisherId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'BaseUser',
         },

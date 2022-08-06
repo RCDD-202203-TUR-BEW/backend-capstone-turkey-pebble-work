@@ -1,4 +1,5 @@
 const { expressjwt: jwt } = require('express-jwt');
+const mongoose = require('mongoose');
 
 const publicRoutes = [
     '/api/auth/user/signup',
@@ -20,6 +21,20 @@ const authMiddleware = jwt({
     path: publicRoutes,
 });
 
+function autherizationMiddleware(model) {
+    return async (req, res, next) => {
+        const obj = await model.findOne({
+            publisherId: mongoose.Types.ObjectId(req.user.id),
+            _id: mongoose.Types.ObjectId(req.params.id),
+        });
+        if (!obj) {
+            return res.sendStatus(403);
+        }
+        return next();
+    };
+}
+
 module.exports = {
     authMiddleware,
+    autherizationMiddleware,
 };

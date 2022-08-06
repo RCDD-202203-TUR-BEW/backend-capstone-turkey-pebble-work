@@ -167,25 +167,68 @@ paths:
                 items:
                   $ref: "#/components/schemas/Event"
         401:
-          description: Bad request.
+          description: This status is returned if the user is not signed in.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  message:
-                    type: string
                   error:
                     type: boolean
                     example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
         422:
           description: This status is returned when the request is missing required fields or has an invalid values.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+  /api/event/:id:
+    delete:
+      tags:
+        - Event
+      summary: Delete an event
+      description: Delete an event by its id.
+      operationId: deleteEvent
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 5e9f8f8f8f8f8f8f8f8f8f8
+      responses:
         403:
           description: This status is returned when the user is not authorized to perform the operation.
+        401:
+          description: This status is returned if the user is not signed in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
 
@@ -277,15 +320,21 @@ components:
             country:
               type: string
               example: Country Name
-            addressLine: 
+            addressLine:
               type: string
               example: Address Line
         location:
           type: object
           properties:
-            lat: 
+            lat:
               type: float
               example: 41.01
-            lon: 
+            lon:
               type: float
               example: 28.97
+
+  securitySchemes:
+    auth_cookie:
+      type: apiKey
+      in: cookie
+      name: auth_token
