@@ -20,20 +20,6 @@ passport.use(
         },
         async (accessToken, refreshToken, profile, cb) => {
             try {
-                // const user = await User.findOne({
-                //     providerId: `google-${profile.id}`,
-                // });
-                // console.log();
-                // if (!user) {
-                //     user = await User.create({
-                //         email: profile.emails[0].value,
-                //         firstName: profile.name.givenName,
-                //         lastName: profile.name.familyName,
-                //         profileImage: profile.photos[0].value,
-                //         provider: 'google',
-                //         providerId: `google-${profile.id}`,
-                //     });
-                // }
                 cb(null, profile);
             } catch (err) {
                 cb(err, null);
