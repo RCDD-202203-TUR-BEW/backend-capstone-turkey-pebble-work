@@ -84,34 +84,6 @@ describe('Google Auth Endpoints', () => {
             expect(res.status).toBe(302);
             expect(res.header['set-cookie']).not.toBeDefined();
         });
-
-        it('Redirects to the profile page with a valid JWT cookie for correct credentials', async () => {
-            expect(redirectUri).not.toBeNull();
-
-            const res = await runInPatchedServer(
-                async () =>
-                    await cookiesAgent.get(getLoginURL(redirectUri.pathname))
-            );
-            expect(res.status).toBe(302);
-            expect(res.header['set-cookie']).toBeDefined();
-
-            const [cookies] = parseCookies(res.header['set-cookie']);
-
-            const auth_cookie = getJWTCookie(cookies);
-
-            const { iat } = auth_cookie;
-
-            expect(iat).toBeLessThanOrEqual(Date.now() / 1000);
-
-            const expected = {
-                email: mockUser.email,
-                providerId: `google-${mockUser.sub}`,
-                exp: iat + 14 * 24 * 3600,
-                iat: expect.any(Number),
-            };
-
-            expect(auth_cookie).toEqual(expect.objectContaining(expected));
-        });
     });
 });
 
