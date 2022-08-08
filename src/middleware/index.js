@@ -10,6 +10,7 @@ const publicRoutes = [
     // https://forbeslindesay.github.io/express-route-tester/
     /^\/api\/auth\/verify\/(?:([^/]+?))\/(?:([^/]+?))\/?$/i,
     { url: '/api/event/', methods: ['GET'] },
+    { url: '/api/fund/', methods: ['GET'] },
     { url: /^\/api\/fund\/(?:([^/]+?))\/donate\/?$/i, methods: ['POST'] },
 ];
 
