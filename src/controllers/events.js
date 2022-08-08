@@ -7,7 +7,7 @@ async function joinedVoulnteers(req, res) {
         if (!event) {
             return res.status(404).json({ message: 'Event not found' });
         }
-        const JoinedUser = await EventModel.findOne({
+        const joinedUser = await EventModel.findOne({
             $and: [
                 { _id: req.params.id },
                 {
@@ -15,7 +15,7 @@ async function joinedVoulnteers(req, res) {
                 },
             ],
         });
-        if (JoinedUser) {
+        if (joinedUser) {
             return res.status(400).json({ message: 'User already joined' });
         }
         await EventModel.findByIdAndUpdate(req.params.id, {
