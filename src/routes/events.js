@@ -1,0 +1,17 @@
+const express = require('express');
+const {
+    EVENT_VALIDATION_RULES,
+    handleValidation,
+} = require('../utility/validation');
+
+const router = express.Router();
+const eventController = require('../controllers/events');
+
+router.post(
+    '/:id/volunteer',
+    EVENT_VALIDATION_RULES,
+    handleValidation,
+    eventController.UnjoinedVolunteers
+);
+
+module.exports = router;

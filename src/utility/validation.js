@@ -129,6 +129,14 @@ const SIGNIN_VALIDATION_RULES = [
     body('password').exists().isString().withMessage('password is required'),
 ];
 
+const EVENT_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -144,5 +152,6 @@ module.exports = {
     ORGANIZATION_SIGNUP_VALIDATION_RULES,
     VERIFY_VALIDATION_RULES,
     SIGNIN_VALIDATION_RULES,
+    EVENT_VALIDATION_RULES,
     handleValidation,
 };
