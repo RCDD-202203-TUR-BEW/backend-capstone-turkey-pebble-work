@@ -8,10 +8,10 @@ const router = express.Router();
 const eventController = require('../controllers/events');
 
 router.post(
-    '/:id/volunteer',
+    '/:id/volunteers',
     EVENT_VALIDATION_RULES,
     handleValidation,
-    eventController.joinedVoulnteers
+    eventController.joinedVolunteers
 );
 
 module.exports = router;

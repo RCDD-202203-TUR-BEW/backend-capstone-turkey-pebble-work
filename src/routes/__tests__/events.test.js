@@ -72,7 +72,7 @@ afterAll(async () => {
 describe('Post api/event/:id/volunteer to join voulnteers', () => {
     it('Should reture 201 status when joined successfully', async () => {
         const res = await request(app)
-            .post(`/api/event/${dummyEvent.id}/volunteer`)
+            .post(`/api/event/${dummyEvent.id}/volunteers`)
             .set('Content-Type', 'application/json')
             .set('Cookie', [jwtToken]);
 
@@ -88,7 +88,7 @@ describe('Post api/event/:id/volunteer to join voulnteers', () => {
 
     it('Should reture 401 status when user not authorized', async () => {
         await request(app)
-            .post(`/event/${dummyEvent.id}/volunteer`)
+            .post(`/event/${dummyEvent.id}/volunteers`)
             .set('Content-Type', 'application/json')
             .then((response) => {
                 expect(response.status).toBe(401);
@@ -98,7 +98,7 @@ describe('Post api/event/:id/volunteer to join voulnteers', () => {
     it('Should reture 404 status when id not found', async () => {
         const wrongId = '62e980586aca79a3936917ef';
         await request(app)
-            .post(`/api/event/${wrongId}/volunteer`)
+            .post(`/api/event/${wrongId}/volunteers`)
             .set('Content-Type', 'application/json')
             .set('Cookie', [jwtToken])
             .then((response) => {
@@ -109,7 +109,7 @@ describe('Post api/event/:id/volunteer to join voulnteers', () => {
 
     it('Should reture 400 status when user already joined the event', async () => {
         await request(app)
-            .post(`/api/event/${dummyEvent.id}/volunteer`)
+            .post(`/api/event/${dummyEvent.id}/volunteers`)
             .set('Content-Type', 'application/json')
             .set('Cookie', [jwtToken])
             .then((response) => {

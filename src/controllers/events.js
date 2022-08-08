@@ -1,7 +1,7 @@
 const EventModel = require('../models/event');
 const { User } = require('../models/user');
 
-async function joinedVoulnteers(req, res) {
+async function joinedVolunteers(req, res) {
     try {
         const event = await EventModel.findById(req.params.id);
         if (!event) {
@@ -31,5 +31,5 @@ async function joinedVoulnteers(req, res) {
 }
 
 module.exports = {
-    joinedVoulnteers,
+    joinedVolunteers,
 };
