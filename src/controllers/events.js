@@ -4,6 +4,9 @@ const Event = require('../models/event');
 const { User } = require('../models/user');
 const { addDummyEventData } = require('../utility/utils');
 const { sendEmail } = require('../utility/mail');
+const storage = require('../db/storage');
+const variables = require('../utility/variables');
+const utils = require('../utility/utils');
 
 async function getEvents(req, res) {
     const { categories, city, publisherId, fromDate, toDate, to, from } =
@@ -103,7 +106,50 @@ async function deleteEvent(req, res) {
 }
 
 async function updateEvent(req, res) {
-    return res.status(200).json({ message: 'Event updated' });
+    const { id: eventId } = req.params;
+    const newEvent = _.pick(req.body, [
+        'title',
+        'content',
+        'date',
+        'categories',
+        'confirmedVolunteers',
+        'invitedVolunteers',
+        'address',
+        'location',
+    ]);
+    const coverImage = req.file;
+
+    if (newEvent.confirmedVolunteers) {
+        newEvent.confirmedVolunteers = newEvent.confirmedVolunteers.map(
+            (volunteer) => mongoose.Types.ObjectId(volunteer)
+        );
+    }
+    if (newEvent.invitedVolunteers) {
+        newEvent.invitedVolunteers = newEvent.invitedVolunteers.map(
+            (volunteer) => mongoose.Types.ObjectId(volunteer)
+        );
+    }
+
+    try {
+        const event = await Event.findByIdAndUpdate(eventId, newEvent, {
+            new: true,
+        });
+
+        if (coverImage) {
+            const imgUrl = await storage.uploadImage(
+                coverImage,
+                `${
+                    variables.EVENT_IMAGE_DIR
+                }/${eventId}.${utils.getFileExtension(coverImage.originalname)}`
+            );
+            event.coverImage = imgUrl;
+        }
+        await event.save();
+        return res.status(200).json(event);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 module.exports = {

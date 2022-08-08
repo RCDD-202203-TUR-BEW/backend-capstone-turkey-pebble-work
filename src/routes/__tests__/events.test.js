@@ -1,5 +1,7 @@
 const request = require('supertest');
 const moment = require('moment');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const app = require('../../app');
 const Event = require('../../models/event');
@@ -7,8 +9,10 @@ const { User, Token } = require('../../models/user');
 const connectToMongo = require('../../db/connection');
 const { addDummyEventData } = require('../../utility/utils');
 const storage = require('../../db/storage');
+const variables = require('../../utility/variables');
 
 const TEST_IMAGE_PATH = `${__dirname}/test_image.jpg`;
+const PDF_PATH = `${__dirname}/invalid_image.pdf`;
 
 const mockUploadImage = jest.spyOn(storage, 'uploadImage');
 mockUploadImage.mockReturnValue(Promise.resolve('https://test.com/test.jpg'));
@@ -341,5 +345,196 @@ describe('DELETE /api/event/:id', () => {
         const user2 = await User.findById(dummyUsers[1].id);
         expect(user2.followedEvents.length).toBe(1);
         expect(user2.followedEvents[0].toString()).toBe(dummyEvents[1].id);
+    });
+});
+
+describe('PUT /api/event/:id', () => {
+    jest.setTimeout(30000);
+    let jwtToken;
+    let dummyEvent;
+    const newEventData = {
+        title: 'new title',
+        content: 'new content',
+        date: '2023-01-01',
+        categories: ['No Poverty', 'Animals'],
+        confirmedVolunteers: ['62e980586aca79a3936917f9'],
+        invitedVolunteers: ['62e980586aca79a3936917f8'],
+        address: {
+            city: 'NY',
+            country: 'USA',
+            addressLine: 'new addressLine',
+        },
+        location: {
+            lat: 2,
+            log: 2,
+        },
+    };
+
+    beforeAll(async () => {
+        await connectToMongo();
+        // create 2 dummy users
+        const validUser = {
+            email: 'test@gmail.com',
+            password: '12345678',
+            firstName: 'Nur',
+            lastName: 'Sh',
+            dateOfBirth: '2000-01-01',
+            gender: 'male',
+            interests: ['No Poverty', 'Zero Hunger'],
+            preferredCities: ['Adana', 'Kocaeli'],
+        };
+
+        const hashedPassword = await bcrypt.hash(
+            validUser.password,
+            variables.HASH_ROUNDS
+        );
+
+        const user = await new User({
+            email: validUser.email,
+            hashedPassword,
+            firstName: validUser.firstName,
+            lastName: validUser.lastName,
+            dateOfBirth: validUser.dateOfBirth,
+            preferredCities: validUser.preferredCities,
+            interests: validUser.interests,
+            gender: validUser.gender,
+        }).save();
+
+        const payload = {
+            id: user.id,
+            email: user.email,
+            // if organization, fullName is the same as name
+            fullName: user.fullName,
+        };
+
+        jwtToken = jwt.sign(payload, process.env.SECRET_KEY, {
+            expiresIn: variables.FOURTEEN_DAYS_STRING,
+        });
+
+        jwtToken = `auth_token=${jwtToken}`;
+
+        dummyEvent = await Event.create({
+            publisherId: mongoose.Types.ObjectId(user.id),
+            title: 'title 1',
+            content: 'new content 1',
+            coverImage: 'coverImage 1',
+            date: '2023-01-01',
+            categories: ['No Poverty', 'Youth'],
+            confirmedVolunteers: [mongoose.Types.ObjectId(user.id)],
+            invitedVolunteers: [mongoose.Types.ObjectId(user.id)],
+            address: {
+                city: 'Bursa',
+                country: 'Turkey',
+                addressLine: 'addressLine',
+            },
+            location: {
+                lat: 1,
+                log: 1,
+            },
+        });
+    });
+
+    afterAll(async () => {
+        // clean up database
+        await User.deleteMany({});
+        await Event.deleteMany({});
+        await Token.deleteMany({});
+    });
+
+    it('PUT /api/event/:id should return an error if no auth_token is passed', async () => {
+        const response = await request(app).put(`/api/event/${dummyEvent.id}`);
+        expect(response.status).toBe(401);
+    });
+
+    it('PUT /api/event/:id should return an error if an invalid id is passed', async () => {
+        const response = await request(app)
+            .put(`/api/event/123`)
+            .set('Cookie', jwtToken);
+        expect(response.status).toBe(422);
+    });
+
+    it('PUT /api/event/:id should return an error if one of the passed optional properties is invalid', async () => {
+        const optionalProperties = [
+            'date',
+            'categories',
+            'confirmedVolunteers',
+            'invitedVolunteers',
+            'address',
+            'location',
+            'coverImage',
+        ];
+        const invalidEventData = {
+            title: JSON.stringify({}),
+            content: JSON.stringify({}),
+            date: 123,
+            categories: JSON.stringify(['invalid category']),
+            confirmedVolunteers: JSON.stringify([123, 'invalid id']),
+            invitedVolunteers: JSON.stringify([123, 'invalid id']),
+            address: JSON.stringify({
+                city: 123,
+                country: 123,
+                addressLine: 123,
+            }),
+            location: JSON.stringify({
+                lat: 'abs',
+                log: 'abs',
+            }),
+        };
+
+        const response = await request(app)
+            .put(`/api/event/${dummyEvent.id}`)
+            .field(invalidEventData)
+            .attach('coverImage', PDF_PATH)
+            .set('Cookie', jwtToken);
+        expect(response.status).toBe(422);
+        optionalProperties.forEach((property) => {
+            expect(
+                response.body.errors.find((error) => error.param === property)
+            ).toBeDefined();
+        });
+    });
+
+    it('PUT /api/event/:id should return an correctly updated event', async () => {
+        const response = await request(app)
+            .put(`/api/event/${dummyEvent.id}`)
+            .field('title', newEventData.title)
+            .field('content', newEventData.content)
+            .field('date', newEventData.date)
+            .field('categories[]', newEventData.categories[0])
+            .field('categories[]', newEventData.categories[1])
+            .field('confirmedVolunteers[]', newEventData.confirmedVolunteers[0])
+            .field('invitedVolunteers[]', newEventData.invitedVolunteers[0])
+            .field('address[city]', newEventData.address.city)
+            .field('address[country]', newEventData.address.country)
+            .field('address[addressLine]', newEventData.address.addressLine)
+            .field('location[lat]', newEventData.location.lat)
+            .field('location[log]', newEventData.location.log)
+            .attach('coverImage', TEST_IMAGE_PATH)
+            .set('Cookie', jwtToken);
+        expect(response.status).toBe(200);
+        expect(response.body.title).toBe(newEventData.title);
+        expect(response.body.content).toBe(newEventData.content);
+        expect(response.body.date.slice(0, 10)).toBe(newEventData.date);
+        expect(response.body.categories).toEqual(newEventData.categories);
+        expect(response.body.confirmedVolunteers).toEqual(
+            newEventData.confirmedVolunteers
+        );
+        expect(response.body.invitedVolunteers).toEqual(
+            newEventData.invitedVolunteers
+        );
+        expect(response.body.address).toEqual(newEventData.address);
+        expect(response.body.location).toEqual(newEventData.location);
+        expect(response.body.coverImage).toBeDefined();
+    });
+
+    it('PUT /api/event/:id should return an error if the user is not the publisher of the event', async () => {
+        dummyEvent.publisherId = mongoose.Types.ObjectId(
+            '62e980586aca79a3936917f7' // different than the user id
+        );
+        await dummyEvent.save();
+        const response = await request(app)
+            .put(`/api/event/${dummyEvent.id}`)
+            .set('Cookie', jwtToken);
+        expect(response.status).toBe(403);
     });
 });
