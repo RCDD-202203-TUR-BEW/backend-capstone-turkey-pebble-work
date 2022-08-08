@@ -191,6 +191,30 @@ const GET_EVENTS_VALIDATION_RULES = [
         .withMessage('publisherId must be a valid id'),
 ];
 
+const CREATE_FUND_VALIDATION_RULES = [
+    body('title').exists().isString().isLength({ max: 50 }).withMessage('title is required'),
+    body('content').exists().isString().isLength({ max: 1000 }).withMessage('content is required'),
+    body('deadline').exists().isDate().withMessage('deadline is required'),
+    body('targetFund').exists().isInt().withMessage('targetFund is required'),
+    body('categories')
+        .exists()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    body('city').exists().isString()
+        .custom((city) => variables.CITIES.includes(city))
+        .withMessage('city is required'),
+    body('country').exists().isString().isLength({ max: 20 }).withMessage('country is required'),
+    body('addressLine').exists().isString().isLength({ max: 50 }).withMessage('addressLine is required'),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
