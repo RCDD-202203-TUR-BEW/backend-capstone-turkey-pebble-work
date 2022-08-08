@@ -145,9 +145,18 @@ const CREATE_EVENT_VALIDATION_RULES = [
         })
         .withMessage('coverImage must be an image less than 10MB'),
     body('date').exists().isDate().withMessage('date is required'),
-    body('category').exists().isString()
-        .custom((category) => variables.CATEGORIES.includes(category))
-        .withMessage('category is required'),
+    body('categories')
+        .exists()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('interests must be an array of valid interests'),
     body('city').exists().isString()
         .custom((city) => variables.CITIES.includes(city))
         .withMessage('city is required'),

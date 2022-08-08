@@ -1,11 +1,11 @@
 tags:
- - name: create a new event
+  - name: Event
     description: create a new event
 paths:
   /api/events:
     post:
       tags:
-        - event
+        - Event
       summary: create a new event
       description: create a new event
       consumes:
@@ -25,15 +25,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Event"
-        400:
-          description: Bad Request.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
         500:
           description: Internal server error
 components:
@@ -60,7 +51,9 @@ components:
           type: string
         date:
           type: date
-        category:
+        categories:
+          type: array
+          items:
           type: string
           enum:
             - 'No Poverty'
@@ -199,9 +192,10 @@ components:
           type: string
         date:
           type: date
-        category:
-          type: string
-          enum:
+        categories:
+          type: array
+          items:
+          type: string          
             - 'No Poverty'
             - 'Zero Hunger'
             - 'Good Health And Well-Being'
@@ -314,3 +308,4 @@ components:
           type: decimal
         long:
           type: decimal
+           

@@ -15,5 +15,3 @@ const multer = Multer({
 router.post('/', multer.single('coverImage'), CREATE_EVENT_VALIDATION_RULES, handleValidation, eventController.createEvent)
 
 module.exports = router
-
-
