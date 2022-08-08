@@ -8,7 +8,7 @@ const createFund = async (req, res) => {
             content: req.body.content,
             deadline: req.body.deadline,
             targetFund: req.body.targetFund,
-            category: req.body.category,
+            categories: req.body.categories,
             address: {
                 city: req.body.city,
                 country: req.body.country,
