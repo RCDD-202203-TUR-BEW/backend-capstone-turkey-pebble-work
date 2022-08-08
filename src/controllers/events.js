@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const Event = require('../models/event');
-const { addDummyEventData } = require('../utility/utils');
 
 async function getEvents(req, res) {
     const { categories, city, publisherId, fromDate, toDate, to, from } =
