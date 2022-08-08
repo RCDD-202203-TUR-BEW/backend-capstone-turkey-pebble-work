@@ -405,11 +405,11 @@ components:
         content:
           type: string
           example: Event Description
-        coverImage: 
-          type: string 
+        coverImage:
+          type: string
           format: binary
-        date: 
-          type: string 
+        date:
+          type: string
           format: date
         categories:
           type: array
@@ -436,9 +436,9 @@ components:
               - Youth
               - Justice
           example: [No Poverty, Zero Hunger]
-        confirmedVolunteers: 
+        confirmedVolunteers:
           type: array
-          items: 
+          items:
             type: string
             format: mongoid
           example: [5e9f8f8f8f8f8f8f8f8f8f8, 5e9f8f8f8f8f8f8f8f8f8f8]
@@ -469,7 +469,7 @@ components:
             lon:
               type: float
               example: 28.97
-    EventNotPopulated: 
+    EventNotPopulated:
       properties:
         publisherId:
           type: string
@@ -516,13 +516,21 @@ components:
           items:
             type: string
             format: monogid
-          example: [ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"), ObjectId("5e9f8f8f8f8f8f8f8f8f84f")]
+          example:
+            [
+              ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"),
+              ObjectId("5e9f8f8f8f8f8f8f8f8f84f"),
+            ]
         invitedVolunteers:
           type: array
           items:
             type: string
             format: monogid
-          example: [ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"), ObjectId("5e9f8f8f8f8f8f8f8f8f84f")]
+          example:
+            [
+              ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"),
+              ObjectId("5e9f8f8f8f8f8f8f8f8f84f"),
+            ]
         __v:
           type: int
           example: 0
