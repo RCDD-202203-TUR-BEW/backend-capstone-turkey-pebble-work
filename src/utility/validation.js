@@ -208,11 +208,11 @@ const CREATE_FUND_VALIDATION_RULES = [
             )
         )
         .withMessage('categories must be an array of valid categories'),
-    body('city').exists().isString()
+    body('city').optional().isString()
         .custom((city) => variables.CITIES.includes(city))
         .withMessage('city is required'),
-    body('country').exists().isString().isLength({ max: 20 }).withMessage('country is required'),
-    body('addressLine').exists().isString().isLength({ max: 50 }).withMessage('addressLine is required'),
+    body('country').optional().isString().isLength({ max: 20 }).withMessage('country is required'),
+    body('addressLine').optional().isString().isLength({ max: 50 }).withMessage('addressLine is required'),
 ];
 
 const handleValidation = (req, res, next) => {
