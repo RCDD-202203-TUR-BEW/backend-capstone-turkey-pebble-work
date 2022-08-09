@@ -237,7 +237,7 @@ describe('DELETE /api/event/:id', () => {
             content: 'new content 1',
             coverImage: 'coverImage 1',
             date: '2023-01-01',
-            category: 'No Poverty',
+            categories: ['No Poverty'],
             confirmedVolunteers: [
                 mongoose.Types.ObjectId(dummyUsers[0].id),
                 mongoose.Types.ObjectId(dummyUsers[1].id),
@@ -259,7 +259,7 @@ describe('DELETE /api/event/:id', () => {
             content: 'new content 2',
             coverImage: 'coverImage 2',
             date: '2023-01-01',
-            category: 'No Poverty',
+            categories: ['No Poverty'],
             confirmedVolunteers: [
                 mongoose.Types.ObjectId(dummyUsers[0].id),
                 mongoose.Types.ObjectId(dummyUsers[1].id),
