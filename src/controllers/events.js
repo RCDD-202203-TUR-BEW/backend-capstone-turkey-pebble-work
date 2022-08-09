@@ -1,7 +1,11 @@
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const Event = require('../models/event');
-const { addDummyEventData } = require('../utility/utils');
+const { User } = require('../models/user');
+const { sendEmail } = require('../utility/mail');
+const storage = require('../db/storage');
+const variables = require('../utility/variables');
+const utils = require('../utility/utils');
 
 async function getEvents(req, res) {
     const { categories, city, publisherId, fromDate, toDate, to, from } =
@@ -65,6 +69,90 @@ async function getEvents(req, res) {
     }
 }
 
+async function deleteEvent(req, res) {
+    try {
+        const { id: eventId } = req.params;
+        const userId = req.user.id;
+
+        const event = await Event.findById(eventId).populate(
+            'confirmedVolunteers'
+        );
+
+        // delete all references to the event in the user's collections
+        await event.confirmedVolunteers.forEach(async (volunteer) => {
+            volunteer.followedEvents.pull(eventId);
+            await volunteer.save();
+            await sendEmail(
+                volunteer.email,
+                'Event deleted', // subject
+                `Unfortunately, the event ${event.title} that you were planning to participate in has been deleted.` // text
+            );
+        });
+
+        await User.findByIdAndUpdate(userId, {
+            $pull: {
+                createdEvents: eventId,
+            },
+        });
+
+        await Event.findByIdAndDelete(eventId);
+
+        return res.status(204).json({ message: 'Event deleted' });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function updateEvent(req, res) {
+    const { id: eventId } = req.params;
+    const newEvent = _.pick(req.body, [
+        'title',
+        'content',
+        'date',
+        'categories',
+        'confirmedVolunteers',
+        'invitedVolunteers',
+        'address',
+        'location',
+    ]);
+    const coverImage = req.file;
+
+    if (newEvent.confirmedVolunteers) {
+        newEvent.confirmedVolunteers = newEvent.confirmedVolunteers.map(
+            (volunteer) => mongoose.Types.ObjectId(volunteer)
+        );
+    }
+    if (newEvent.invitedVolunteers) {
+        newEvent.invitedVolunteers = newEvent.invitedVolunteers.map(
+            (volunteer) => mongoose.Types.ObjectId(volunteer)
+        );
+    }
+
+    try {
+        const event = await Event.findByIdAndUpdate(eventId, newEvent, {
+            new: true,
+        });
+
+        if (coverImage) {
+            const imgUrl = await storage.uploadImage(
+                coverImage,
+                `${
+                    variables.EVENT_IMAGE_DIR
+                }/${eventId}.${utils.getFileExtension(coverImage.originalname)}`
+            );
+            event.coverImage = imgUrl;
+        }
+        await event.save();
+        return res.status(200).json(event);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
     getEvents,
+    deleteEvent,
+    updateEvent,
 };

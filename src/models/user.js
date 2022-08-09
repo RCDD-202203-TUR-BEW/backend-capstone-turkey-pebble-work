@@ -127,6 +127,7 @@ const user = mongoose.Schema({
         enum: ['male', 'female', 'other'],
         required: false,
     },
+    // Events the user has participated in or will participate in.
     followedEvents: {
         type: [
             {
@@ -137,6 +138,7 @@ const user = mongoose.Schema({
         ],
         default: [],
     },
+    // funds where a user is a donor for.
     followedFunds: {
         type: [
             {
