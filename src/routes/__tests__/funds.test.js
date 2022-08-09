@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-
 const request = require('supertest');
 const app = require('../../app');
 const connectToMongo = require('../../db/connection');
@@ -29,13 +27,13 @@ const validFund2 = {
         addressLine: 'address line 2',
     },
 };
-let id;
+let fundId;
 
 beforeAll(async () => {
     await connectToMongo();
     const fund1 = await Funds.create(validFund1);
-    const fund2 = await Funds.create(validFund2);
-    id = fund1.id;
+    fundId = fund1.id;
+    await Funds.create(validFund2);
 });
 
 afterAll(async () => {
@@ -100,36 +98,36 @@ describe('Get and filter funds', () => {
             });
     });
 });
+
 describe('Get funds by id ', () => {
     it('GET /api/fund:id should filter funds by id', (done) => {
         // this test case doesn't work! thank you in advance : D
         request(app)
-            .get(`/api/fund/${id}`)
+            .get(`/api/fund/${fundId}`)
             .set('Content-Type', 'application/json')
+            .expect('Content-type', /json/)
             .expect(200, (err, res) => {
                 if (err) return done(err);
-                expect(res.body[1].content).toEqual('lalalalalalalalala');
-                done();
+                expect(res.body.title).toEqual('Fund 1');
+                return done();
             });
     });
-
     it('GET /api/fund should give error when id not provided correctly', (done) => {
         request(app)
             .get('/api/fund/0')
             .expect('Content-Type', /json/)
             .expect(422, (err, res) => {
                 if (err) return done(err);
-                done();
+                return done();
             });
     });
-
     it('GET /api/fund/ should give an empty array when id not in the database', (done) => {
         request(app)
             .get('/api/fund/62bb828a0633870dbec9dc38')
             .expect('Content-Type', /json/)
             .expect(404, (err, res) => {
                 if (err) return done(err);
-                done();
+                return done();
             });
     });
 });

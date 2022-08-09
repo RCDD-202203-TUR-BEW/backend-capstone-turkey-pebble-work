@@ -21,4 +21,5 @@ router.get(
     handleValidation,
     fundsController.getOneFund
 );
+
 module.exports = router;

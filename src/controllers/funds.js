@@ -1,10 +1,10 @@
 /* eslint-disable consistent-return */
 const mongoose = require('mongoose');
 const Funds = require('../models/fund');
+const { User } = require('../models/user');
 
 async function getOneFund(req, res) {
     try {
-        // const { id } = req.params;
         const id = mongoose.Types.ObjectId(req.params.id);
         const requiredUserField = [
             'id',
@@ -25,9 +25,11 @@ async function getOneFund(req, res) {
         }
         return res.status(200).json(fund);
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ error: 'Internal server error' });
     }
 }
+
 async function getFunds(req, res) {
     try {
         const requiredUserField = [
