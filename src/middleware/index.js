@@ -2,6 +2,7 @@ const { expressjwt: jwt } = require('express-jwt');
 const mongoose = require('mongoose');
 
 const publicRoutes = [
+    '/api/auth/googleauth',
     '/api/auth/user/signup',
     '/api/auth/organization/signup',
     '/api/auth/signin',
@@ -11,6 +12,7 @@ const publicRoutes = [
     // https://forbeslindesay.github.io/express-route-tester/
     /^\/api\/auth\/verify\/(?:([^/]+?))\/(?:([^/]+?))\/?$/i,
     { url: '/api/event/', methods: ['GET'] },
+    { url: '/api/fund/', methods: ['GET'] },
     { url: /^\/api\/fund\/(?:([^/]+?))\/donate\/?$/i, methods: ['POST'] },
 ];
 
