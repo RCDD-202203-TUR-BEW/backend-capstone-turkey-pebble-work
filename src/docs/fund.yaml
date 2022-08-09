@@ -1,14 +1,57 @@
 tags:
-  - name: "Funds"
-    description: "Everything about your Funds"
-schemes:
-  - "https"
-  - "http"
+  - name: Fund
+    description: API to manage funds.
 paths:
-  /funds:
+  /api/fund/:id/donate:
+    post:
+      tags:
+        - Fund
+      summary: Donate to a fund
+      description: Donates to a fund
+      operationId: donate
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          description: The fund id
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            properties:
+              amount:
+                type: number
+                description: The amount to donate
+                format: double
+                example: 10.00
+      responses:
+        201:
+          description: Successfully donated to fund
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Donation successful
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+  /api/funds/:
     get:
       tags:
-        - "Funds"
+        - Fund
       description: "funds route"
       parameters:
         - in: query
@@ -45,7 +88,27 @@ paths:
         "400":
           description: Not Found
 components:
-  schema:
+  schemas:
+    ValidationError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+                example: an invalid value
+              msg:
+                type: string
+                example: a message explaining the error
+              param:
+                type: string
+                example: the parameter name that caused the error
+              location:
+                type: string
+                example: the location of the error whether it be a path, query, or body
     Fund:
       type: object
       properties:

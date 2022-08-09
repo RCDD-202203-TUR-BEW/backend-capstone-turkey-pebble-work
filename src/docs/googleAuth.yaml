@@ -1,5 +1,5 @@
 paths:
-  /api/auth/google:
+  /api/googleauth/google:
     get:
       tags:
         - OAuth2

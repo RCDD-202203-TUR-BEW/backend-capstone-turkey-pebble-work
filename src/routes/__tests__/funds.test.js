@@ -1,7 +1,4 @@
-/* eslint-disable consistent-return */
-
 const request = require('supertest');
-
 const app = require('../../app');
 const connectToMongo = require('../../db/connection');
 const Funds = require('../../models/fund');

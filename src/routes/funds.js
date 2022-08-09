@@ -1,6 +1,7 @@
 const express = require('express');
 const {
     VERIFY_VALIDATION_FUND,
+    DONATE_VALIDATION_RULES,
     handleValidation,
 } = require('../utility/validation');
 
@@ -14,4 +15,12 @@ router.get(
     handleValidation,
     fundsController.getFunds
 );
+
+router.post(
+    '/:id/donate',
+    DONATE_VALIDATION_RULES,
+    handleValidation,
+    fundsController.donate
+);
+
 module.exports = router;
