@@ -7,6 +7,7 @@ const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
 const eventRouter = require('./routes/events');
+const fundsRouter = require('./routes/funds');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 
@@ -30,6 +31,7 @@ app.use(authMiddleware);
 
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventRouter);
+app.use('/api/fund', fundsRouter);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {

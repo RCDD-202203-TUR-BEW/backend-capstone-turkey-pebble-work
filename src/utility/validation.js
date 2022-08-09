@@ -7,14 +7,11 @@ const VERIFY_VALIDATION_FUND = [
     query('publisherId')
         .optional()
         .isString()
-        .custom((value) => {
-            console.log(mongoose.Types.ObjectId.isValid(value));
-            return mongoose.Types.ObjectId.isValid(value);
-        }),
-    query('category')
+        .custom((value) => mongoose.Types.ObjectId.isValid(value)),
+    query('categories')
         .optional()
         .isArray({ min: 1 })
-        .withMessage('interests must be an unempty array')
+        .withMessage('categories must be an unempty array')
         .custom((array) =>
             array.every(
                 (category) =>
