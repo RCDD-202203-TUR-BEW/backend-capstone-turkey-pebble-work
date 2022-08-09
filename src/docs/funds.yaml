@@ -1,33 +1,47 @@
 tags:
-  - name: "funds"
+  - name: "Funds"
     description: "Everything about your Funds"
-    externalDocs:
-      description: "Find out more"
-      url: "http://swagger.io"
 schemes:
   - "https"
   - "http"
 paths:
   /funds:
     get:
+      tags:
+        - "Funds"
       description: "funds route"
       parameters:
         - in: query
           name: publisherId
           type: integer
-          required: false
           collectionFormat: multi
-        - name: category
+        - name: categories
           in: query
-          required: false
-          type: array
+          schema:
+            type: array
+            items:
+              type: string
+              example: "category1"
+              collectionFormat: multi
+        - name: lastDate
+          in: query
+          schema:
+            type: string
+            format: date
+            example: 2022-01-01
+        - name: currentDate
+          in: query
+          schema:
+            type: string
+            format: date
+            example: 2022-01-05
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Fund"
+                $ref: "#/components/schema/Fund"
         "400":
           description: Not Found
 components:
@@ -52,7 +66,7 @@ components:
                 type: string
               amount:
                 type: integer
-        category:
+        categories:
           type: array
           items:
             type: "string"
@@ -86,3 +100,38 @@ components:
               type: integer
             adressLine:
               type: string
+/api/fund/:id:
+    get:
+      tags:
+        - Fund
+      summary: Get a fund
+      description: Get a fund by its id.
+      operationId: getFund
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 5e9f8f8f8f8f8f8f8f8f8f8
+      responses:
+        200:
+          description: A list of matching funds.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error

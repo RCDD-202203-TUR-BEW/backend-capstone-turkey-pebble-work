@@ -1,4 +1,6 @@
+/* eslint-disable consistent-return */
 const request = require('supertest');
+
 const app = require('../../app');
 const connectToMongo = require('../../db/connection');
 const Funds = require('../../models/fund');
@@ -93,6 +95,38 @@ describe('Get and filter funds', () => {
                 if (err) return done(err);
                 expect(res.body.length).toEqual(0);
                 return done();
+            });
+    });
+});
+describe('Get funds by id ', () => {
+    it('GET /api/fund:id should filter funds by id', (done) => {
+        request(app)
+            .get(`/api/fund?id=62e054bc598fb3f77c7e8af6`)
+            .set('Content-Type', 'application/json')
+            .expect(200, (err, res) => {
+                if (err) return done(err);
+                expect(res.body[0].content).toEqual('lalalalalalalalala');
+                done();
+            });
+    });
+
+    it('GET /api/fund should give error when id not provided correctly', (done) => {
+        request(app)
+            .get('/api/fund?id=0')
+            .expect('Content-Type', /json/)
+            .expect(422, (err, res) => {
+                if (err) return done(err);
+                done();
+            });
+    });
+
+    it('GET /api/fund/ should give an empty array when id not in the database', (done) => {
+        request(app)
+            .get('/api/fund/?id=62bb828a6633870dbec9dc38')
+            .expect('Content-Type', /json/)
+            .expect(404, (err, res) => {
+                if (err) return done(err);
+                done();
             });
     });
 });

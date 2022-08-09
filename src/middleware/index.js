@@ -8,6 +8,7 @@ const publicRoutes = [
     // we can't use /api/auth/verify/:id/:token directly
     // this is a regex, so it will match any path similar to /api/auth/verify/324/123456789
     /^\/api\/auth\/verify\/(?:([^/]+?))\/(?:([^/]+?))\/?$/i,
+    { url: /^\/api\/fund\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: '/api/event/', methods: ['GET'] },
 ];
 
