@@ -4,6 +4,8 @@ const Funds = require('../models/fund');
 
 async function getOneFund(req, res) {
     try {
+        // const { id } = req.params;
+        const id = mongoose.Types.ObjectId(req.params.id);
         const requiredUserField = [
             'id',
             'firstName',
@@ -12,7 +14,7 @@ async function getOneFund(req, res) {
             'profileImage',
         ];
 
-        const fund = await Funds.findById(req.params.id).populate(
+        const fund = await Funds.findById(id).populate(
             'publisherId',
             requiredUserField.join(' ')
         );
