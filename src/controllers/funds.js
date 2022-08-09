@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 const mongoose = require('mongoose');
 const Funds = require('../models/fund');
 
@@ -37,10 +36,10 @@ async function getFunds(req, res) {
             'email',
             'profileImage',
         ];
-        const { category, publisherId, lastDate, currentDate } = req.query;
+        const { categories, publisherId, lastDate, currentDate } = req.query;
         const filter = {};
-        if (category) {
-            filter.category = { $in: category };
+        if (categories) {
+            filter.categories = { $in: categories };
         }
         if (publisherId) {
             filter.publisherId = mongoose.Types.ObjectId(publisherId);
@@ -52,7 +51,7 @@ async function getFunds(req, res) {
             'publisherId',
             requiredUserField.join(' ')
         );
-        res.status(200).json(filteredItem);
+        return res.status(200).json(filteredItem);
     } catch (err) {
         return res.sendStatus(500);
     }

@@ -18,7 +18,8 @@ const VERIFY_VALIDATION_FUND = [
                     isString(category) &&
                     variables.CATEGORIES.includes(category)
             )
-        ),
+        )
+        .withMessage('categories must be an array of valid categories'),
     query('lastDate')
         .optional()
         .isDate() // example: '2000-01-01'
