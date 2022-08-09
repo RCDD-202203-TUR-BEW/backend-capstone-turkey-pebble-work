@@ -1,13 +1,11 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
+
 const request = require('supertest');
-const { ObjectId } = require('mongodb');
 const app = require('../../app');
 const connectToMongo = require('../../db/connection');
 const Funds = require('../../models/fund');
 
 const validFund1 = {
-    // id = '619b77dd5c639f35dd2d37c4',
     publisherId: '62e054bc598fb3f77c7e8af7',
     title: 'Fund 1',
     content: 'lalalalalalalalala',
@@ -20,7 +18,6 @@ const validFund1 = {
     },
 };
 const validFund2 = {
-    // id : '619b77dd5c639f35dd2d37c4',
     publisherId: '62e054bc598fb3f77c7e8af9',
     title: 'Fund 2',
     content: 'lalalalalalalalala',
@@ -32,13 +29,13 @@ const validFund2 = {
         addressLine: 'address line 2',
     },
 };
-let userId;
+let id;
 
 beforeAll(async () => {
     await connectToMongo();
-    await Funds.create(validFund1);
-    await Funds.create(validFund2);
-    userId = validFund1._id;
+    const fund1 = await Funds.create(validFund1);
+    const fund2 = await Funds.create(validFund2);
+    id = fund1.id;
 });
 
 afterAll(async () => {
@@ -105,9 +102,9 @@ describe('Get and filter funds', () => {
 });
 describe('Get funds by id ', () => {
     it('GET /api/fund:id should filter funds by id', (done) => {
-        // const id = '619b77dd5c639f35dd2d37c4';
+        // this test case doesn't work! thank you in advance : D
         request(app)
-            .get(`/api/fund/${userId}`)
+            .get(`/api/fund/${id}`)
             .set('Content-Type', 'application/json')
             .expect(200, (err, res) => {
                 if (err) return done(err);
