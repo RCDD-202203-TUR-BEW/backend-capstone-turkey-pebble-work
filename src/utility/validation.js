@@ -125,7 +125,7 @@ const ORGANIZATION_SIGNUP_VALIDATION_RULES = [
     body('categories')
         .optional()
         .isArray({ min: 1 })
-        .withMessage('interests must be an unempty array')
+        .withMessage('categories must be an unempty array')
         .custom((array) =>
             array.every(
                 (category) =>
@@ -133,7 +133,7 @@ const ORGANIZATION_SIGNUP_VALIDATION_RULES = [
                     variables.CATEGORIES.includes(category)
             )
         )
-        .withMessage('interests must be an array of valid interests'),
+        .withMessage('categories must be an array of valid categories'),
     body('city')
         .exists()
         .isString()
@@ -221,6 +221,97 @@ const GET_EVENTS_VALIDATION_RULES = [
         .withMessage('publisherId must be a valid id'),
 ];
 
+const DELETE_EVENT_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
+
+const PUT_EVENT_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+    body('title').optional().isString().withMessage('title must be a string'),
+    body('content')
+        .optional()
+        .isString()
+        .withMessage('content must be a string'),
+    body('coverImage')
+        .custom((value, { req }) => {
+            // image is optional
+            if (!req.file) return true;
+            if (
+                req.file.mimetype.split('/')[0] !== 'image' ||
+                req.file.size > variables.MAX_IMAGE_SIZE
+            ) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage('coverImage must be an image less than 10MB'),
+    body('date').optional().isDate().withMessage('date is required'),
+    body('categories')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    body('confirmedVolunteers')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('confirmedVolunteers must be an unempty array')
+        .bail()
+        .custom((array) =>
+            array.every(
+                (id) => isString(id) && mongoose.Types.ObjectId.isValid(id)
+            )
+        )
+        .withMessage('confirmedVolunteers must be an array of valid ids'),
+    body('invitedVolunteers')
+        .optional()
+        .isArray({ min: 1 })
+        .custom((array) =>
+            array.every(
+                (id) => isString(id) && mongoose.Types.ObjectId.isValid(id)
+            )
+        )
+        .withMessage('invitedVolunteers must be an array of valid ids'),
+    body('address')
+        .optional()
+        .isObject()
+        .custom((address) => {
+            if (!address) return true;
+            return (
+                isString(address.addressLine) &&
+                isString(address.city) &&
+                isString(address.country)
+            );
+        })
+        .withMessage(
+            'address must be an object that contains street, city and country properties which all must be strings'
+        ),
+    body('location')
+        .optional()
+        .isObject()
+        .custom((location) => {
+            if (!location) return true;
+            return isString(location.lat) && isString(location.log);
+        })
+        .withMessage(
+            'location must be an object that contains lat and log properties which both must be floats'
+        ),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -238,5 +329,7 @@ module.exports = {
     VERIFY_VALIDATION_RULES,
     SIGNIN_VALIDATION_RULES,
     GET_EVENTS_VALIDATION_RULES,
+    DELETE_EVENT_VALIDATION_RULES,
+    PUT_EVENT_VALIDATION_RULES,
     handleValidation,
 };
