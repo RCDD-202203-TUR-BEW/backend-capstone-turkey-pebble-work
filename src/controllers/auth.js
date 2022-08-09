@@ -210,7 +210,7 @@ async function signOut(req, res) {
     }
 }
 
-async function saveUserToTokenAndCookie(req, res) {
+async function saveGoogleUser(req, res) {
     const googleId = `google-${req.user._json.sub}`;
 
     let user = await BaseUser.findOne({ providerId: googleId });
@@ -247,5 +247,5 @@ module.exports = {
     verifyBaseUserEmail,
     signIn,
     signOut,
-    saveUserToTokenAndCookie,
+    saveGoogleUser,
 };

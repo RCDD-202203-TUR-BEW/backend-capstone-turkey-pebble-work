@@ -17,7 +17,7 @@ router.get(
         failureRedirect: '/api/auth/google',
         session: false,
     }),
-    authController.saveUserToTokenAndCookie
+    authController.saveGoogleUser
 );
 
 module.exports = router;

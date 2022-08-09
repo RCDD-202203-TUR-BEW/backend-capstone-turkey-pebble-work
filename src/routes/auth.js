@@ -26,7 +26,7 @@ const APIs = [
         route: '/organization/signup',
         method: 'post',
         multer: multer.single('coverImage'),
-        controller: passport.authenticate,
+        controller: authController.signUp,
         validation: ORGANIZATION_SIGNUP_VALIDATION_RULES,
     },
     {
@@ -75,7 +75,7 @@ router.get(
         failureRedirect: '/api/auth/google',
         session: false,
     }),
-    authController.saveUserToTokenAndCookie
+    authController.saveGoogleUser
 );
 
 router.get('/signout', authController.signOut);
