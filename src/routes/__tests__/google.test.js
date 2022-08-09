@@ -17,11 +17,15 @@ const http = require('node:http');
 const https = require('node:https');
 const monkeypatch = require('monkeypatch');
 const supertest = require('supertest');
+const { decryptAesGcm } = require('encrypt-cookie');
+const jwt = require('jsonwebtoken');
+const { unsign } = require('cookie-signature');
 const app = require('../../app');
 
 const req = supertest(app);
 const db = require('../../db/connection');
-const UserModel = require('../../models/user');
+
+const { SECRET_KEY } = process.env;
 
 const mockUser = {
     sub: '12345678',
@@ -151,8 +155,6 @@ function getLoginURL(base) {
     return `${base}?${params.toString()}`;
 }
 
-// This is a testing server that
-// serves google identical profile and tokens
 function runTestServer() {
     const app = require('express')();
     const token = {
@@ -176,7 +178,6 @@ function runTestServer() {
     return async () => await server.close();
 }
 
-// receives cookies object {name: value}
 function getJWTCookie(cookies) {
     const entries = Object.entries(cookies);
 
@@ -189,27 +190,22 @@ function getJWTCookie(cookies) {
         }
     }
 }
+
 function parseJWTCookie(value) {
     if (typeof value !== 'string') {
         return undefined;
     }
-    const { SECRET_KEY } = process.env;
+    const decoded = jwt.verify(value, SECRET_KEY);
 
-    const { decryptAesGcm } = require('encrypt-cookie');
-    const jwt = require('jsonwebtoken');
     value = decryptAesGcm(value, SECRET_KEY) || value;
 
     if (value.substr(0, 2) === 's:') {
-        // Unsign cookie
-        const { unsign } = require('cookie-signature');
         value = unsign(value, SECRET_KEY);
     }
 
-    const decoded = jwt.verify(value, SECRET_KEY);
     return decoded;
 }
 
-// parses set-cookie array
 function parseCookies(cookies) {
     const parser = require('cookie');
     const obj = {};
