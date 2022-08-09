@@ -2,7 +2,6 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 const Event = require('../models/event');
 const { User } = require('../models/user');
-const { addDummyEventData } = require('../utility/utils');
 const { sendEmail } = require('../utility/mail');
 const storage = require('../db/storage');
 const variables = require('../utility/variables');

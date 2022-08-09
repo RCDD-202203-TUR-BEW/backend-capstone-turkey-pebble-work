@@ -3,7 +3,37 @@ const { isString, parseInt } = require('lodash');
 const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
 
-const { MAX_IMAGE_SIZE } = require('./variables');
+const VERIFY_VALIDATION_FUND = [
+    query('publisherId')
+        .optional()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value)),
+    query('categories')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        ),
+    query('lastDate')
+        .optional()
+        .isDate() // example: '2000-01-01'
+        .withMessage('Enter a valid date'),
+    query('currentDate')
+        .optional()
+        .isDate() // example: '2000-01-01'
+        .withMessage('Enter a valid date')
+        .custom((currentDte, { req }) => {
+            const currentDate = new Date(currentDte);
+            const lastDate = new Date(req.body.lastDate);
+            return currentDate > lastDate;
+        })
+        .withMessage('Current date must be after last date'),
+];
 
 const BASE_USER_VALIDATION_RULES = [
     body('email').exists().isEmail().withMessage('email is required'),
@@ -32,7 +62,7 @@ const USER_SIGNUP_VALIDATION_RULES = [
             if (!req.file) return true;
             if (
                 req.file.mimetype.split('/')[0] !== 'image' ||
-                req.file.size > MAX_IMAGE_SIZE
+                req.file.size > variables.MAX_IMAGE_SIZE
             ) {
                 return false;
             }
@@ -85,7 +115,7 @@ const ORGANIZATION_SIGNUP_VALIDATION_RULES = [
             if (!req.file) return true;
             if (
                 req.file.mimetype.split('/')[0] !== 'image' ||
-                req.file.size > MAX_IMAGE_SIZE
+                req.file.size > variables.MAX_IMAGE_SIZE
             ) {
                 return false;
             }
@@ -216,7 +246,7 @@ const PUT_EVENT_VALIDATION_RULES = [
             if (!req.file) return true;
             if (
                 req.file.mimetype.split('/')[0] !== 'image' ||
-                req.file.size > MAX_IMAGE_SIZE
+                req.file.size > variables.MAX_IMAGE_SIZE
             ) {
                 return false;
             }
@@ -293,6 +323,7 @@ const handleValidation = (req, res, next) => {
 };
 
 module.exports = {
+    VERIFY_VALIDATION_FUND,
     USER_SIGNUP_VALIDATION_RULES,
     ORGANIZATION_SIGNUP_VALIDATION_RULES,
     VERIFY_VALIDATION_RULES,

@@ -7,18 +7,21 @@ const fundSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'BaseUser',
         },
-        title: {
-            type: String,
-            required: true,
-        },
+        title: { type: String, required: true },
         content: {
             type: String,
             required: true,
         },
-        category: {
-            type: String,
-            enum: variables.CATEGORIES,
+        categories: {
+            type: [
+                {
+                    type: String,
+                    enum: variables.CATEGORIES,
+                    required: true,
+                },
+            ],
             required: true,
+            default: [variables.CATEGORIES[0]],
         },
         targetFund: {
             type: Number,
@@ -32,25 +35,26 @@ const fundSchema = mongoose.Schema(
                 },
                 amount: {
                     type: Number,
-                    required: true,
+                    required: false,
                 },
             },
         ],
         address: {
             city: {
                 type: String,
-                required: true,
+                required: false,
             },
             country: {
                 type: String,
-                required: true,
+                required: false,
             },
             addressLine: {
                 type: String,
-                required: true,
+                required: false,
             },
         },
     },
+    { timestamps: true },
     { toJSON: { virtuals: true } },
     { toObject: { virtuals: true } }
 );
