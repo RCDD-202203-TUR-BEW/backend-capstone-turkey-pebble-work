@@ -4,9 +4,6 @@ const Funds = require('../models/fund');
 
 async function getOneFund(req, res) {
     try {
-        console.log('hereeeeeeeeeeeeeeeeeeeeeeee');
-
-        // const id = mongoose.Types.ObjectId(req.params.id);
         const requiredUserField = [
             'id',
             'firstName',
