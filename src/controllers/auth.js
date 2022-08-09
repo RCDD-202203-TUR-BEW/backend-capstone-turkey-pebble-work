@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -209,9 +210,42 @@ async function signOut(req, res) {
     }
 }
 
+async function saveGoogleUser(req, res) {
+    const googleId = `google-${req.user._json.sub}`;
+
+    let user = await BaseUser.findOne({ providerId: googleId });
+
+    if (!user) {
+        user = await BaseUser.create({
+            email: req.user._json.email,
+            fullName: req.user._json.name,
+            firstName: req.user._json.given_name,
+            lastName: req.user._json.family_name,
+            provider: 'google',
+            providerId: googleId,
+            isVerified: true,
+        });
+    }
+
+    const claims = {
+        email: user.email,
+        fullName: user.fullName,
+        providerId: user.providerId,
+    };
+    const token = jwt.sign(claims, process.env.SECRET_KEY, {
+        expiresIn: '14d',
+    });
+    res.cookie('token', token, {
+        httpOnly: true,
+        signed: true,
+    });
+    res.status(200).json({ message: 'User successfully signed in' });
+}
+
 module.exports = {
     signUp,
     verifyBaseUserEmail,
     signIn,
     signOut,
+    saveGoogleUser,
 };
