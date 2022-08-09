@@ -26,7 +26,7 @@ const APIs = [
         route: '/organization/signup',
         method: 'post',
         multer: multer.single('coverImage'),
-        controller: authController.signUp,
+        controller: passport.authenticate,
         validation: ORGANIZATION_SIGNUP_VALIDATION_RULES,
     },
     {
