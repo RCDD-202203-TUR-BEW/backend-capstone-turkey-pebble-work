@@ -101,7 +101,6 @@ describe('Get and filter funds', () => {
 
 describe('Get funds by id ', () => {
     it('GET /api/fund:id should filter funds by id', (done) => {
-        // const id = '619b77dd5c639f35dd2d37c4';
         request(app)
             .get(`/api/fund/${fundId}`)
             .set('Content-Type', 'application/json')
