@@ -1,7 +1,8 @@
+ 
+ 
 tags:
     - name: Event
       description: API to manage the authentication.
-
 paths:
     /api/event/:
         get:
@@ -188,6 +189,50 @@ paths:
                 500:
                     description: Internal server error
     /api/event/:id:
+        get:
+          tags: 
+          - "Events"
+          summary: "Get event by id"
+          description: "Returns a single event"
+          operationId: "getEventById"
+          produces:
+          - "application/json"
+          parameters:
+            - name: "id"
+              in: "path"
+              description: "ID of the event to return"
+              required: true
+              type: "string"
+              format: "int64"
+          responses:
+            "200":
+              description: "An event by spesific id"
+              content: 
+               application/json:
+                schema:
+                type: "object"
+                items: 
+                  $ref: "#/components/schemas/Event"
+            "404":
+              description: Error Message
+              content:
+               application/json:
+                schema:
+                  type: "object"
+                  properties:
+                    message:
+                     type: "string"
+                     example: "Invalid event ID supplied, Event not found"
+            "500":
+              description: Error Message
+              content:
+               application/json:
+                schema:
+                 type: "object"
+                 properties:
+                  message:
+                   type: "string"
+                   example: Internal server error
         delete:
             tags:
                 - Event
@@ -359,7 +404,6 @@ paths:
                                         example: User already joined
                 500:
                     description: Internal server error
-
 components:
     schemas:
         ShortUser:
