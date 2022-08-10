@@ -1,0 +1,627 @@
+tags:
+    - name: Event
+      description: API to manage the authentication.
+
+paths:
+    /api/event/:
+        get:
+            tags:
+                - Event
+            summary: Filter events
+            description: Filter events based on the given filters.
+            operationId: getEvents
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: categories
+                  in: query
+                  schema:
+                      type: array
+                      items:
+                          type: string
+                          enum:
+                              - No Poverty
+                              - Zero Hunger
+                              - Good Health And Well-Being
+                              - Quality Education
+                              - Gender Equality
+                              - Clean Water And Sanitation
+                              - Affordable And Clean Energy
+                              - Animals
+                              - Oceans
+                              - Nature
+                              - Reduced Inequalities
+                              - Sustainable Cities And Communities
+                              - Responsible Consumption And Production
+                              - Climate Action
+                              - Life Below Water
+                              - Life On Land
+                              - Peace
+                              - Youth
+                              - Justice
+                      example: [No Poverty, Zero Hunger]
+                - name: city
+                  in: query
+                  schema:
+                      type: string
+                      enum:
+                          - Adana
+                          - Kocaeli
+                          - Adiyaman
+                          - Konya
+                          - Afyonkarahisar
+                          - Kutahya
+                          - Agri
+                          - Malatya
+                          - Amasya
+                          - Manisa
+                          - Ankara
+                          - Kahramanmaras
+                          - Antalya
+                          - Mardin
+                          - Artviin
+                          - Mugla
+                          - Aydin
+                          - Mus
+                          - Balikesir
+                          - Nevsehir
+                          - Bilecik
+                          - Nigde
+                          - Bingol
+                          - Ordu
+                          - Bitlis
+                          - Rize
+                          - Bolu
+                          - Sakarya
+                          - Burdur
+                          - Samsun
+                          - Bursa
+                          - Siirt
+                          - Canakkale
+                          - Sinop
+                          - Cankiri
+                          - Sivas
+                          - Corum
+                          - Tekirdag
+                          - Denizli
+                          - Tokat
+                          - Diyarbakir
+                          - Trabzon
+                          - Edirne
+                          - Tunceli
+                          - Elazig
+                          - Sanliurfa
+                          - Erzincan
+                          - Usak
+                          - Erzurum
+                          - Van
+                          - Eskisehir
+                          - Yozgat
+                          - Gaziantep
+                          - Zonguldak
+                          - Giresun
+                          - Aksaray
+                          - Gumushane
+                          - Bayburt
+                          - Hakkari
+                          - Karaman
+                          - Hatay
+                          - Kirikkale
+                          - Isparta
+                          - Batman
+                          - Mersin
+                          - Sirnak
+                          - Istanbul
+                          - Bartin
+                          - Izmir
+                          - Ardahan
+                          - Kars
+                          - Igdir
+                          - Kastamonu
+                          - Yalova
+                          - Kayseri
+                          - Karabuk
+                          - Kirklareli
+                          - Kilis
+                          - Kirsehir
+                          - Osmaniye
+                          - Duzce
+                - name: from
+                  in: query
+                  schema:
+                      type: int
+                      format: int64
+                      example: 0
+                - name: to
+                  in: query
+                  schema:
+                      type: int
+                      format: int64
+                      example: 5
+                - name: fromDate
+                  in: query
+                  schema:
+                      type: string
+                      format: date
+                      example: 2022-01-01
+                - name: toDate
+                  in: query
+                  schema:
+                      type: string
+                      format: date
+                      example: 2022-01-05
+                - name: publisherId
+                  in: query
+                  schema:
+                      type: string
+                      example: 62e980586aca79a3936917e6
+            responses:
+                200:
+                    description: A list of matching events.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Event'
+                401:
+                    description: This status is returned if the user is not signed in.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                422:
+                    description: This status is returned when the request is missing required fields or has an invalid values.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                500:
+                    description: Internal server error
+    /api/event/:id:
+        delete:
+            tags:
+                - Event
+            summary: Delete an event
+            description: Delete an event by its id.
+            operationId: deleteEvent
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                      example: 5e9f8f8f8f8f8f8f8f8f8f8
+            responses:
+                403:
+                    description: This status is returned when the user is not authorized to perform the operation.
+                401:
+                    description: This status is returned if the user is not signed in.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                422:
+                    description: This status is returned when the request is missing required fields or has an invalid values.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                500:
+                    description: Internal server error
+        put:
+            tags:
+                - Event
+            summary: Update an event
+            description: Update an event by its id.
+            operationId: updateEvent
+            consumes:
+                - multipart/form-data
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                      example: 5e9f8f8f8f8f8f8f8f8f8f8
+            requestBody:
+                required: true
+                content:
+                    multipart/form-data:
+                        schema:
+                            $ref: '#/components/schemas/UpdateEvent'
+                        encoding:
+                            categories:
+                                style: form
+                                explode: true
+                            confirmedVolunteers:
+                                style: form
+                                explode: true
+                            invitedVolunteers:
+                                style: form
+                                explode: true
+            responses:
+                204:
+                    description: The updated event.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EventNotPopulated'
+                403:
+                    description: This status is returned when the user is not authorized to perform the operation.
+                401:
+                    description: This status is returned if the user is not signed in.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                422:
+                    description: This status is returned when at least one of the optional fields has an invalid value.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                500:
+                    description: Internal server error
+    /api/event/:id/volunteers:
+        post:
+            tags:
+                - Event
+            summary: Join user to an event
+            description: add user to an event as a confirmed Volunteer
+            operationId: Join user
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            parameters:
+                - name: id
+                  in: path
+                  description: event id that user goign to join
+                  required: true
+                  schema:
+                      type: string
+                      example: 62e297b6eb2bce7177c6fefc
+            responses:
+                201:
+                    description: User joined Successfully to an event
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Joined Successfully
+                401:
+                    description: user not sigend in
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                404:
+                    description: Event not found  or has an invalid value
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                400:
+                    description: User already joined in the event
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: User already joined
+                500:
+                    description: Internal server error
+
+components:
+    schemas:
+        ShortUser:
+            properties:
+                _id:
+                    type: string
+                    example: 62e980586aca79a3936917e6
+                firstName:
+                    type: string
+                    example: John
+                lastName:
+                    type: string
+                    example: Doe
+                email:
+                    type: string
+                    example: mail@example.com
+                __t:
+                    type: string
+                    example: User
+                profileImage:
+                    type: string
+                    example: https://www.example.com/image.jpg
+                fullName:
+                    type: string
+                    example: John Doe
+                id:
+                    type: string
+                    example: 62e980586aca79a3936917e6
+        Event:
+            properties:
+                publisherId:
+                    $ref: '#/components/schemas/ShortUser'
+                title:
+                    type: string
+                    example: Event Title
+                content:
+                    type: string
+                    example: Event Description
+                date:
+                    type: string
+                    example: 2022-01-01
+                coverImage:
+                    type: string
+                    example: https://www.example.com/image.jpg
+                categories:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - No Poverty
+                            - Zero Hunger
+                            - Good Health And Well-Being
+                            - Quality Education
+                            - Gender Equality
+                            - Clean Water And Sanitation
+                            - Affordable And Clean Energy
+                            - Animals
+                            - Oceans
+                            - Nature
+                            - Reduced Inequalities
+                            - Sustainable Cities And Communities
+                            - Responsible Consumption And Production
+                            - Climate Action
+                            - Life Below Water
+                            - Life On Land
+                            - Peace
+                            - Youth
+                            - Justice
+                confirmedVolunteers:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ShortUser'
+                invitedVolunteers:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ShortUser'
+                __v:
+                    type: int
+                    example: 0
+                address:
+                    type: object
+                    properties:
+                        city:
+                            type: string
+                            example: City Name
+                        country:
+                            type: string
+                            example: Country Name
+                        addressLine:
+                            type: string
+                            example: Address Line
+                location:
+                    type: object
+                    properties:
+                        lat:
+                            type: float
+                            example: 41.01
+                        lon:
+                            type: float
+                            example: 28.97
+        UpdateEvent:
+            type: object
+            properties:
+                title:
+                    type: string
+                    example: Event Title
+                content:
+                    type: string
+                    example: Event Description
+                coverImage:
+                    type: string
+                    format: binary
+                date:
+                    type: string
+                    format: date
+                categories:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - No Poverty
+                            - Zero Hunger
+                            - Good Health And Well-Being
+                            - Quality Education
+                            - Gender Equality
+                            - Clean Water And Sanitation
+                            - Affordable And Clean Energy
+                            - Animals
+                            - Oceans
+                            - Nature
+                            - Reduced Inequalities
+                            - Sustainable Cities And Communities
+                            - Responsible Consumption And Production
+                            - Climate Action
+                            - Life Below Water
+                            - Life On Land
+                            - Peace
+                            - Youth
+                            - Justice
+                    example: [No Poverty, Zero Hunger]
+                confirmedVolunteers:
+                    type: array
+                    items:
+                        type: string
+                        format: mongoid
+                    example: [5e9f8f8f8f8f8f8f8f8f8f8, 5e9f8f8f8f8f8f8f8f8f8f8]
+                invitedVolunteers:
+                    type: array
+                    items:
+                        type: string
+                        format: mongoid
+                    example: [5e9f8f8f8f8f8f8f8f8f8f8, 5e9f8f8f8f8f8f8f8f8f8f8]
+                address:
+                    type: object
+                    properties:
+                        city:
+                            type: string
+                            example: City Name
+                        country:
+                            type: string
+                            example: Country Name
+                        addressLine:
+                            type: string
+                            example: Address Line
+                location:
+                    type: object
+                    properties:
+                        lat:
+                            type: float
+                            example: 41.01
+                        lon:
+                            type: float
+                            example: 28.97
+        EventNotPopulated:
+            properties:
+                publisherId:
+                    type: string
+                    format: monogid
+                    example: ObjectId("5e9f8f8f8f8f8f8f8f8f8f8")
+                title:
+                    type: string
+                    example: Event Title
+                content:
+                    type: string
+                    example: Event Description
+                date:
+                    type: string
+                    example: 2022-01-01
+                coverImage:
+                    type: string
+                    example: https://www.example.com/image.jpg
+                categories:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - No Poverty
+                            - Zero Hunger
+                            - Good Health And Well-Being
+                            - Quality Education
+                            - Gender Equality
+                            - Clean Water And Sanitation
+                            - Affordable And Clean Energy
+                            - Animals
+                            - Oceans
+                            - Nature
+                            - Reduced Inequalities
+                            - Sustainable Cities And Communities
+                            - Responsible Consumption And Production
+                            - Climate Action
+                            - Life Below Water
+                            - Life On Land
+                            - Peace
+                            - Youth
+                            - Justice
+                confirmedVolunteers:
+                    type: array
+                    items:
+                        type: string
+                        format: monogid
+                    example:
+                        [
+                            ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"),
+                            ObjectId("5e9f8f8f8f8f8f8f8f8f84f"),
+                        ]
+                invitedVolunteers:
+                    type: array
+                    items:
+                        type: string
+                        format: monogid
+                    example:
+                        [
+                            ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"),
+                            ObjectId("5e9f8f8f8f8f8f8f8f8f84f"),
+                        ]
+                __v:
+                    type: int
+                    example: 0
+                address:
+                    type: object
+                    properties:
+                        city:
+                            type: string
+                            example: City Name
+                        country:
+                            type: string
+                            example: Country Name
+                        addressLine:
+                            type: string
+                            example: Address Line
+                location:
+                    type: object
+                    properties:
+                        lat:
+                            type: float
+                            example: 41.01
+                        lon:
+                            type: float
+                            example: 28.97
+
+    securitySchemes:
+        auth_cookie:
+            type: apiKey
+            in: cookie
+            name: auth_token

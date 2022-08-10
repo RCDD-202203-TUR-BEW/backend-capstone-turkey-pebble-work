@@ -1,3 +1,8 @@
+
+tags:
+  - name: Event
+    description: API to manage Events.
+    
 paths:
   /events/{id}:
     get:
@@ -13,19 +18,65 @@ paths:
           in: "path"
           description: "ID of the event to return"
           required: true
-          type: "integer"
+          type: "string"
           format: "int64"
       responses:
         "200":
-          description: "succesful operation"
-          schema:
-            $ref: "#/components/schemas/Event"
+          description: "An event by spesific id"
+          content: 
+           application/json:
+            schema:
+            type: "object"
+            items: 
+              $ref: "#/components/schemas/Event"
         "404":
-          description: Invalid event ID supplied, Event not found
+          description: Error Message
+          content:
+           application/json:
+            schema:
+            type: "object"
+            properties:
+             message:
+               type: "string"
+               example: "Invalid event ID supplied, Event not found"
         "500": 
-          description: Internal server error
+          description: Error Message
+          content:
+           application/json:
+            schema:
+            type: "object"
+            properties:
+             message:
+               type: "string"
+               example: Internal server error
 components:
   schemas:
+    ShortUser:
+     properties:
+     _id:
+       type: string
+       example: 62e980586aca79a3936917e6
+     firstName:
+       type: string
+       example: John
+     lastName:
+       type: string
+       example: Doe
+     email:
+       type: string
+       example: mail@example.com
+     __t:
+       type: string
+       example: User
+     profileImage:
+       type: string
+       example: https://www.example.com/image.jpg
+     fullName:
+       type: string
+       example: John Doe
+     id:
+       type: string
+       example: 62e980586aca79a3936917e6
     Event:
      type: "object"
      required:
@@ -38,153 +89,111 @@ components:
        - "location"
      properties:
        publisherId:
-        type: "integer"
-        format: "objectId"
+        $ref: "#/components/schemas/ShortUser"
        title:
         type: "string"
-        description: "Event Title"
+        example: "Event Title 1"
        content:
         type: "string"
+        example: "Event 1 content"
        coverImage:
         type: "string"
+        example: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
        date:
         type: "date"
-       category:
-        type: "string"
-        enum:
-         - "No Poverty"
-         - "Zero Hunger"
-         - "Good Health And Well-Being"
-         - "Quality Education"
-         - "Gender Equality"
-         - "Clean Water And Sanitation"
-         - "Affordable And Clean Energy"
-         - "Animals"
-         - "Oceans"
-         - "Nature"
-         - "Reduced Inequalities"
-         - "Sustainable Cities And Communities"
-         - "Responsible Consumption And Production"
-         - "Climate Action"
-         - "Life Below Water"
-         - "Life On Land"
-         - "Peace"
-         - "Youth"
-         - "Justice"
+        example: "2022-01-01"
+       categories:
+        type: "array"
+        items:
+         type: "string"
+         enum:
+          - "No Poverty"
+          - "Zero Hunger"
+          - "Good Health And Well-Being"
+          - "Quality Education"
+          - "Gender Equality"
+          - "Clean Water And Sanitation"
+          - "Affordable And Clean Energy"
+          - "Animals"
+          - "Oceans"
+          - "Nature"
+          - "Reduced Inequalities"
+          - "Sustainable Cities And Communities"
+          - "Responsible Consumption And Production"
+          - "Climate Action"
+          - "Life Below Water"
+          - "Life On Land"
+          - "Peace"
+          - "Youth"
+          - "Justice"
        confirmedVolunteers:
         type: "array"
         items:
-         type: "object"
-         $ref: "#components/schemas/user"
+         $ref: "#/components/schemas/ShortUser"
        invitedVolunteers:
         type: "array"
         items:
          type: "object"
-         $ref: "#components/schemas/user"
-       address:
-        type: "array"
-        items:
-         properties:
-          city:
-           type: "string"
-           enum:
-            - Adana
-            - Kocaeli
-            - Adiyaman
-            - Konya
-            - Afyonkarahisar
-            - Kutahya
-            - Agri
-            - Malatya
-            - Amasya
-            - Manisa
-            - Ankara
-            - Kahramanmaras
-            - Antalya
-            - Mardin
-            - Artvin
-            - Mugla
-            - Aydin
-            - Mus
-            - Balikesir
-            - Nevsehir
-            - Bilecik
-            - Nigde
-            - Bingol
-            - Ordu
-            - Bitlis
-            - Rize
-            - Bolu
-            - Sakarya
-            - Burdur
-            - Samsun
-            - Bursa
-            - Siirt
-            - Canakkale
-            - Sinop
-            - Cankiri
-            - Sivas
-            - Corum
-            - Tekirdag
-            - Denizli
-            - Tokat
-            - Diyarbakir
-            - Trabzon
-            - Edirne
-            - Tunceli
-            - Elazig
-            - Sanliurfa
-            - Erzincan
-            - Usak
-            - Erzurum
-            - Van
-            - Eskisehir
-            - Yozgat
-            - Gaziantep
-            - Zonguldak
-            - Giresun
-            - Aksaray
-            - Gumushane
-            - Bayburt
-            - Hakkari
-            - Karaman
-            - Hatay
-            - Kirikkale
-            - Isparta
-            - Batman
-            - Mersin
-            - Sirnak
-            - Istanbul
-            - Bartin
-            - Izmir
-            - Ardahan
-            - Kars
-            - Igdir
-            - Kastamonu
-            - Yalova
-            - Kayseri
-            - Karabuk
-            - Kirklareli
-            - Kilis
-            - Kirsehir
-            - Osmaniye
-            - Duzce
-          country:
-           type: "string"
-          addressLine:
-           type: "string" 
+         $ref: "#/components/schemas/ShortUser"
+       address:     
+         type: "object"
+         properties:  
+           city: 
+            type: "string"
+            example: "Mersin"
+           country:
+            type: "string" 
+            example: "Sweden"
+           addressLine:
+            type: "string" 
+            example: "123 Main Street, New York"
        location:
-        type: "array"
-        items:
-         properties:
-          lat:
-           type: "number"      
-          log:
-           type: "number"    
-              
+        type: "object"   
+        properties:
+         lat: 
+          type: "float"
+          example: "12.89"
+         lon:
+          type: "float"
+          example: "44.06"
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
-           
-           
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
 
 
 
