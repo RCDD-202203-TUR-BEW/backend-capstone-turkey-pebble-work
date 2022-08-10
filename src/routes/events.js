@@ -11,7 +11,7 @@ router.post(
     '/:id/volunteer',
     EVENT_VALIDATION_RULES,
     handleValidation,
-    eventController.UnjoinedVolunteers
+    eventController.unjoinedVolunteers
 );
 
 module.exports = router;
