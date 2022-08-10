@@ -6,8 +6,10 @@ const swaggerUi = require('swagger-ui-express');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
+const fundRouter = require('./routes/funds');
 const eventRouter = require('./routes/events');
-const fundsRouter = require('./routes/funds');
+
+const googleauth = require('./routes/google');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 
@@ -27,11 +29,12 @@ app.use(
     swaggerUi.setup(swaggerSpec, { explorer: true })
 );
 
+app.use('/api/google-auth', googleauth);
 app.use(authMiddleware);
 
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventRouter);
-app.use('/api/fund', fundsRouter);
+app.use('/api/fund', fundRouter);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {

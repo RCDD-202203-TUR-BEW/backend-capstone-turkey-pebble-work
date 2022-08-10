@@ -21,4 +21,11 @@ router.get(
     handleValidation,
     fundsController.getOneFund
 );
+router.delete(
+    '/:id',
+    VERIFY_VALIDATION_FUNDSBYID,
+    handleValidation,
+    fundsController.deleteFund
+);
+
 module.exports = router;

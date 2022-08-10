@@ -2,6 +2,7 @@ const { expressjwt: jwt } = require('express-jwt');
 const mongoose = require('mongoose');
 
 const publicRoutes = [
+    '/api/google-auth/google',
     '/api/auth/user/signup',
     '/api/auth/organization/signup',
     '/api/auth/signin',
