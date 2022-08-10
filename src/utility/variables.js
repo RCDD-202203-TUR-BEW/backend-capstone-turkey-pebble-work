@@ -109,7 +109,35 @@ const FOURTEEN_DAYS_MILLISECONDS = 1000 * 60 * 60 * 24 * 14; // 14 days
 const FOURTEEN_DAYS_STRING = '14d'; // 14 days
 const PROFILE_IMAGE_DIR = 'profileImages';
 const COVER_IMAGE_DIR = 'coverImages';
+const EVENT_IMAGE_DIR = 'eventImages';
 const EMAIL_VERIFY_SUBJECT = 'Verify your email';
+
+const SWAGGER_OPTIONS = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'PebbleWork API documentation with Swagger',
+            version: '0.1.0',
+            description: 'This is a API application made with Express',
+            license: {
+                name: 'MIT',
+                url: 'https://spdx.org/licenses/MIT.html',
+            },
+            contact: {
+                name: 'PebbleWork',
+                url: 'https://github.com/RCDD-202203-TUR-BEW/backend-capstone-turkey-pebble-work',
+                email: process.env.EMAIL,
+            },
+        },
+        servers: [
+            {
+                url: process.env.BASE_URL,
+            },
+        ],
+        host: process.env.BASE_URL,
+    },
+    apis: ['./src/docs/**/*.yaml'],
+};
 
 module.exports = {
     CITIES,
@@ -121,4 +149,6 @@ module.exports = {
     PROFILE_IMAGE_DIR,
     COVER_IMAGE_DIR,
     EMAIL_VERIFY_SUBJECT,
+    SWAGGER_OPTIONS,
+    EVENT_IMAGE_DIR,
 };

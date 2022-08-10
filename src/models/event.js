@@ -22,10 +22,16 @@ const eventSchema = mongoose.Schema({
         type: Date,
         required: true,
     },
-    category: {
-        type: String,
-        enum: variables.CATEGORIES,
+    categories: {
+        type: [
+            {
+                type: String,
+                enum: variables.CATEGORIES,
+                required: true,
+            },
+        ],
         required: true,
+        default: [variables.CATEGORIES[0]],
     },
     confirmedVolunteers: [
         {

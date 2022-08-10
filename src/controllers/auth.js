@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -122,19 +123,24 @@ async function verifyBaseUserEmail(req, res) {
         const baseUser = await BaseUser.findOne({
             _id: req.params.id,
         });
+
         if (!baseUser) {
             return res.status(400).json({ message: 'Invalid link' });
         }
+
         if (baseUser.isVerified) {
             return res.status(400).json({ message: 'User already verified' });
         }
+
         const token = await Token.findOne({
             userId: baseUser.id,
             token: req.params.token,
         });
+
         if (!token) {
             return res.status(400).json({ message: 'Invalid link' });
         }
+
         await BaseUser.updateOne({ _id: baseUser.id, isVerified: true });
         await Token.findByIdAndDelete(token.id);
 
@@ -199,9 +205,42 @@ async function signOut(req, res) {
     }
 }
 
+async function saveGoogleUser(req, res) {
+    const googleId = `google-${req.user._json.sub}`;
+
+    let user = await BaseUser.findOne({ providerId: googleId });
+
+    if (!user) {
+        user = await BaseUser.create({
+            email: req.user._json.email,
+            fullName: req.user._json.name,
+            firstName: req.user._json.given_name,
+            lastName: req.user._json.family_name,
+            provider: 'google',
+            providerId: googleId,
+            isVerified: true,
+        });
+    }
+
+    const claims = {
+        email: user.email,
+        fullName: user.fullName,
+        providerId: user.providerId,
+    };
+    const token = jwt.sign(claims, process.env.SECRET_KEY, {
+        expiresIn: '14d',
+    });
+    res.cookie('token', token, {
+        httpOnly: true,
+        signed: true,
+    });
+    res.status(200).json({ message: 'User successfully signed in' });
+}
+
 module.exports = {
     signUp,
     verifyBaseUserEmail,
     signIn,
     signOut,
+    saveGoogleUser,
 };
