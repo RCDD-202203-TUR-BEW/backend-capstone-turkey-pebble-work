@@ -129,7 +129,7 @@ const SIGNIN_VALIDATION_RULES = [
     body('password').exists().isString().withMessage('password is required'),
 ];
 
-const EVENT_VALIDATION_RULES = [
+const VOLUNTEERS_EVENT_VALIDATION_RULES = [
     param('id')
         .exists()
         .isString()
@@ -152,6 +152,6 @@ module.exports = {
     ORGANIZATION_SIGNUP_VALIDATION_RULES,
     VERIFY_VALIDATION_RULES,
     SIGNIN_VALIDATION_RULES,
-    EVENT_VALIDATION_RULES,
+    VOLUNTEERS_EVENT_VALIDATION_RULES,
     handleValidation,
 };
