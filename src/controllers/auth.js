@@ -228,16 +228,18 @@ async function saveGoogleUser(req, res) {
     }
 
     const claims = {
+        id: user.id,
         email: user.email,
         fullName: user.fullName,
-        providerId: user.providerId,
     };
     const token = jwt.sign(claims, process.env.SECRET_KEY, {
-        expiresIn: '14d',
+        expiresIn: FOURTEEN_DAYS_STRING,
     });
-    res.cookie('token', token, {
+    res.cookie('auth_token', token, {
         httpOnly: true,
         signed: true,
+        expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
+        secure: process.env.NODE_ENV === 'production',
     });
     res.status(200).json({ message: 'User successfully signed in' });
 }
