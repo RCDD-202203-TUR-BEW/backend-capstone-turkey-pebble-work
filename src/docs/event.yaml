@@ -359,6 +359,59 @@ paths:
                                         example: User already joined
                 500:
                     description: Internal server error
+    /api/event/:id/volunteer:
+        post:
+            tags:
+                - Event
+            summary: Unjoin user from an event
+            description: remove volunteered from an event
+            operationId: Unjoin user
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            parameters:
+                - name: id
+                  in: path
+                  description: event id that user goign to unjoin
+                  required: true
+                  schema:
+                      type: string
+                      example: 62e297b6eb2bce7177c6fefc
+            responses:
+                200:
+                    description: User unjoined Successfully from an event
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Unjoined Successfully
+                401:
+                    description: user not sigend in
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                404:
+                    description: Event not found  or has an invalid value
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                500:
+                    description: Internal server error
 
 components:
     schemas:

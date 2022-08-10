@@ -192,7 +192,7 @@ async function unjoinedVolunteers(req, res) {
         await User.findByIdAndUpdate(req.user.id, {
             $pull: { followedEvents: req.params.id },
         });
-        return res.status(201).json({ message: 'Unjoined Successfully' });
+        return res.status(200).json({ message: 'Unjoined Successfully' });
     } catch (err) {
         return res.sendStatus(500);
     }
