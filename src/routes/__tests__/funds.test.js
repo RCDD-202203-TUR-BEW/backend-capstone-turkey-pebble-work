@@ -38,6 +38,7 @@ afterAll(async () => {
     await Funds.deleteMany({});
 });
 
+jest.setTimeout(10000);
 describe('Get and filter funds', () => {
     it('GET /api/fund/ should get all funds', async () => {
         const res = await request(app)

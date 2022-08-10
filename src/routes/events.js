@@ -6,6 +6,7 @@ const {
     GET_EVENTS_VALIDATION_RULES,
     DELETE_EVENT_VALIDATION_RULES,
     PUT_EVENT_VALIDATION_RULES,
+    VOLUNTEERS_EVENT_VALIDATION_RULES,
     handleValidation,
 } = require('../utility/validation');
 
@@ -43,6 +44,13 @@ router.put(
     handleValidation,
     autherizationMiddleware(EventModel),
     eventsController.updateEvent
+);
+
+router.post(
+    '/:id/volunteers',
+    VOLUNTEERS_EVENT_VALIDATION_RULES,
+    handleValidation,
+    eventsController.joinedVolunteers
 );
 
 module.exports = router;

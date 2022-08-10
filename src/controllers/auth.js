@@ -95,7 +95,6 @@ async function signUp(req, res) {
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
             expiresIn: FOURTEEN_DAYS_STRING,
         });
-
         res.cookie('auth_token', token, {
             httpOnly: true, // only accessible by server
             signed: true,
@@ -115,7 +114,6 @@ async function signUp(req, res) {
                 'User successfully signed up and a verification email sent',
         });
     } catch (error) {
-        console.log(error);
         return res.sendStatus(500);
     }
 }
@@ -148,7 +146,6 @@ async function verifyBaseUserEmail(req, res) {
 
         return res.status(200).json({ message: 'User verified' });
     } catch (error) {
-        console.log(error);
         return res.sendStatus(500);
     }
 }
@@ -195,7 +192,6 @@ async function signIn(req, res) {
         result.message = 'User signed in';
         return res.status(200).json(result);
     } catch (error) {
-        console.log(error);
         return res.sendStatus(500);
     }
 }
@@ -205,7 +201,6 @@ async function signOut(req, res) {
         res.clearCookie('auth_token');
         return res.status(200).json({ message: 'User signed out' });
     } catch (error) {
-        console.log(error);
         return res.sendStatus(500);
     }
 }
