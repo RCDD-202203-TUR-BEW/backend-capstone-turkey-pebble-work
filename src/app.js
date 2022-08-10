@@ -1,13 +1,17 @@
 const express = require('express');
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
-
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
 const eventRouter = require('./routes/events');
+
+const googleauth = require('./routes/google');
+const fundsRouter = require('./routes/funds');
 const { authMiddleware } = require('./middleware');
-const { connectToStorage } = require('./db/storage');
+const { SWAGGER_OPTIONS } = require('./utility/variables');
 
 const app = express();
 const port = process.env.PORT;
@@ -18,10 +22,19 @@ app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+const swaggerSpec = swaggerJsdoc(SWAGGER_OPTIONS);
+app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, { explorer: true })
+);
+
+app.use('/api/googleauth', googleauth);
 app.use(authMiddleware);
 
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventRouter);
+app.use('/api/fund', fundsRouter);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
