@@ -12,13 +12,13 @@ const createEvent = async (req, res) => {
             date: req.body.date,
             category: req.body.category,
             address: {
-                city: req.body.city,
-                country: req.body.country,
-                addressLine: req.body.addressLine
+                city: req.body.address.city,
+                country: req.body.address.country,
+                addressLine: req.body.address.addressLine
             },
             location: {
-                lat: req.body.lat,
-                log: req.body.long
+                lat: req.body.location.lat,
+                log: req.body.location.log
             }
         })
 
