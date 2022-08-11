@@ -647,38 +647,6 @@ describe('POST /api/event/:id/volunteers', () => {
     });
 });
 
-const validEvent = {
-    id: '1a34',
-    publisherId: '667',
-    title: 'Event 1',
-    content: 'Event 1 content',
-    coverImage:
-        'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-    date: '2022-01-01',
-    categories: ['No Poverty', 'Zero Hunger'],
-    address: {
-        city: 'Adana',
-        country: 'Turkey',
-        addressLine: 'X mah, Adana, Turkey',
-    },
-    confirmedVolunteers: ['12dg4', '12dg5'],
-    invitedVolunteers: ['12dg4', '12dg5', '12dg6'],
-    location: {
-        lat: 34.12,
-        log: 34.16,
-    },
-};
-
-beforeAll(async () => {
-    await connectToMongo();
-});
-
-afterAll(async () => {
-    await Event.deleteMany({});
-});
-
-jest.setTimeout(10000);
-
 describe('Get and filter events', () => {
     it('GET /api/event/ should return all events if no filter is passed', async () => {
         const response = await request(app).get('/api/event/');
@@ -823,6 +791,37 @@ describe('Get and filter events', () => {
             ).toBeDefined();
         });
     });
+    const validEvent = {
+        id: '1a34',
+        publisherId: '667',
+        title: 'Event 1',
+        content: 'Event 1 content',
+        coverImage:
+            'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+        date: '2022-01-01',
+        categories: ['No Poverty', 'Zero Hunger'],
+        address: {
+            city: 'Adana',
+            country: 'Turkey',
+            addressLine: 'X mah, Adana, Turkey',
+        },
+        confirmedVolunteers: ['12dg4', '12dg5'],
+        invitedVolunteers: ['12dg4', '12dg5', '12dg6'],
+        location: {
+            lat: 34.12,
+            log: 34.16,
+        },
+    };
+
+    beforeAll(async () => {
+        await connectToMongo();
+    });
+
+    afterAll(async () => {
+        await Event.deleteMany({});
+    });
+
+    jest.setTimeout(10000);
 
     describe('Fetching event by id', () => {
         it('GET /api/event/:id should fetch event by id and populate', async () => {
