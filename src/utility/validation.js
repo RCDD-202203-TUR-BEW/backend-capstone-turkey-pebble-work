@@ -130,8 +130,8 @@ const SIGNIN_VALIDATION_RULES = [
 ];
 
 const CREATE_EVENT_VALIDATION_RULES = [
-    body('title').exists().isString().isLength({ max: 50 }).withMessage('title is required'),
-    body('content').exists().isString().isLength({ max: 1000 }).withMessage(' content is required'),
+    body('title').exists().isString().isLength().withMessage('title is required'),
+    body('content').exists().isString().isLength().withMessage(' content is required'),
     body('coverImage')
         .custom((value, { req }) => {
             if (!req.file) return false;
@@ -156,14 +156,14 @@ const CREATE_EVENT_VALIDATION_RULES = [
                     variables.CATEGORIES.includes(category)
             )
         )
-        .withMessage('interests must be an array of valid interests'),
-    body('city').exists().isString()
+        .withMessage('categories must be an array of valid categories'),
+    body('address.city').exists().isString()
         .custom((city) => variables.CITIES.includes(city))
         .withMessage('city is required'),
-    body('country').exists().isString().isLength({ max: 20 }).withMessage('country is required'),
-    body('addressLine').exists().isString().isLength({ max: 50 }).withMessage('addressLine is required'),
-    body('lat').exists().isDecimal().withMessage('lat is required'),
-    body('long').exists().isDecimal().withMessage('long is required')
+    body('address.country').exists().isString().isLength().withMessage('country is required'),
+    body('address.addressLine').exists().isString().isLength().withMessage('addressLine is required'),
+    body('location.lat').exists().isDecimal().withMessage('lat is required'),
+    body('location.long').exists().isDecimal().withMessage('long is required')
 ];
 
 const handleValidation = (req, res, next) => {
