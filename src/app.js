@@ -27,7 +27,7 @@ app.use(authMiddleware);
 
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventRouter);
-app.use('/api/funds', fundRouter)
+app.use('/api/fund', fundRouter)
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
