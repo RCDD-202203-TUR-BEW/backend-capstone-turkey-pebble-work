@@ -141,7 +141,7 @@ async function verifyBaseUserEmail(req, res) {
             return res.status(400).json({ message: 'Invalid link' });
         }
 
-        await BaseUser.updateOne({ _id: baseUser.id, isVerified: true });
+        await BaseUser.updateOne({ _id: baseUser.id }, { isVerified: true });
         await Token.findByIdAndDelete(token.id);
 
         return res.status(200).json({ message: 'User verified' });
