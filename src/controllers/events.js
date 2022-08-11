@@ -192,18 +192,14 @@ async function getEventById(req, res) {
             'email',
             'profileImage',
         ];
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            res.status(400).json({ message: 'Invalid id' });
-        } else {
-            const event = await Event.findById(id)
-                .populate('publisherId', requiredUserField.join(' '))
-                .populate('confirmedVolunteers', requiredUserField.join(' '))
-                .populate('invitedVolunteers', requiredUserField.join(' '));
-            if (!event) {
-                return res.status(404).json({ error: 'Event not found' });
-            }
-            return res.status(200).json(event);
+        const event = await Event.findById(id)
+            .populate('publisherId', requiredUserField.join(' '))
+            .populate('confirmedVolunteers', requiredUserField.join(' '))
+            .populate('invitedVolunteers', requiredUserField.join(' '));
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
         }
+        return res.status(200).json(event);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
