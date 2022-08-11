@@ -192,8 +192,8 @@ const GET_EVENTS_VALIDATION_RULES = [
 ];
 
 const CREATE_FUND_VALIDATION_RULES = [
-    body('title').exists().isString().isLength({ max: 50 }).withMessage('title is required'),
-    body('content').exists().isString().isLength({ max: 1000 }).withMessage('content is required'),
+    body('title').exists().isString().isLength().withMessage('title is required'),
+    body('content').exists().isString().isLength().withMessage('content is required'),
     body('deadline').exists().isDate().withMessage('deadline is required'),
     body('targetFund').exists().isInt().withMessage('targetFund is required'),
     body('categories')
@@ -208,11 +208,19 @@ const CREATE_FUND_VALIDATION_RULES = [
             )
         )
         .withMessage('categories must be an array of valid categories'),
-    body('city').optional().isString()
-        .custom((city) => variables.CITIES.includes(city))
-        .withMessage('city is required'),
-    body('country').optional().isString().isLength({ max: 20 }).withMessage('country is required'),
-    body('addressLine').optional().isString().isLength({ max: 50 }).withMessage('addressLine is required'),
+    body('address')
+        .exist()
+        .isObject()
+        .custom((address) => {
+            return (
+                isString(address.addressLine) &&
+                isString(address.city) &&
+                isString(address.country)
+            );
+        })
+        .withMessage(
+            'address must be an object that contains street, city, and country properties which all must be strings'
+        ),
 ];
 
 const handleValidation = (req, res, next) => {
