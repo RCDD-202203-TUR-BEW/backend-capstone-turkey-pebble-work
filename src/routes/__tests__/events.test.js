@@ -824,10 +824,10 @@ describe('Get and filter events', () => {
         });
     });
 
-    describe('Fetching events by id', () => {
-        it('GET /api/events/:id should fetch event by id and populate', async () => {
+    describe('Fetching event by id', () => {
+        it('GET /api/event/:id should fetch event by id and populate', async () => {
             request(app)
-                .get('/api/events/:id')
+                .get('/api/event/:id')
                 .expect('Content-Type', /json/)
                 .expect(200, (err, res) => {
                     if (err) return err;
@@ -849,9 +849,9 @@ describe('Get and filter events', () => {
                     );
                 });
         });
-        it('GET /api/events/:id should return an error if the event is not found', async () => {
+        it('GET /api/event/:id should return an error if the event is not found', async () => {
             request(app)
-                .get('/api/events/:id')
+                .get('/api/event/:id')
                 .expect('Content-Type', /json/)
                 .expect(404, (err, res) => {
                     if (err) return err;
@@ -859,10 +859,10 @@ describe('Get and filter events', () => {
                     expect(res.body.message).toBe('Event not found');
                 });
         });
-        it('GET /api/events/:id should return an error if the id is not valid', async () => {
+        it('GET /api/event/:id should return an error if the id is not valid', async () => {
             const id = '12dg4';
             request(app)
-                .get(`/api/events/${id}`)
+                .get(`/api/event/${id}`)
                 .expect('Content-Type', /json/)
                 .expect(404, (err, res) => {
                     if (err) return err;

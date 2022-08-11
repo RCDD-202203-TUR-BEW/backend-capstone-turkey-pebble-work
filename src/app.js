@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 const express = require('express');
 require('dotenv').config();
@@ -35,7 +36,6 @@ app.use(authMiddleware);
 
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventRouter);
-app.use('/api/events', eventRouter);
 app.use('/api/fund', fundsRouter);
 
 function ErrorHandler(err, req, res, next) {

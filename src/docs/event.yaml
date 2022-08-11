@@ -191,7 +191,7 @@ paths:
     /api/event/:id:
         get:
           tags: 
-          - "Events"
+          - "Event"
           summary: "Get event by id"
           description: "Returns a single event"
           operationId: "getEventById"
@@ -203,36 +203,29 @@ paths:
               description: "ID of the event to return"
               required: true
               type: "string"
-              format: "int64"
           responses:
             "200":
-              description: "An event by spesific id"
-              content: 
+              description: A list of matching events
+              content:
                application/json:
                 schema:
                 type: "object"
-                items: 
-                  $ref: "#/components/schemas/Event"
+                items:
+                    $ref: '#/components/schemas/Event'
+            "422":
+              description: "This status is returned when the request is missing required fields or has an invalid values."
+              content:
+               application/json:
+                schema:
+                   $ref: "#/components/schemas/ValidationError"       
             "404":
-              description: Error Message
-              content:
-               application/json:
-                schema:
-                  type: "object"
-                  properties:
-                    message:
-                     type: "string"
-                     example: "Invalid event ID supplied, Event not found"
+               description: "Event not found"
+               content:
+                application/json:
+                 schema:
+                    $ref: '#/components/schemas/ValidationError'
             "500":
-              description: Error Message
-              content:
-               application/json:
-                schema:
-                 type: "object"
-                 properties:
-                  message:
-                   type: "string"
-                   example: Internal server error
+              description: "Internal server error"
         delete:
             tags:
                 - Event
