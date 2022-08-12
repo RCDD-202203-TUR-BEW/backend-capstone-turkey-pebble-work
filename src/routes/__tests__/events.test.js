@@ -597,7 +597,6 @@ describe('POST /api/event/:id/volunteers', () => {
     });
 
     it('Should reture 201 status when joined successfully', async () => {
-        // const operationType = true;
         const res = await request(app)
             .post(`/api/event/${dummyEvent.id}/volunteers`)
             .send({ operationType: true })
@@ -648,7 +647,6 @@ describe('POST /api/event/:id/volunteers', () => {
     });
 
     it('Should reture 200 status when unjoined successfully', async () => {
-        // operationType = false;
         const res = await request(app)
             .post(`/api/event/${dummyEvent.id}/volunteers`)
             .send({ operationType: false })
