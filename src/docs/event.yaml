@@ -337,7 +337,7 @@ paths:
                                 properties:
                                     message:
                                         type: string
-                                        example: Unjoined Successfully
+                                        example: Joined Successfully
                 200:
                     description: User unjoined Successfully from an event
                     content:
@@ -347,7 +347,7 @@ paths:
                                 properties:
                                     message:
                                         type: string
-                                        example: Joined Successfully
+                                        example: Unjoined Successfully
                 401:
                     description: user not sigend in
                     content:
