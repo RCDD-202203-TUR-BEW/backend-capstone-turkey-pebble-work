@@ -35,7 +35,6 @@ router.get(
     '/:id',
     GET_EVENT_ID_VALIDATION_RULES,
     handleValidation,
-    autherizationMiddleware(EventModel),
     eventsController.getEventById
 );
 
