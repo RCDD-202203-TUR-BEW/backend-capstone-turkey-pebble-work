@@ -45,19 +45,13 @@ router.put(
     autherizationMiddleware(EventModel),
     eventsController.updateEvent
 );
-// ADD USER TO EVENT
+
+// ADD OR REMOVE volunteers
 router.post(
     '/:id/volunteers',
     VOLUNTEERS_EVENT_VALIDATION_RULES,
     handleValidation,
-    eventsController.joinedVolunteers
-);
-// REMOVE USER FROM EVENT
-router.post(
-    '/:id/volunteer',
-    VOLUNTEERS_EVENT_VALIDATION_RULES,
-    handleValidation,
-    eventsController.unjoinedVolunteers
+    eventsController.addOrRemoveVolunteer
 );
 
 module.exports = router;
