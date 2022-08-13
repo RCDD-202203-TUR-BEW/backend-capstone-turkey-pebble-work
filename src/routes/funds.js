@@ -24,7 +24,7 @@ router.get(
     fundsController.getOneFund
 );
 router.delete(
-    '/:id',
+    '/:id/delete',
     VERIFY_VALIDATION_FUNDSBYID,
     handleValidation,
     autherizationMiddleware(FundModel),

@@ -79,6 +79,37 @@ paths:
                   $ref: "#/components/schemas/ValidationError"
           500:
             description: Internal server error
+  /api/fund/:id/delete:
+    delete:
+      tags:
+        - Fund
+      summary: Delete a fund
+      description: Delete a fund by its id.
+      operationId: deleteFund
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 5e9f8f8f8f8f8f8f8f8f8f8
+      responses:
+        403:
+          description: This status is returned when the user is not authorized to perform the operation.
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
 components:
   schema:
     Fund:
