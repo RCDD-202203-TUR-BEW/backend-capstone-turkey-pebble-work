@@ -32,9 +32,9 @@ app.use(
 app.use('/api/google-auth', googleauth);
 app.use(authMiddleware);
 
+app.use('/api/fund', fundRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventRouter);
-app.use('/api/fund', fundRouter);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {

@@ -1,4 +1,6 @@
 const express = require('express');
+const FundModel = require('../models/fund');
+const { autherizationMiddleware } = require('../middleware');
 const {
     VERIFY_VALIDATION_FUND,
     VERIFY_VALIDATION_FUNDSBYID,
@@ -25,6 +27,7 @@ router.delete(
     '/:id',
     VERIFY_VALIDATION_FUNDSBYID,
     handleValidation,
+    autherizationMiddleware(FundModel),
     fundsController.deleteFund
 );
 

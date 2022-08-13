@@ -1,6 +1,10 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable consistent-return */
 const mongoose = require('mongoose');
 const Funds = require('../models/fund');
+const { BaseUser } = require('../models/user');
 const { sendEmail } = require('../utility/mail');
+// const { User } = require('../models/user');
 
 async function getOneFund(req, res) {
     try {
@@ -62,18 +66,28 @@ async function getFunds(req, res) {
 async function deleteFund(req, res) {
     try {
         const { id } = req.params;
-        return null;
-        // const fund = await Funds.findById(id);
-        // console.log(fund + "<<<<<<<<<<<====");
-        // await fund.donations.forEach(async (doner) => {
-        //     doner._id.followedFunds.pull(id);
-        //     await doner.save();
-        //     await sendEmail(
-        //         doner.email,
-        //         'Fund deleted', // subject
-        //         `Unfortunately, the dund ${fund.title} has been deleted. you donation amount ${fund.donations.amount} will be sent back within 24 hours.`
-        //     );
-        // });
+        const fund = await Funds.findById(id).populate('donations.donorId');
+        console.log(`=====> ${fund}`);
+        await fund.donations.forEach(async (donation) => {
+            if (donation.donerId) {
+                donation.donorId.followedFunds.pull(id);
+                await donation.donorId.save();
+                await sendEmail(
+                    donation.donorId.email,
+                    'Fund deleted', // subject
+                    `Your money will be sent back within 24 hours.`
+                );
+            }
+        });
+
+        await BaseUser.findByIdAndUpdate(req.user.id, {
+            $pull: {
+                createdFunds: id,
+            },
+        });
+        await Funds.findByIdAndDelete(id);
+
+        return res.status(204).json({ message: 'Fund deleted' });
     } catch (err) {
         console.log(err);
         return res.sendStatus(500);
