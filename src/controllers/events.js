@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const Event = require('../models/event');
-const { User } = require('../models/user');
+const { User, BaseUser } = require('../models/user');
 const { sendEmail } = require('../utility/mail');
 const storage = require('../db/storage');
 const variables = require('../utility/variables');
@@ -89,7 +89,7 @@ async function deleteEvent(req, res) {
             );
         });
 
-        await User.findByIdAndUpdate(userId, {
+        await BaseUser.findByIdAndUpdate(userId, {
             $pull: {
                 createdEvents: eventId,
             },
