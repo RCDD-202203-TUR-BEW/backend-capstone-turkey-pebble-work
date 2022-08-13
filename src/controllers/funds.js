@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const Funds = require('../models/fund');
 const Fund = require('../models/fund');
 
@@ -23,7 +24,12 @@ async function getFunds(req, res) {
 }
 
 async function donate(req, res) {
+    const token = req.signedCookies.auth_token;
     try {
+        let user;
+        if (token) {
+            user = jwt.verify(token, process.env.SECRET_KEY);
+        }
         const { id } = req.params;
         const { amount } = req.body;
         const existingFund = await Fund.findById(id);
@@ -36,8 +42,8 @@ async function donate(req, res) {
             amount,
         };
 
-        if (req.user) {
-            donationObj.userId = mongoose.Types.ObjectId(id);
+        if (user) {
+            donationObj.donorId = mongoose.Types.ObjectId(user.id);
         }
 
         await Fund.findByIdAndUpdate(id, {
@@ -49,6 +55,12 @@ async function donate(req, res) {
         return res.status(201).json({ message: 'Donation successful' });
     } catch (err) {
         console.log(err);
+        if (err.name === 'UnauthorizedError') {
+            return res.status(401).json({
+                error: true,
+                message: `Invalid Token: ${err.message}`,
+            });
+        }
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
