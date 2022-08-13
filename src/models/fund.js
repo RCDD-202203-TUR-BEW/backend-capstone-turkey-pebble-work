@@ -28,7 +28,7 @@ const fundSchema = mongoose.Schema(
             {
                 donorId: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: 'user',
+                    ref: 'User',
                 },
                 amount: {
                     type: Number,

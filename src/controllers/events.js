@@ -1,7 +1,8 @@
-const Event = require('../models/event')
-const { uploadImage } = require('../db/storage')
+const Event = require('../models/event');
+const { BaseUser } = require('../models/user');
+const { uploadImage } = require('../db/storage');
 const { getFileExtension } = require('../utility/utils');
-const { EVENT_IMAGE_DIR } = require('../utility/variables')
+const { EVENT_IMAGE_DIR } = require('../utility/variables');
 
 const createEvent = async (req, res) => {
     try {
@@ -11,16 +12,10 @@ const createEvent = async (req, res) => {
             content: req.body.content,
             date: req.body.date,
             category: req.body.category,
-            address: {
-                city: req.body.address.city,
-                country: req.body.address.country,
-                addressLine: req.body.address.addressLine
-            },
-            location: {
-                lat: req.body.location.lat,
-                log: req.body.location.log
-            }
-        })
+            address: req.body.address,
+            location: req.body.location,
+            coverImage: 'placeholder',
+        });
 
         const imageUrl = await uploadImage(
             req.file,
@@ -28,15 +23,34 @@ const createEvent = async (req, res) => {
                 req.file.originalname
             )}`
         );
-        event.coverImage = imageUrl
-        await event.save()
-        res.status(201).json(event)
+        event.coverImage = imageUrl;
+        await event.save();
+
+        await BaseUser.findByIdAndUpdate(req.user.id, {
+            $push: { createdEvents: event.id },
+        });
+
+        const requiredUserField = [
+            'id',
+            'firstName',
+            'lastName',
+            'email',
+            'profileImage',
+        ];
+
+        // pubulate the event with the publisher
+        const populatedEvent = await Event.findById(event.id).populate(
+            'publisherId',
+            requiredUserField.join(' ')
+        );
+
+        res.status(201).json(populatedEvent);
     } catch (err) {
-        console.log(err)
-        res.status(500).json({ error: 'Internal Server Error' })
+        console.log(err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
 module.exports = {
-    createEvent
-}
+    createEvent,
+};

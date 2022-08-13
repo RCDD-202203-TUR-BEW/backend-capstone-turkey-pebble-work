@@ -130,8 +130,16 @@ const SIGNIN_VALIDATION_RULES = [
 ];
 
 const CREATE_EVENT_VALIDATION_RULES = [
-    body('title').exists().isString().isLength().withMessage('title is required'),
-    body('content').exists().isString().isLength().withMessage(' content is required'),
+    body('title')
+        .exists()
+        .isString()
+        .isLength()
+        .withMessage('title is required'),
+    body('content')
+        .exists()
+        .isString()
+        .isLength()
+        .withMessage(' content is required'),
     body('coverImage')
         .custom((value, { req }) => {
             if (!req.file) return false;
@@ -157,13 +165,30 @@ const CREATE_EVENT_VALIDATION_RULES = [
             )
         )
         .withMessage('categories must be an array of valid categories'),
-    body('address.city').exists().isString()
-        .custom((city) => variables.CITIES.includes(city))
-        .withMessage('city is required'),
-    body('address.country').exists().isString().isLength().withMessage('country is required'),
-    body('address.addressLine').exists().isString().isLength().withMessage('addressLine is required'),
-    body('location.lat').exists().isDecimal().withMessage('lat is required'),
-    body('location.long').exists().isDecimal().withMessage('long is required')
+    body('address')
+        .exists()
+        .isObject()
+        .custom((address) => {
+            if (!address) return true;
+            return (
+                isString(address.addressLine) &&
+                isString(address.city) &&
+                isString(address.country)
+            );
+        })
+        .withMessage(
+            'address must be an object that contains street, city and country properties which all must be strings'
+        ),
+    body('location')
+        .exists()
+        .isObject()
+        .custom((location) => {
+            if (!location) return true;
+            return location.lat && location.log;
+        })
+        .withMessage(
+            'location must be an object that contains lat and log properties which both must be floats'
+        ),
 ];
 
 const handleValidation = (req, res, next) => {
@@ -182,5 +207,5 @@ module.exports = {
     VERIFY_VALIDATION_RULES,
     SIGNIN_VALIDATION_RULES,
     handleValidation,
-    CREATE_EVENT_VALIDATION_RULES
+    CREATE_EVENT_VALIDATION_RULES,
 };

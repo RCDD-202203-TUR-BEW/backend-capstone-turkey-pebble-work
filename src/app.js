@@ -9,7 +9,7 @@ const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
-const eventsRoutes = require('./routes/events')
+const eventsRoutes = require('./routes/events');
 
 const app = express();
 const port = process.env.PORT;
@@ -26,8 +26,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(authMiddleware);
 
 app.use('/api/auth', authRouter);
-
-app.use('/api/events', eventsRoutes)
+app.use('/api/event', eventsRoutes);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {

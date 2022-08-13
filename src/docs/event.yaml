@@ -1,178 +1,232 @@
 tags:
-    - name: Event
-      description: create a new event
+  - name: Event
+    description: create a new event
 paths:
-    /api/events:
-        post:
-            tags:
-                - Event
-            summary: create a new event
-            description: create a new event
-            consumes:
-                - multipart/form-data
-            produces:
-                - application/json
-            requestBody:
-                required: true
-                content:
-                    multipart/form-data:
-                        schema:
-                            $ref: "#/components/schemas/newEvent"
-            responses:
-                201:
-                    description: Authenticated user succesfully created event.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Event"
-                401:
-                    description: user not sigend in
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    error:
-                                        type: boolean
-                                        example: true
-                                    message:
-                                        type: string
-                                        example: 'Invalid Token: No authorization token was found'
-                422:
-                    description: This status is returned when the request is missing required fields or has an invalid values.      
-                500:
-                    description: Internal server error
+  /api/event:
+    post:
+      tags:
+        - Event
+      summary: create a new event
+      description: create a new event
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/newEvent"
+      responses:
+        201:
+          description: Authenticated user succesfully created event.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        401:
+          description: user not sigend in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
 components:
-    schemas:
-        newEvent:
+  schemas:
+    ShortUser:
+      properties:
+        _id:
+          type: string
+          example: 62e980586aca79a3936917e6
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: mail@example.com
+        __t:
+          type: string
+          example: User
+        profileImage:
+          type: string
+          example: https://www.example.com/image.jpg
+        fullName:
+          type: string
+          example: John Doe
+        id:
+          type: string
+          example: 62e980586aca79a3936917e6
+    newEvent:
+      type: object
+      required:
+        - title
+        - content
+        - coverImage
+        - date
+        - categories
+        - address
+        - location
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        coverImage:
+          type: string
+        date:
+          type: date
+        categories:
+          type: array
+          items:
+            type: string
+            enum:
+              - "No Poverty"
+              - "Zero Hunger"
+              - "Good Health And Well-Being"
+              - "Quality Education"
+              - "Gender Equality"
+              - "Clean Water And Sanitation"
+              - "Affordable And Clean Energy"
+              - "Animals"
+              - "Oceans"
+              - "Nature"
+              - "Reduced Inequalities"
+              - "Sustainable Cities And Communities"
+              - "Responsible Consumption And Production"
+              - "Climate Action"
+              - "Life Below Water"
+              - "Life On Land"
+              - "Peace"
+              - "Youth"
+              - "Justice"
+        address:
+          type: object
+          properties:
+            city:
+              type: string
+              example: City Name
+            country:
+              type: string
+              example: Country Name
+            addressLine:
+              type: string
+              example: Address Line
+        location:
+          type: object
+          properties:
+            lat:
+              type: float
+              example: 41.01
+            lon:
+              type: float
+              example: 28.97
+    Event:
+      properties:
+        publisherId:
+          $ref: "#/components/schemas/ShortUser"
+        title:
+          type: string
+          example: Event Title
+        content:
+          type: string
+          example: Event Description
+        date:
+          type: string
+          example: 2022-01-01
+        coverImage:
+          type: string
+          example: https://www.example.com/image.jpg
+        categories:
+          type: array
+          items:
+            type: string
+            enum:
+              - No Poverty
+              - Zero Hunger
+              - Good Health And Well-Being
+              - Quality Education
+              - Gender Equality
+              - Clean Water And Sanitation
+              - Affordable And Clean Energy
+              - Animals
+              - Oceans
+              - Nature
+              - Reduced Inequalities
+              - Sustainable Cities And Communities
+              - Responsible Consumption And Production
+              - Climate Action
+              - Life Below Water
+              - Life On Land
+              - Peace
+              - Youth
+              - Justice
+        confirmedVolunteers:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShortUser"
+        invitedVolunteers:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShortUser"
+        __v:
+          type: int
+          example: 0
+        address:
+          type: object
+          properties:
+            city:
+              type: string
+              example: City Name
+            country:
+              type: string
+              example: Country Name
+            addressLine:
+              type: string
+              example: Address Line
+        location:
+          type: object
+          properties:
+            lat:
+              type: float
+              example: 41.01
+            lon:
+              type: float
+              example: 28.97
+    ValidationError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
             type: object
-            required:
-                - title
-                - content
-                - coverImage
-                - date
-                - categories
-                - address
-                - location
             properties:
-                title:
-                    type: string
-                content:
-                    type: string
-                coverImage:
-                    type: string
-                date:
-                    type: date
-                categories:
-                    type: array
-                    items:
-                        type: string
-                        enum:
-                            - 'No Poverty'
-                            - 'Zero Hunger'
-                            - 'Good Health And Well-Being'
-                            - 'Quality Education'
-                            - 'Gender Equality'
-                            - 'Clean Water And Sanitation'
-                            - 'Affordable And Clean Energy'
-                            - 'Animals'
-                            - 'Oceans'
-                            - 'Nature'
-                            - 'Reduced Inequalities'
-                            - 'Sustainable Cities And Communities'
-                            - 'Responsible Consumption And Production'
-                            - 'Climate Action'
-                            - 'Life Below Water'
-                            - 'Life On Land'
-                            - 'Peace'
-                            - 'Youth'
-                            - 'Justice'
-                address:
-                    type: object
-                    properties:
-                        city:
-                            type: string
-                            example: City Name
-                        country:
-                            type: string
-                            example: Country Name
-                        addressLine:
-                            type: string
-                            example: Address Line
-                location:
-                    type: object
-                    properties:
-                        lat:
-                            type: float
-                            example: 41.01
-                        lon:
-                            type: float
-                            example: 28.97
-        Event:
-            type: object
-            required:
-                - publisherId
-                - title
-                - content
-                - coverImage
-                - date
-                - categories
-                - address
-                - location
-            properties:
-                publisherId:
-                    type: string
-                title:
-                    type: string
-                content:
-                    type: string
-                coverImage:
-                    type: string
-                date:
-                    type: date
-                categories:
-                    type: array
-                    items:
-                        type: string
-                        enum:          
-                            - 'No Poverty'
-                            - 'Zero Hunger'
-                            - 'Good Health And Well-Being'
-                            - 'Quality Education'
-                            - 'Gender Equality'
-                            - 'Clean Water And Sanitation'
-                            - 'Affordable And Clean Energy'
-                            - 'Animals'
-                            - 'Oceans'
-                            - 'Nature'
-                            - 'Reduced Inequalities'
-                            - 'Sustainable Cities And Communities'
-                            - 'Responsible Consumption And Production'
-                            - 'Climate Action'
-                            - 'Life Below Water'
-                            - 'Life On Land'
-                            - 'Peace'
-                            - 'Youth'
-                            - 'Justice'
-                address:
-                    type: object
-                    properties:
-                        city:
-                            type: string
-                            example: City Name
-                        country:
-                            type: string
-                            example: Country Name
-                        addressLine:
-                            type: string
-                            example: Address Line
-                location:
-                    type: object
-                    properties:
-                        lat:
-                            type: float
-                            example: 41.01
-                        lon:
-                            type: float
-                            example: 28.97
-           
+              value:
+                type: string
+                example: an invalid value
+              msg:
+                type: string
+                example: a message explaining the error
+              param:
+                type: string
+                example: the parameter name that caused the error
+              location:
+                type: string
+                example: the location of the error whether it be a path, query, or body

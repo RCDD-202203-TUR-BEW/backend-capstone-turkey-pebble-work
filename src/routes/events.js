@@ -1,10 +1,13 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
 const Multer = require('multer');
-const eventController = require('../controllers/events')
+const eventController = require('../controllers/events');
 const { MAX_IMAGE_SIZE } = require('../utility/variables');
-const { CREATE_EVENT_VALIDATION_RULES, handleValidation } = require('../utility/validation')
+const {
+    CREATE_EVENT_VALIDATION_RULES,
+    handleValidation,
+} = require('../utility/validation');
 
+const router = express.Router();
 const multer = Multer({
     storage: Multer.memoryStorage(),
     limits: {
@@ -12,7 +15,12 @@ const multer = Multer({
     },
 });
 
-router.post('/', multer.single('coverImage'), CREATE_EVENT_VALIDATION_RULES, handleValidation, eventController.createEvent)
+router.post(
+    '/',
+    multer.single('coverImage'),
+    CREATE_EVENT_VALIDATION_RULES,
+    handleValidation,
+    eventController.createEvent
+);
 
-module.exports = router
- 
+module.exports = router;
