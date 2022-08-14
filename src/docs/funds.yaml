@@ -36,15 +36,22 @@ paths:
             format: date
             example: 2022-01-05
       responses:
-        "200":
+        200:
           description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schema/Fund"
-        "400":
-          description: Not Found
-  /api/fund/:id:
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal Server Error
+
+  /api/fund/{id}:
       get:
         tags:
           - Fund
@@ -64,13 +71,11 @@ paths:
               example: 5e9f8f8f8f8f8f8f8f8f8f8
         responses:
           200:
-            description: A list of matching funds.
+            description: The Fund object with the specified Id.
             content:
               application/json:
                 schema:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/Event"
+                  $ref: "#/components/schemas/Fund"
           422:
             description: This status is returned when the request is missing required fields or has an invalid values.
             content:
@@ -79,45 +84,92 @@ paths:
                   $ref: "#/components/schemas/ValidationError"
           500:
             description: Internal server error
-  /api/fund/:id/delete:
-  # Here i got an error (Maps keys must be uniqe) when i use api/fund/:id that's why i added /delete "HELP"
-    delete:
-      tags:
-        - Fund
-      summary: Delete a fund
-      description: Delete a fund by its id.
-      operationId: deleteFund
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      security:
-        - auth_cookie: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            example: 5e9f8f8f8f8f8f8f8f8f8f8
-      responses:
-        403:
-          description: This status is returned when the user is not authorized to perform the operation.
-        422:
-          description: This status is returned when the request is missing required fields or has an invalid values.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ValidationError"
-        500:
-          description: Internal server error
+      delete:
+        tags:
+          - Fund
+        summary: Delete a fund
+        description: Delete a fund by its id.
+        operationId: deleteFund
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        security:
+          - auth_cookie: []
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: string
+              example: 5e9f8f8f8f8f8f8f8f8f8f8
+        responses:
+          204:
+            description: The fund was deleted.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Fund deleted"
+          403:
+            description: This status is returned when the user is not authorized to perform the operation.
+          422:
+            description: This status is returned when the request is missing required fields or has an invalid values.
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ValidationError"
+          500:
+            description: Internal server error
+          401:
+            description: This status is returned if the user is not signed in.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: boolean
+                      example: true
+                    message:
+                      type: string
+                      example: "Invalid Token: No authorization token was found"
 components:
   schema:
+    ShortUser:
+      properties:
+        _id:
+          type: string
+          example: 62e980586aca79a3936917e6
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: mail@example.com
+        __t:
+          type: string
+          example: User
+        profileImage:
+          type: string
+          example: https://www.example.com/image.jpg
+        fullName:
+          type: string
+          example: John Doe
+        id:
+          type: string
+          example: 62e980586aca79a3936917e6
     Fund:
       type: object
       properties:
         publisherId:
-          type: string
+          $ref: "#/components/schemas/ShortUser"
         targetFund:
           type: integer
         content:
@@ -167,4 +219,9 @@ components:
               type: integer
             adressLine:
               type: string
+  securitySchemes: 
+    auth_cookie: 
+      type: apiKey
+      in: cookie
+      name: auth_token              
   

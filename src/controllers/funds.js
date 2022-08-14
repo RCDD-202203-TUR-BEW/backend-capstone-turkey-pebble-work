@@ -87,8 +87,7 @@ async function deleteFund(req, res) {
 
         return res.status(204).json({ message: 'Fund deleted' });
     } catch (err) {
-        console.log(err);
-        return res.sendStatus(500);
+        return res.status(500).json({ error: 'Internal server error' });
     }
 }
 module.exports = {
