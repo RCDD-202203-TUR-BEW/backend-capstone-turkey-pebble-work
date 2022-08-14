@@ -7,6 +7,7 @@ const {
     DELETE_EVENT_VALIDATION_RULES,
     PUT_EVENT_VALIDATION_RULES,
     VOLUNTEERS_EVENT_VALIDATION_RULES,
+    CREATE_EVENT_VALIDATION_RULES,
     handleValidation,
 } = require('../utility/validation');
 
@@ -51,6 +52,14 @@ router.post(
     VOLUNTEERS_EVENT_VALIDATION_RULES,
     handleValidation,
     eventsController.joinedVolunteers
+);
+
+router.post(
+    '/',
+    multer.single('coverImage'),
+    CREATE_EVENT_VALIDATION_RULES,
+    handleValidation,
+    eventController.createEvent
 );
 
 module.exports = router;
