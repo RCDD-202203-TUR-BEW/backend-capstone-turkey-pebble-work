@@ -41,7 +41,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Fund"
+                $ref: "#/components/schema/Fund"
         422:
           description: This status is returned when the request is missing required fields or has an invalid values.
           content:
