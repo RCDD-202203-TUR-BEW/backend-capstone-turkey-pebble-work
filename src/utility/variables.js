@@ -109,6 +109,7 @@ const FOURTEEN_DAYS_MILLISECONDS = 1000 * 60 * 60 * 24 * 14; // 14 days
 const FOURTEEN_DAYS_STRING = '14d'; // 14 days
 const PROFILE_IMAGE_DIR = 'profileImages';
 const COVER_IMAGE_DIR = 'coverImages';
+const EVENT_IMAGE_DIR = 'eventImages';
 const EMAIL_VERIFY_SUBJECT = 'Verify your email';
 const EVENT_IMAGE_DIR = 'eventImages';
 
