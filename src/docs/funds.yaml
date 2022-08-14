@@ -80,6 +80,7 @@ paths:
           500:
             description: Internal server error
   /api/fund/:id/delete:
+  # Here i got an error (Maps keys must be uniqe) when i use api/fund/:id that's why i added /delete "HELP"
     delete:
       tags:
         - Fund

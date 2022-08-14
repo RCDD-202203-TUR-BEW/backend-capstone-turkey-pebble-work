@@ -4,9 +4,8 @@ const mongoose = require('mongoose');
 const Funds = require('../models/fund');
 const { BaseUser } = require('../models/user');
 const { sendEmail } = require('../utility/mail');
-// const { User } = require('../models/user');
 
-async function getOneFund(req, res) {
+async function getSingleFund(req, res) {
     try {
         const id = mongoose.Types.ObjectId(req.params.id);
         const requiredUserField = [
@@ -67,14 +66,13 @@ async function deleteFund(req, res) {
     try {
         const { id } = req.params;
         const fund = await Funds.findById(id).populate('donations.donorId');
-        console.log(`=====> ${fund}`);
         await fund.donations.forEach(async (donation) => {
             if (donation.donerId) {
                 donation.donorId.followedFunds.pull(id);
                 await donation.donorId.save();
                 await sendEmail(
                     donation.donorId.email,
-                    'Fund deleted', // subject
+                    'Fund deleted',
                     `Your money will be sent back within 24 hours.`
                 );
             }
@@ -95,6 +93,6 @@ async function deleteFund(req, res) {
 }
 module.exports = {
     getFunds,
-    getOneFund,
+    getSingleFund,
     deleteFund,
 };
