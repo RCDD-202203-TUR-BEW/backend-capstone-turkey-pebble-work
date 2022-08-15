@@ -15,8 +15,7 @@
         "lint": "eslint --ignore-path .gitignore .",
         "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
         "validate": "yarn format && yarn lint",
-        "validate-staged": "lint-staged",
-        "postinstall": "husky install && husky add .husky/pre-commit \"yarn validate\" && husky add .husky/pre-push \"yarn test\""
+        "validate-staged": "lint-staged"
     },
     "dependencies": {
         "@google-cloud/storage": "^6.2.3",

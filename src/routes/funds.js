@@ -4,6 +4,7 @@ const { autherizationMiddleware } = require('../middleware');
 const {
     VERIFY_VALIDATION_FUND,
     VERIFY_VALIDATION_FUNDSBYID,
+    DONATE_VALIDATION_RULES,
     handleValidation,
 } = require('../utility/validation');
 
@@ -29,6 +30,12 @@ router.delete(
     handleValidation,
     autherizationMiddleware(FundModel),
     fundsController.deleteFund
+);
+router.post(
+    '/:id/donate',
+    DONATE_VALIDATION_RULES,
+    handleValidation,
+    fundsController.donate
 );
 
 module.exports = router;

@@ -12,6 +12,7 @@ const eventRouter = require('./routes/events');
 const googleauth = require('./routes/google');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
+const eventsRoutes = require('./routes/events');
 
 const app = express();
 const port = process.env.PORT;

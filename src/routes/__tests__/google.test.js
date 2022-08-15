@@ -51,11 +51,9 @@ afterAll(async (drop = false) => {
 let redirectUri = null;
 
 describe('Google Auth Endpoints', () => {
-    const cookiesAgent = supertest.agent(app);
-
-    describe('GET /api/auth/google', () => {
+    describe('GET /api/googleauth/google', () => {
         it('Redirects to google authorization page', (done) => {
-            req.get('/api/auth/google')
+            req.get('/api/googleauth/google')
                 .expect(302)
                 .expect('location', /google\.com/)
                 .end(done);

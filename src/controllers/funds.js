@@ -1,6 +1,5 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const Funds = require('../models/fund');
 const { BaseUser } = require('../models/user');
 const { sendEmail } = require('../utility/mail');
@@ -90,8 +89,52 @@ async function deleteFund(req, res) {
         return res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+async function donate(req, res) {
+    const token = req.signedCookies.auth_token;
+    try {
+        let user;
+        if (token) {
+            user = jwt.verify(token, process.env.SECRET_KEY);
+        }
+        const { id } = req.params;
+        const { amount } = req.body;
+        const existingFund = await Funds.findById(id);
+
+        if (!existingFund) {
+            return res.status(404).json({ message: 'Fund not found' });
+        }
+
+        const donationObj = {
+            amount,
+        };
+
+        if (user) {
+            donationObj.donorId = mongoose.Types.ObjectId(user.id);
+        }
+
+        await Funds.findByIdAndUpdate(id, {
+            $push: {
+                donations: donationObj,
+            },
+        });
+
+        return res.status(201).json({ message: 'Donation successful' });
+    } catch (err) {
+        console.log(err);
+        if (err.name === 'UnauthorizedError') {
+            return res.status(401).json({
+                error: true,
+                message: `Invalid Token: ${err.message}`,
+            });
+        }
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 module.exports = {
     getFunds,
     getSingleFund,
     deleteFund,
+    donate,
 };
