@@ -36,7 +36,6 @@ app.use('/api/auth', authRouter);
 app.use('/api/event', eventsRoutes);
 app.use('/api/fund', fundsRouter);
 
-
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
         res.status(401).json({

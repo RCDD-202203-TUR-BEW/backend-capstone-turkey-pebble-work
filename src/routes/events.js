@@ -59,7 +59,7 @@ router.post(
     multer.single('coverImage'),
     CREATE_EVENT_VALIDATION_RULES,
     handleValidation,
-    eventController.createEvent
+    eventsController.createEvent
 );
 
 module.exports = router;
