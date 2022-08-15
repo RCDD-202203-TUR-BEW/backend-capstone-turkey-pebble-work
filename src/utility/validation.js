@@ -4,6 +4,15 @@ const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
 const { MAX_IMAGE_SIZE } = require('./variables');
 
+const GET_EVENT_ID_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .withMessage('Event id is required')
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('Event id must be a valid ObjectId'),
+];
+
 const VERIFY_VALIDATION_FUND = [
     query('publisherId')
         .optional()
@@ -409,6 +418,7 @@ module.exports = {
     VERIFY_VALIDATION_RULES,
     SIGNIN_VALIDATION_RULES,
     GET_EVENTS_VALIDATION_RULES,
+    GET_EVENT_ID_VALIDATION_RULES,
     DELETE_EVENT_VALIDATION_RULES,
     PUT_EVENT_VALIDATION_RULES,
     VOLUNTEERS_EVENT_VALIDATION_RULES,
