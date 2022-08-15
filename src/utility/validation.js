@@ -329,6 +329,14 @@ const DONATE_VALIDATION_RULES = [
     body('amount').isNumeric().withMessage('amount must be a number'),
 ];
 
+const GET_ORGANIZATION_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -350,5 +358,6 @@ module.exports = {
     PUT_EVENT_VALIDATION_RULES,
     VOLUNTEERS_EVENT_VALIDATION_RULES,
     DONATE_VALIDATION_RULES,
+    GET_ORGANIZATION_VALIDATION_RULES,
     handleValidation,
 };
