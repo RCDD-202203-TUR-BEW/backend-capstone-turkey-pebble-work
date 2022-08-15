@@ -2,6 +2,7 @@ const { validationResult, param, body, query } = require('express-validator');
 const { isString, parseInt } = require('lodash');
 const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
+const { MAX_IMAGE_SIZE } = require('./variables');
 
 const GET_EVENT_ID_VALIDATION_RULES = [
     param('id')
@@ -338,6 +339,68 @@ const DONATE_VALIDATION_RULES = [
     body('amount').isNumeric().withMessage('amount must be a number'),
 ];
 
+const CREATE_EVENT_VALIDATION_RULES = [
+    body('title')
+        .exists()
+        .isString()
+        .isLength()
+        .withMessage('title is required'),
+    body('content')
+        .exists()
+        .isString()
+        .isLength()
+        .withMessage(' content is required'),
+    body('coverImage')
+        .custom((value, { req }) => {
+            if (!req.file) return false;
+            if (
+                req.file.mimetype.split('/')[0] !== 'image' ||
+                req.file.size > MAX_IMAGE_SIZE
+            ) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage('coverImage must be an image less than 10MB'),
+    body('date').exists().isDate().withMessage('date is required'),
+    body('categories')
+        .exists()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    body('address')
+        .exists()
+        .isObject()
+        .custom((address) => {
+            if (!address) return true;
+            return (
+                isString(address.addressLine) &&
+                isString(address.city) &&
+                isString(address.country)
+            );
+        })
+        .withMessage(
+            'address must be an object that contains street, city and country properties which all must be strings'
+        ),
+    body('location')
+        .exists()
+        .isObject()
+        .custom((location) => {
+            if (!location) return true;
+            return location.lat && location.log;
+        })
+        .withMessage(
+            'location must be an object that contains lat and log properties which both must be floats'
+        ),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -360,5 +423,6 @@ module.exports = {
     PUT_EVENT_VALIDATION_RULES,
     VOLUNTEERS_EVENT_VALIDATION_RULES,
     DONATE_VALIDATION_RULES,
+    CREATE_EVENT_VALIDATION_RULES,
     handleValidation,
 };

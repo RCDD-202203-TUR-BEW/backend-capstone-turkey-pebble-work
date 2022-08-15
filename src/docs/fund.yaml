@@ -2,7 +2,7 @@ tags:
   - name: Fund
     description: API to manage funds.
 paths:
-  /api/fund/:id/donate:
+  /api/fund/{id}/donate:
     post:
       tags:
         - Fund
