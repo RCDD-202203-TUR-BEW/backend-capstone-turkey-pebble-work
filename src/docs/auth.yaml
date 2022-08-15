@@ -105,7 +105,7 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/auth/signin: 
+  /api/auth/signin:
     post:
       tags:
         - Auth
@@ -132,7 +132,7 @@ paths:
                   format: password
                   example: 12341234
       responses:
-        400: 
+        400:
           description: This status is returned if the email or password is incorrect.
           content:
             application/json:
@@ -164,7 +164,7 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/auth/verify/:id/:token: 
+  /api/auth/verify/{id}/{token}:
     get:
       tags:
         - Auth
@@ -219,7 +219,7 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/auth/signout: 
+  /api/auth/signout:
     get:
       tags:
         - Auth
@@ -567,8 +567,8 @@ components:
               - Youth
               - Justice
           example: [No Poverty, Zero Hunger]
-  securitySchemes: 
-    auth_cookie: 
+  securitySchemes:
+    auth_cookie:
       type: apiKey
       in: cookie
       name: auth_token

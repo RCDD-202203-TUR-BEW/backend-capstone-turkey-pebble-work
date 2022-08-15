@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
 const express = require('express');
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
@@ -6,12 +8,12 @@ const swaggerUi = require('swagger-ui-express');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
-const eventRouter = require('./routes/events');
 
 const googleauth = require('./routes/google');
 const fundsRouter = require('./routes/funds');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
+const eventsRoutes = require('./routes/events');
 
 const app = express();
 const port = process.env.PORT;
@@ -33,7 +35,7 @@ app.use('/api/googleauth', googleauth);
 app.use(authMiddleware);
 
 app.use('/api/auth', authRouter);
-app.use('/api/event', eventRouter);
+app.use('/api/event', eventsRoutes);
 app.use('/api/fund', fundsRouter);
 
 function ErrorHandler(err, req, res, next) {

@@ -12,6 +12,7 @@ const publicRoutes = [
     /^\/api\/auth\/verify\/(?:([^/]+?))\/(?:([^/]+?))\/?$/i,
     { url: '/api/event/', methods: ['GET'] },
     { url: '/api/fund/', methods: ['GET'] },
+    { url: /^\/api\/event\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: /^\/api\/fund\/(?:([^/]+?))\/donate\/?$/i, methods: ['POST'] },
 ];
 
