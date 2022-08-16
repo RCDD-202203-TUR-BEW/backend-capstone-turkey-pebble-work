@@ -14,6 +14,7 @@ const publicRoutes = [
     { url: /^\/api\/fund\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: '/api/event/', methods: ['GET'] },
     { url: '/api/fund/', methods: ['GET'] },
+    { url: /^\/api\/event\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: /^\/api\/fund\/(?:([^/]+?))\/donate\/?$/i, methods: ['POST'] },
 ];
 
