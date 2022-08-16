@@ -7,7 +7,7 @@ paths:
       tags:
         - Fund
       summary: create a new fund
-      description: create a new fevent
+      description: create a new fund
       consumes:
         - application/json
       produces:
