@@ -14,15 +14,15 @@ const fundSchema = mongoose.Schema(
         },
         categories: {
             type: [
-             {
-                type: String,
-                enum: variables.CATEGORIES,
-                required: true,
-             },
-        ],
-        required: true,
-        default: [variables.CATEGORIES[0]],
-    },
+                {
+                    type: String,
+                    enum: variables.CATEGORIES,
+                    required: true,
+                },
+            ],
+            required: true,
+            default: [variables.CATEGORIES[0]],
+        },
         targetFund: {
             type: Number,
             required: true,
@@ -31,7 +31,7 @@ const fundSchema = mongoose.Schema(
             {
                 donorId: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: 'user',
+                    ref: 'User',
                 },
                 amount: {
                     type: Number,

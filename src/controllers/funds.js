@@ -1,4 +1,5 @@
 const Fund = require("../models/fund")
+const { BaseUser } = require('../models/user')
 
 const createFund = async (req, res) => {
     try {
@@ -16,6 +17,11 @@ const createFund = async (req, res) => {
                 addressLine: address.addressLine
             },
         })
+
+        await BaseUser.findByIdAndUpdate(req.user.id, {
+            $push: { createdFunds: fund.id },
+        });
+        
         res.status(201).json(fund)
     } catch (err) {
         console.log(err)
