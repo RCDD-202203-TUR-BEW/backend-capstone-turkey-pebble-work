@@ -111,7 +111,6 @@ const PROFILE_IMAGE_DIR = 'profileImages';
 const COVER_IMAGE_DIR = 'coverImages';
 const EVENT_IMAGE_DIR = 'eventImages';
 const EMAIL_VERIFY_SUBJECT = 'Verify your email';
-const EVENT_IMAGE_DIR = 'eventImages';
 
 const SWAGGER_OPTIONS = {
     definition: {
