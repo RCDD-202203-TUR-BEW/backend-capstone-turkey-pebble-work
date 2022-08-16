@@ -1,0 +1,176 @@
+const { default: mongoose } = require('mongoose');
+const { Organization, User } = require('../models/user');
+const Fund = require('../models/fund');
+
+async function getOneOrganization(req) {
+    const { id: orgaId } = req.params;
+    const requiredUserFields = [
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'profileImage',
+    ];
+    const requiredFundFields = [
+        'id',
+        'title',
+        'content',
+        'categories',
+        'targetFund',
+        'gatheredFund',
+        'address',
+        'createdAt',
+        'remainingFund',
+    ];
+    const requiredEventFields = [
+        'id',
+        'title',
+        'content',
+        'coverImage',
+        'date',
+        'categories',
+        'confirmedVolunteers',
+        'invitedVolunteers',
+        'address',
+        'location',
+        'createdAt',
+    ];
+
+    const requiredOrgaFields = {
+        id: 1,
+        createdEvents: 1,
+        followers: 1,
+        createdFunds: 1,
+        name: 1,
+        description: 1,
+        coverImage: 1,
+        categories: 1,
+        city: 1,
+        rates: 1,
+        websiteUrl: 1,
+        rate: 1,
+    };
+
+    const organization = await Organization.findById(orgaId, requiredOrgaFields)
+        .populate('followers', requiredUserFields.join(' '))
+        .populate('createdFunds', requiredFundFields.join(' '))
+        .populate({
+            path: 'createdEvents',
+            select: requiredEventFields.join(' '),
+            populate: [
+                {
+                    path: 'confirmedVolunteers',
+                    select: requiredUserFields.join(' '),
+                },
+                {
+                    path: 'invitedVolunteers',
+                    select: requiredUserFields.join(' '),
+                },
+            ],
+        })
+        .populate('rates.userId', requiredUserFields.join(' '));
+
+    return organization;
+}
+
+async function rate(req, res) {
+    try {
+        const { id: orgaId } = req.params;
+        const { id: userId } = req.user;
+        const { rating: newRating } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(400).json({ error: 'Only users can rate' });
+        }
+
+        let existingOrganization = await Organization.findById(orgaId);
+
+        if (!existingOrganization) {
+            return res.status(404).json({ error: 'Organization not found' });
+        }
+
+        // check if the user has already rated the organization before
+        if (
+            existingOrganization.rates.find(
+                (rating) => rating.userId.toString() === userId
+            )
+        ) {
+            existingOrganization = await Organization.findOneAndUpdate(
+                {
+                    _id: orgaId,
+                    'rates.userId': mongoose.Types.ObjectId(userId),
+                },
+                { $set: { 'rates.$.rate': newRating } },
+                { new: true }
+            );
+            // if the user has not rated the organization before, create a new rating
+        } else {
+            existingOrganization.rates.push({
+                userId: mongoose.Types.ObjectId(userId),
+                rate: newRating,
+            });
+        }
+
+        await existingOrganization.save();
+        const updatedOrganization = await getOneOrganization(req);
+
+        return res.status(201).json(updatedOrganization);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function deleteRate(req, res) {
+    try {
+        const { id: orgaId } = req.params;
+        const { id: userId } = req.user;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(400).json({ error: 'Only users can rate' });
+        }
+
+        let existingOrganization = await Organization.findById(orgaId);
+
+        if (!existingOrganization) {
+            return res.status(404).json({ error: 'Organization not found' });
+        }
+
+        // check if the user has already rated the organization before
+        if (
+            existingOrganization.rates.find(
+                (rating) => rating.userId.toString() === userId
+            )
+        ) {
+            existingOrganization = await Organization.findOneAndUpdate(
+                {
+                    _id: orgaId,
+                    'rates.userId': mongoose.Types.ObjectId(userId),
+                },
+                {
+                    $pull: {
+                        rates: { userId: mongoose.Types.ObjectId(userId) },
+                    },
+                },
+                { new: true }
+            );
+        } else {
+            return res.status(404).json({ error: 'Rating not found' });
+        }
+
+        await existingOrganization.save();
+        const updatedOrganization = await getOneOrganization(req);
+
+        return res.status(201).json(updatedOrganization);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+module.exports = {
+    rate,
+    deleteRate,
+};
