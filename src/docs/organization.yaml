@@ -1,11 +1,11 @@
 tags:
     - name: Organization
-      description: API to manage users.
+      description: API to manage organization profile.
 paths:
     /api/organization/:
         put:
             tags:
-                - Users
+                - Organization
             summery: Update an organization profile
             description: Update information of an organization
             operationId: updateOrga

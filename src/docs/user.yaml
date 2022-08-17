@@ -1,11 +1,11 @@
 tags:
-    - name: Users
-      description: API to manage users.
+    - name: User
+      description: API to manage user profile.
 paths:
     /api/user/:
         put:
             tags:
-                - Users
+                - User
             summery: Update a user profile
             description: Update information of a user
             operationId: updateUser
