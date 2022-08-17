@@ -1,6 +1,6 @@
 const express = require('express');
 const Multer = require('multer');
-const userController = require('../controllers/users');
+const userController = require('../controllers/organizations');
 const { MAX_IMAGE_SIZE } = require('../utility/variables');
 
 const multer = Multer({
@@ -10,7 +10,6 @@ const multer = Multer({
     },
 });
 const {
-    PUT_USER_VALIDATION_RULES,
     PUT_ORGANIZATION_VALIDATION_RULES,
     handleValidation,
 } = require('../utility/validation');
@@ -18,14 +17,7 @@ const {
 const router = express.Router();
 
 router.put(
-    '/user',
-    multer.single('profileImage'),
-    PUT_USER_VALIDATION_RULES,
-    handleValidation,
-    userController.updateUserProfile
-);
-router.put(
-    '/organization',
+    '/',
     multer.single('coverImage'),
     PUT_ORGANIZATION_VALIDATION_RULES,
     handleValidation,

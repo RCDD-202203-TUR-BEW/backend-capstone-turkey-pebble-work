@@ -11,6 +11,8 @@ const authRouter = require('./routes/auth');
 
 const googleauth = require('./routes/google');
 const fundsRouter = require('./routes/funds');
+const userRouter = require('./routes/user');
+const organizationRouter = require('./routes/organization');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 const eventsRoutes = require('./routes/events');
@@ -37,6 +39,8 @@ app.use(authMiddleware);
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventsRoutes);
 app.use('/api/fund', fundsRouter);
+app.use('/api/user', userRouter);
+app.use('/api/organization', organizationRouter);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
