@@ -1,6 +1,6 @@
 const express = require('express');
 const Multer = require('multer');
-const userController = require('../controllers/user');
+const userController = require('../controllers/users');
 const { MAX_IMAGE_SIZE } = require('../utility/variables');
 
 const multer = Multer({

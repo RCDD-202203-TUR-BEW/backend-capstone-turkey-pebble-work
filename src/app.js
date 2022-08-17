@@ -11,8 +11,8 @@ const authRouter = require('./routes/auth');
 
 const googleauth = require('./routes/google');
 const fundsRouter = require('./routes/funds');
-const userRouter = require('./routes/user');
-const organizationRouter = require('./routes/organization');
+const userRouter = require('./routes/users');
+const organizationRouter = require('./routes/organizations');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 const eventsRoutes = require('./routes/events');
