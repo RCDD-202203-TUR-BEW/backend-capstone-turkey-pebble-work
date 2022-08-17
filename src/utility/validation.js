@@ -401,6 +401,123 @@ const CREATE_EVENT_VALIDATION_RULES = [
         ),
 ];
 
+const PUT_USER_VALIDATION_RULES = [
+    body('email').optional().isEmail().withMessage('email is required'),
+    body('password')
+        .optional()
+        .isString()
+        .isStrongPassword({
+            min: 8,
+            minLowercase: 0,
+            minUppercase: 0,
+            minNumbers: 0,
+            minSymbols: 0,
+        })
+        .withMessage(
+            'password is required and most be longer than 8 characters'
+        ),
+    body('firstName')
+        .optional()
+        .isString()
+        .withMessage('firstName is required'),
+    body('lastName').optional().isString().withMessage('lastName is required'),
+    body('profileImage')
+        .custom((value, { req }) => {
+            // image is optional
+            if (!req.file) return true;
+            if (
+                req.file.mimetype.split('/')[0] !== 'image' ||
+                req.file.size > variables.MAX_IMAGE_SIZE
+            ) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage('profileImage must be an image less than 10MB'),
+    body('dateOfBirth')
+        .optional()
+        .isDate() // example: '2000-01-01'
+        .withMessage('dateOfBirth is required'),
+    body('preferredCities')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('preferredCities must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (city) => isString(city) && variables.CITIES.includes(city)
+            )
+        )
+        .withMessage('preferredCities must be an array of valid cities'),
+    body('interests')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('interests must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (interest) =>
+                    isString(interest) &&
+                    variables.CATEGORIES.includes(interest)
+            )
+        )
+        .withMessage('interests must be an array of valid interests'),
+];
+
+const PUT_ORGANIZATION_VALIDATION_RULES = [
+    body('email').optional().isEmail().withMessage('email is required'),
+    body('password')
+        .optional()
+        .isString()
+        .isStrongPassword({
+            min: 8,
+            minLowercase: 0,
+            minUppercase: 0,
+            minNumbers: 0,
+            minSymbols: 0,
+        })
+        .withMessage(
+            'password is required and most be longer than 8 characters'
+        ),
+    body('name').optional().exists().isString().withMessage('name is required'),
+    body('description')
+        .optional()
+        .isString()
+        .withMessage('description is required'),
+    body('coverImage')
+        .custom((value, { req }) => {
+            // image is optional
+            if (!req.file) return true;
+            if (
+                req.file.mimetype.split('/')[0] !== 'image' ||
+                req.file.size > variables.MAX_IMAGE_SIZE
+            ) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage('coverImage must be an image less than 10MB'),
+    body('categories')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    body('city')
+        .optional()
+        .isString()
+        .custom((city) => variables.CITIES.includes(city))
+        .withMessage('city is required'),
+    body('websiteUrl')
+        .optional()
+        .isString()
+        .withMessage('websiteUrl is required'),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -424,5 +541,7 @@ module.exports = {
     VOLUNTEERS_EVENT_VALIDATION_RULES,
     DONATE_VALIDATION_RULES,
     CREATE_EVENT_VALIDATION_RULES,
+    PUT_USER_VALIDATION_RULES,
+    PUT_ORGANIZATION_VALIDATION_RULES,
     handleValidation,
 };
