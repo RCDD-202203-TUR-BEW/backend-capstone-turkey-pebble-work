@@ -27,10 +27,12 @@ const validFund2 = {
         addressLine: 'address line 2',
     },
 };
+let fundId;
 
 beforeAll(async () => {
     await connectToMongo();
-    await Funds.create(validFund1);
+    const fund1 = await Funds.create(validFund1);
+    fundId = fund1.id;
     await Funds.create(validFund2);
 });
 
@@ -93,6 +95,38 @@ describe('Get and filter funds', () => {
             .expect(200, (err, res) => {
                 if (err) return done(err);
                 expect(res.body.length).toEqual(0);
+                return done();
+            });
+    });
+});
+
+describe('Get funds by id ', () => {
+    it('GET /api/fund:id should filter funds by id', (done) => {
+        request(app)
+            .get(`/api/fund/${fundId}`)
+            .set('Content-Type', 'application/json')
+            .expect('Content-type', /json/)
+            .expect(200, (err, res) => {
+                if (err) return done(err);
+                expect(res.body.title).toEqual('Fund 1');
+                return done();
+            });
+    });
+    it('GET /api/fund should give error when id not provided correctly', (done) => {
+        request(app)
+            .get('/api/fund/0')
+            .expect('Content-Type', /json/)
+            .expect(422, (err, res) => {
+                if (err) return done(err);
+                return done();
+            });
+    });
+    it('GET /api/fund/ should give an empty array when id not in the database', (done) => {
+        request(app)
+            .get('/api/fund/62bb828a0633870dbec9dc38')
+            .expect('Content-Type', /json/)
+            .expect(404, (err, res) => {
+                if (err) return done(err);
                 return done();
             });
     });

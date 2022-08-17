@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-console */
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const Event = require('../models/event');
@@ -229,8 +231,33 @@ const createEvent = async (req, res) => {
     }
 };
 
+async function getEventById(req, res) {
+    const { id } = req.params;
+    try {
+        const requiredUserField = [
+            'id',
+            'firstName',
+            'lastName',
+            'email',
+            'profileImage',
+        ];
+        const event = await Event.findById(id)
+            .populate('publisherId', requiredUserField.join(' '))
+            .populate('confirmedVolunteers', requiredUserField.join(' '))
+            .populate('invitedVolunteers', requiredUserField.join(' '));
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+        return res.status(200).json(event);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
     getEvents,
+    getEventById,
     deleteEvent,
     updateEvent,
     joinedVolunteers,
