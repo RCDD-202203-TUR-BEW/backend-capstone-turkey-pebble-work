@@ -1,24 +1,65 @@
 const { Organization } = require('../models/user');
 
 async function getOrgProfile(req, res) {
-    const requiredEventField = [
-        'publisherId',
+    const requiredEventFields = [
+        'id',
         'title',
+        'content',
         'coverImage',
+        'date',
         'categories',
+        'confirmedVolunteers',
+        'invitedVolunteers',
+        'address',
+        'location',
+        'createdAt',
     ];
-    const requiredFundField = ['publisherId', 'title', 'categories'];
-    const requiredUserField = ['firstName', 'lastName', 'profileImage'];
+    const requiredFundFields = [
+        'id',
+        'title',
+        'content',
+        'categories',
+        'targetFund',
+        'gatheredFund',
+        'address',
+        'createdAt',
+        'remainingFund',
+    ];
+    const requiredUserFields = [
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'profileImage',
+    ];
+
+    const notIncludeField = { hashedPassword: 0, provider: 0 };
     try {
         const org = await Organization.findById(req.params.id);
         if (!org) {
             return res.status(404).json({ message: 'Page not found' });
         }
-        const getOrg = await Organization.findOne({ _id: req.params.id })
-            .populate('createdEvents', requiredEventField.join(' '))
-            .populate('followers', requiredUserField.join(' '))
-            .populate('createdFunds', requiredFundField.join(' '))
-            .populate('rates', requiredUserField.join(' '));
+        const getOrg = await Organization.findOne(
+            { _id: req.params.id },
+            notIncludeField
+        )
+            .populate({
+                path: 'createdEvents',
+                select: requiredEventFields.join(' '),
+                populate: [
+                    {
+                        path: 'confirmedVolunteers',
+                        select: requiredUserFields.join(' '),
+                    },
+                    {
+                        path: 'invitedVolunteers',
+                        select: requiredUserFields.join(' '),
+                    },
+                ],
+            })
+            .populate('followers', requiredUserFields.join(' '))
+            .populate('createdFunds', requiredFundFields.join(' '))
+            .populate('rates.userId', requiredUserFields.join(' '));
 
         return res.status(200).json(getOrg);
     } catch (error) {

@@ -2,10 +2,17 @@ const { User } = require('../models/user');
 
 async function getUserProfile(req, res) {
     const requiredEventField = [
-        'publisherId',
+        'id',
         'title',
+        'content',
         'coverImage',
+        'date',
         'categories',
+        'confirmedVolunteers',
+        'invitedVolunteers',
+        'address',
+        'location',
+        'createdAt',
     ];
     const requiredFundField = ['publisherId', 'title', 'categories'];
     const requiredUserField = [
