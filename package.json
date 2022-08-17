@@ -11,12 +11,11 @@
     "scripts": {
         "start": "export NODE_ENV=dev && nodemon src/app.js",
         "start_prod": "export NODE_ENV=production && nodemon src/app.js",
-        "test": "export NODE_ENV=test && jest --passWithNoTests --forceExit",
+        "test": "export NODE_ENV=test && jest --passWithNoTests --forceExit --runInBand",
         "lint": "eslint --ignore-path .gitignore .",
         "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
         "validate": "yarn format && yarn lint",
-        "validate-staged": "lint-staged",
-        "postinstall": "husky install && husky add .husky/pre-commit \"yarn validate\" && husky add .husky/pre-push \"yarn test\""
+        "validate-staged": "lint-staged"
     },
     "dependencies": {
         "@google-cloud/storage": "^6.2.3",
@@ -39,6 +38,7 @@
         "moment": "^2.29.4",
         "mongodb": "^4.8.0",
         "mongoose": "^6.4.6",
+        "monkeypatch": "^1.0.0",
         "morgan": "^1.10.0",
         "multer": "^1.4.5-lts.1",
         "nodemailer": "^6.7.7",

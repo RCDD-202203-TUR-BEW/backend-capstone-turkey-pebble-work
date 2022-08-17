@@ -1,7 +1,8 @@
 const express = require('express');
 const Multer = require('multer');
-
 const authController = require('../controllers/auth');
+const { passport } = require('../config/passport');
+
 const {
     ORGANIZATION_SIGNUP_VALIDATION_RULES,
     USER_SIGNUP_VALIDATION_RULES,
@@ -63,7 +64,18 @@ APIs.forEach((api) => {
         api.controller
     );
 });
+router.get(
+    '/google',
+    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
+);
 
-router.get('/signout', authController.signOut);
+router.get(
+    '/google/callback',
+    passport.authenticate('google', {
+        failureRedirect: '/api/auth/google',
+        session: false,
+    }),
+    authController.saveGoogleUser
+);
 
 module.exports = router;

@@ -15,5 +15,4 @@ const connectToMongo = () => {
             console.log('Database connection error: ', err);
         });
 };
-
 module.exports = connectToMongo;

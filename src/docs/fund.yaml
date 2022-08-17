@@ -328,6 +328,21 @@ components:
     newFund:
       type: object
       properties:
+        id:
+          type: string
+          example: 62e980586aca79a3936917e6
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: mail@example.com
+        profileImage:
+          type: string
+          example: https://www.example.com/image.jpg
         targetFund:
           type: integer
         content:

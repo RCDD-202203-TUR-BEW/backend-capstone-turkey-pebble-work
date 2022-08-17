@@ -100,7 +100,7 @@ const user = mongoose.Schema({
     },
     dateOfBirth: {
         type: String,
-        required: true,
+        required: false,
     },
     preferredCities: {
         type: [
@@ -125,8 +125,9 @@ const user = mongoose.Schema({
     gender: {
         type: String,
         enum: ['male', 'female', 'other'],
-        required: true,
+        required: false,
     },
+    // Events the user has participated in or will participate in.
     followedEvents: {
         type: [
             {
@@ -137,6 +138,7 @@ const user = mongoose.Schema({
         ],
         default: [],
     },
+    // funds where a user is a donor for.
     followedFunds: {
         type: [
             {

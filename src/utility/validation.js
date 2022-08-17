@@ -1,9 +1,58 @@
+/* eslint-disable arrow-body-style */
 const { validationResult, param, body, query } = require('express-validator');
 const { isString, parseInt } = require('lodash');
 const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
-
 const { MAX_IMAGE_SIZE } = require('./variables');
+
+const GET_EVENT_ID_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .withMessage('Event id is required')
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('Event id must be a valid ObjectId'),
+];
+
+const VERIFY_VALIDATION_FUND = [
+    query('publisherId')
+        .optional()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value)),
+    query('categories')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    query('lastDate')
+        .optional()
+        .isDate() // example: '2000-01-01'
+        .withMessage('Enter a valid date'),
+    query('currentDate')
+        .optional()
+        .isDate() // example: '2000-01-01'
+        .withMessage('Enter a valid date')
+        .custom((currentDte, { req }) => {
+            const currentDate = new Date(currentDte);
+            const lastDate = new Date(req.body.lastDate);
+            return currentDate > lastDate;
+        })
+        .withMessage('Current date must be after last date'),
+];
+const VERIFY_VALIDATION_FUNDSBYID = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
 
 const BASE_USER_VALIDATION_RULES = [
     body('email').exists().isEmail().withMessage('email is required'),
@@ -32,7 +81,7 @@ const USER_SIGNUP_VALIDATION_RULES = [
             if (!req.file) return true;
             if (
                 req.file.mimetype.split('/')[0] !== 'image' ||
-                req.file.size > MAX_IMAGE_SIZE
+                req.file.size > variables.MAX_IMAGE_SIZE
             ) {
                 return false;
             }
@@ -85,7 +134,7 @@ const ORGANIZATION_SIGNUP_VALIDATION_RULES = [
             if (!req.file) return true;
             if (
                 req.file.mimetype.split('/')[0] !== 'image' ||
-                req.file.size > MAX_IMAGE_SIZE
+                req.file.size > variables.MAX_IMAGE_SIZE
             ) {
                 return false;
             }
@@ -95,7 +144,7 @@ const ORGANIZATION_SIGNUP_VALIDATION_RULES = [
     body('categories')
         .optional()
         .isArray({ min: 1 })
-        .withMessage('interests must be an unempty array')
+        .withMessage('categories must be an unempty array')
         .custom((array) =>
             array.every(
                 (category) =>
@@ -103,7 +152,7 @@ const ORGANIZATION_SIGNUP_VALIDATION_RULES = [
                     variables.CATEGORIES.includes(category)
             )
         )
-        .withMessage('interests must be an array of valid interests'),
+        .withMessage('categories must be an array of valid categories'),
     body('city')
         .exists()
         .isString()
@@ -191,9 +240,187 @@ const GET_EVENTS_VALIDATION_RULES = [
         .withMessage('publisherId must be a valid id'),
 ];
 
+const DELETE_EVENT_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
+
+const PUT_EVENT_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+    body('title').optional().isString().withMessage('title must be a string'),
+    body('content')
+        .optional()
+        .isString()
+        .withMessage('content must be a string'),
+    body('coverImage')
+        .custom((value, { req }) => {
+            // image is optional
+            if (!req.file) return true;
+            if (
+                req.file.mimetype.split('/')[0] !== 'image' ||
+                req.file.size > variables.MAX_IMAGE_SIZE
+            ) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage('coverImage must be an image less than 10MB'),
+    body('date').optional().isDate().withMessage('date is required'),
+    body('categories')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    body('confirmedVolunteers')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('confirmedVolunteers must be an unempty array')
+        .bail()
+        .custom((array) =>
+            array.every(
+                (id) => isString(id) && mongoose.Types.ObjectId.isValid(id)
+            )
+        )
+        .withMessage('confirmedVolunteers must be an array of valid ids'),
+    body('invitedVolunteers')
+        .optional()
+        .isArray({ min: 1 })
+        .custom((array) =>
+            array.every(
+                (id) => isString(id) && mongoose.Types.ObjectId.isValid(id)
+            )
+        )
+        .withMessage('invitedVolunteers must be an array of valid ids'),
+    body('address')
+        .optional()
+        .isObject()
+        .custom((address) => {
+            if (!address) return true;
+            return (
+                isString(address.addressLine) &&
+                isString(address.city) &&
+                isString(address.country)
+            );
+        })
+        .withMessage(
+            'address must be an object that contains street, city and country properties which all must be strings'
+        ),
+    body('location')
+        .optional()
+        .isObject()
+        .custom((location) => {
+            if (!location) return true;
+            return isString(location.lat) && isString(location.log);
+        })
+        .withMessage(
+            'location must be an object that contains lat and log properties which both must be floats'
+        ),
+];
+
+const VOLUNTEERS_EVENT_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
+
+const DONATE_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+    body('amount').isNumeric().withMessage('amount must be a number'),
+];
+
+const CREATE_EVENT_VALIDATION_RULES = [
+    body('title')
+        .exists()
+        .isString()
+        .isLength()
+        .withMessage('title is required'),
+    body('content')
+        .exists()
+        .isString()
+        .isLength()
+        .withMessage(' content is required'),
+    body('coverImage')
+        .custom((value, { req }) => {
+            if (!req.file) return false;
+            if (
+                req.file.mimetype.split('/')[0] !== 'image' ||
+                req.file.size > MAX_IMAGE_SIZE
+            ) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage('coverImage must be an image less than 10MB'),
+    body('date').exists().isDate().withMessage('date is required'),
+    body('categories')
+        .exists()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    body('address')
+        .exists()
+        .isObject()
+        .custom((address) => {
+            if (!address) return true;
+            return (
+                isString(address.addressLine) &&
+                isString(address.city) &&
+                isString(address.country)
+            );
+        })
+        .withMessage(
+            'address must be an object that contains street, city and country properties which all must be strings'
+        ),
+    body('location')
+        .exists()
+        .isObject()
+        .custom((location) => {
+            if (!location) return true;
+            return location.lat && location.log;
+        })
+        .withMessage(
+            'location must be an object that contains lat and log properties which both must be floats'
+        ),
+];
+
 const CREATE_FUND_VALIDATION_RULES = [
-    body('title').exists().isString().isLength().withMessage('title is required'),
-    body('content').exists().isString().isLength().withMessage('content is required'),
+    body('title')
+        .exists()
+        .isString()
+        .isLength()
+        .withMessage('title is required'),
+    body('content')
+        .exists()
+        .isString()
+        .isLength()
+        .withMessage('content is required'),
     body('targetFund').exists().isInt().withMessage('targetFund is required'),
     body('categories')
         .exists()
@@ -233,11 +460,19 @@ const handleValidation = (req, res, next) => {
 };
 
 module.exports = {
+    VERIFY_VALIDATION_FUND,
+    VERIFY_VALIDATION_FUNDSBYID,
     USER_SIGNUP_VALIDATION_RULES,
     ORGANIZATION_SIGNUP_VALIDATION_RULES,
     VERIFY_VALIDATION_RULES,
     SIGNIN_VALIDATION_RULES,
     GET_EVENTS_VALIDATION_RULES,
+    GET_EVENT_ID_VALIDATION_RULES,
+    DELETE_EVENT_VALIDATION_RULES,
+    PUT_EVENT_VALIDATION_RULES,
+    VOLUNTEERS_EVENT_VALIDATION_RULES,
+    DONATE_VALIDATION_RULES,
+    CREATE_EVENT_VALIDATION_RULES,
     CREATE_FUND_VALIDATION_RULES,
     handleValidation,
 };
