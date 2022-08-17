@@ -194,7 +194,6 @@ const GET_EVENTS_VALIDATION_RULES = [
 const CREATE_FUND_VALIDATION_RULES = [
     body('title').exists().isString().isLength().withMessage('title is required'),
     body('content').exists().isString().isLength().withMessage('content is required'),
-    body('deadline').exists().isDate().withMessage('deadline is required'),
     body('targetFund').exists().isInt().withMessage('targetFund is required'),
     body('categories')
         .exists()

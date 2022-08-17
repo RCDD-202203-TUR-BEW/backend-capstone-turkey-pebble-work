@@ -3,12 +3,11 @@ const { BaseUser } = require('../models/user')
 
 const createFund = async (req, res) => {
     try {
-        const { title, content, deadline, targetFund, categories, address } = req.body
+        const { title, content, targetFund, categories, address } = req.body
         const fund = await Fund.create({
             publisherId: req.user.id,
             title: title,
             content: content,
-            deadline: deadline,
             targetFund: targetFund,
             categories: categories,
             address: {

@@ -224,7 +224,7 @@ paths:
                       type: string
                       example: "Invalid Token: No authorization token was found"
 components:
-  schema:
+  schemas:
     ShortUser:
       properties:
         _id:
@@ -316,14 +316,14 @@ components:
               - Peace
               - Youth
               - Justice
-        adress:
+        address:
           type: object
           properties:
             city:
               type: string
             country:
-              type: integer
-            adressLine:
+              type: string
+            addressLine:
               type: string
     newFund:
       type: object
@@ -359,14 +359,14 @@ components:
               - Peace
               - Youth
               - Justice
-        adress:
+        address:
           type: object
           properties:
             city:
               type: string
             country:
-              type: integer
-            adressLine:
+              type: string
+            addressLine:
               type: string              
   securitySchemes: 
     auth_cookie: 
