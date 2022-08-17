@@ -7,6 +7,7 @@ const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/users');
+const organizationRouter = require('./routes/organizations');
 const eventRouter = require('./routes/events');
 
 const googleauth = require('./routes/google');
@@ -34,7 +35,8 @@ app.use('/api/googleauth', googleauth);
 app.use(authMiddleware);
 
 app.use('/api/auth', authRouter);
-app.use('/api', userRouter);
+app.use('/api/user', userRouter);
+app.use('/api/organization', organizationRouter);
 app.use('/api/event', eventRouter);
 app.use('/api/fund', fundsRouter);
 
