@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable arrow-body-style */
 const { validationResult, param, body, query } = require('express-validator');
 const { isString, parseInt } = require('lodash');
@@ -414,12 +415,10 @@ const CREATE_FUND_VALIDATION_RULES = [
     body('title')
         .exists()
         .isString()
-        .isLength()
         .withMessage('title is required'),
     body('content')
         .exists()
         .isString()
-        .isLength()
         .withMessage('content is required'),
     body('targetFund').exists().isInt().withMessage('targetFund is required'),
     body('categories')
