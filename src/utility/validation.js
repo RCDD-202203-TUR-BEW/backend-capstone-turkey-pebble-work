@@ -412,14 +412,8 @@ const CREATE_EVENT_VALIDATION_RULES = [
 ];
 
 const CREATE_FUND_VALIDATION_RULES = [
-    body('title')
-        .exists()
-        .isString()
-        .withMessage('title is required'),
-    body('content')
-        .exists()
-        .isString()
-        .withMessage('content is required'),
+    body('title').exists().isString().withMessage('title is required'),
+    body('content').exists().isString().withMessage('content is required'),
     body('targetFund').exists().isInt().withMessage('targetFund is required'),
     body('categories')
         .exists()
