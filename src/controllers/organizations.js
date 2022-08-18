@@ -33,7 +33,7 @@ async function getOrgProfile(req, res) {
         'profileImage',
     ];
 
-    const notIncludeField = { hashedPassword: 0, provider: 0 };
+    const excludeFields = { hashedPassword: 0, provider: 0, isVerified: 0 };
     try {
         const org = await Organization.findById(req.params.id);
         if (!org) {
@@ -41,7 +41,7 @@ async function getOrgProfile(req, res) {
         }
         const getOrg = await Organization.findOne(
             { _id: req.params.id },
-            notIncludeField
+            excludeFields
         )
             .populate({
                 path: 'createdEvents',

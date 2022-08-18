@@ -15,7 +15,8 @@ async function getUserProfile(req, res) {
         'createdAt',
     ];
     const requiredFundField = ['publisherId', 'title', 'categories'];
-    const requiredUserField = [
+    const requiredUserFields = [
+        'id',
         'firstName',
         'lastName',
         'email',
@@ -23,12 +24,36 @@ async function getUserProfile(req, res) {
     ];
     try {
         const getUser = await User.findOne({ _id: req.user.id })
-            .populate('createdEvents', requiredEventField.join(' '))
-            .populate('followers', requiredUserField.join(' '))
-            .populate('createdFunds', requiredFundField.join(' '))
-            .populate('followedEvents', requiredEventField.join(' '))
-            .populate('followedFunds', requiredFundField.join(' '))
-            .populate('followedUsers', requiredUserField.join(' '))
+            .populate({
+                path: 'createdEvents',
+                populate: [
+                    {
+                        path: 'confirmedVolunteers',
+                        select: requiredUserFields.join(' '),
+                    },
+                    {
+                        path: 'invitedVolunteers',
+                        select: requiredUserFields.join(' '),
+                    },
+                ],
+            })
+            .populate('followers', requiredUserFields.join(' '))
+            .populate('createdFunds')
+            .populate({
+                path: 'followedEvents',
+                populate: [
+                    {
+                        path: 'confirmedVolunteers',
+                        // select: requiredUserFields.join(' '),
+                    },
+                    {
+                        path: 'invitedVolunteers',
+                        select: requiredUserFields.join(' '),
+                    },
+                ],
+            })
+            .populate('followedFunds')
+            .populate('followedUsers', requiredUserFields.join(' '))
             .populate('followedOrganizations');
         if (!getUser) {
             return res.status(404).json({ message: 'Page not found' });
