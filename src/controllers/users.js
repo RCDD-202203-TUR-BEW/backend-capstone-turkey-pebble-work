@@ -45,7 +45,7 @@ async function updateUserProfile(req, res) {
             updateUser.profileImage = imgUrl;
         }
         await updateUser.save();
-        return res.status(204).json(updateUser);
+        return res.status(200).json(updateUser);
     } catch (error) {
         return res.status(500).json({ error: 'Internal server error' });
     }

@@ -47,7 +47,7 @@ async function updateOrgProfile(req, res) {
             updateOrga.coverImage = imgUrl;
         }
         await updateOrga.save();
-        return res.status(204).json(updateOrga);
+        return res.status(200).json(updateOrga);
     } catch (error) {
         return res.status(500).json({ error: 'Internal server error' });
     }
