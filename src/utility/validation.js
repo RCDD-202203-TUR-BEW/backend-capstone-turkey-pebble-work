@@ -318,6 +318,13 @@ const PUT_EVENT_VALIDATION_RULES = [
             'location must be an object that contains lat and log properties which both must be floats'
         ),
 ];
+const POST_EVENT_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
 
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
@@ -339,5 +346,6 @@ module.exports = {
     GET_EVENTS_VALIDATION_RULES,
     DELETE_EVENT_VALIDATION_RULES,
     PUT_EVENT_VALIDATION_RULES,
+    POST_EVENT_VALIDATION_RULES,
     handleValidation,
 };

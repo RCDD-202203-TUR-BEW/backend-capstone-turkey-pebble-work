@@ -151,8 +151,37 @@ async function updateEvent(req, res) {
     }
 }
 
+async function inviteVolunteer(req, res) {
+    const { id: eventId } = req.params;
+    const filter = {};
+    try {
+        const event = await Event.findById(eventId);
+        console.log(event.categories);
+        filter.interests = { $in: event.categories };
+        const userToInvite = await User.find(filter);
+        const arr = [];
+        userToInvite.forEach(async (item) => {
+            // this array was created for the sake of testing only! lol I will remove it after the review
+            arr.push(item.email);
+            await sendEmail(
+                item.email,
+                'Event Invetation', // subject
+                `${event.title} is an event that you may be interested in attending.` // text
+            );
+        });
+
+        console.log(arr);
+
+        return res.status(200).json(userToInvite);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
     getEvents,
     deleteEvent,
     updateEvent,
+    inviteVolunteer,
 };
