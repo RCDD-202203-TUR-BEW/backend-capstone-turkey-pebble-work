@@ -4,7 +4,6 @@ const Multer = require('multer');
 const { MAX_IMAGE_SIZE } = require('../utility/variables');
 
 const {
-    POST_EVENT_VALIDATION_RULES,
     GET_EVENTS_VALIDATION_RULES,
     GET_EVENT_ID_VALIDATION_RULES,
     DELETE_EVENT_VALIDATION_RULES,
@@ -59,7 +58,7 @@ router.put(
 
 router.post(
     '/:id/invite-volunteer',
-    POST_EVENT_VALIDATION_RULES,
+    VOLUNTEERS_EVENT_VALIDATION_RULES,
     handleValidation,
     autherizationMiddleware(EventModel),
     eventsController.inviteVolunteer
