@@ -2,6 +2,56 @@ tags:
     - name: Users
       description: API to manage users.
 paths:
+    /api/user/:id:
+        get:
+            tags:
+             - Users
+             summery: Show a user profile
+            description: show information of a user
+            operationId: getUser
+            consumes:
+                - multipart/form-data
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                      example: 5e9f8f8f8f8f8f8f8f8f8f8
+            responses:
+                200:
+                    description: The user Profile.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FullUser'
+                404:
+                    description: User not found  or has an invalid value
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                                properties:
+                                    error:
+                                     type: string
+                                     example: Page not found   
+                401:
+                    description: User is not signed in.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                500:
+                    description: Internal server error
     /api/user/:
         put:
             tags:
@@ -129,7 +179,7 @@ paths:
                     description: Internal server error
 components:
     schemas:
-        UpdatedUser:
+        FullUser:
             type: object
             properties:
                 email:
