@@ -1,10 +1,10 @@
-/* eslint-disable consistent-return */
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const Funds = require('../models/fund');
+const { BaseUser } = require('../models/user');
+const { sendEmail } = require('../utility/mail');
 
-async function getOneFund(req, res) {
-    const { id: eventId } = req.params;
-    const filter = {};
+async function getSingleFund(req, res) {
     try {
         const id = mongoose.Types.ObjectId(req.params.id);
         const requiredUserField = [
@@ -40,10 +40,10 @@ async function getFunds(req, res) {
             'email',
             'profileImage',
         ];
-        const { category, publisherId, lastDate, currentDate } = req.query;
+        const { categories, publisherId, lastDate, currentDate } = req.query;
         const filter = {};
-        if (category) {
-            filter.category = { $in: category };
+        if (categories) {
+            filter.categories = { $in: categories };
         }
         if (publisherId) {
             filter.publisherId = mongoose.Types.ObjectId(publisherId);
@@ -55,13 +55,86 @@ async function getFunds(req, res) {
             'publisherId',
             requiredUserField.join(' ')
         );
-        res.status(200).json(filteredItem);
+        return res.status(200).json(filteredItem);
     } catch (err) {
+        console.log(err);
         return res.sendStatus(500);
+    }
+}
+async function deleteFund(req, res) {
+    try {
+        const { id } = req.params;
+        const fund = await Funds.findById(id).populate('donations.donorId');
+        await fund.donations.forEach(async (donation) => {
+            if (donation.donerId) {
+                donation.donorId.followedFunds.pull(id);
+                await donation.donorId.save();
+                await sendEmail(
+                    donation.donorId.email,
+                    'Fund deleted',
+                    `Your money will be sent back within 24 hours.`
+                );
+            }
+        });
+
+        await BaseUser.findByIdAndUpdate(req.user.id, {
+            $pull: {
+                createdFunds: id,
+            },
+        });
+        await Funds.findByIdAndDelete(id);
+
+        return res.status(204).json({ message: 'Fund deleted' });
+    } catch (err) {
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function donate(req, res) {
+    const token = req.signedCookies.auth_token;
+    try {
+        let user;
+        if (token) {
+            user = jwt.verify(token, process.env.SECRET_KEY);
+        }
+        const { id } = req.params;
+        const { amount } = req.body;
+        const existingFund = await Funds.findById(id);
+
+        if (!existingFund) {
+            return res.status(404).json({ message: 'Fund not found' });
+        }
+
+        const donationObj = {
+            amount,
+        };
+
+        if (user) {
+            donationObj.donorId = mongoose.Types.ObjectId(user.id);
+        }
+
+        await Funds.findByIdAndUpdate(id, {
+            $push: {
+                donations: donationObj,
+            },
+        });
+
+        return res.status(201).json({ message: 'Donation successful' });
+    } catch (err) {
+        console.log(err);
+        if (err.name === 'UnauthorizedError') {
+            return res.status(401).json({
+                error: true,
+                message: `Invalid Token: ${err.message}`,
+            });
+        }
+        return res.status(500).json({ message: 'Internal server error' });
     }
 }
 
 module.exports = {
     getFunds,
-    getOneFund,
+    getSingleFund,
+    deleteFund,
+    donate,
 };

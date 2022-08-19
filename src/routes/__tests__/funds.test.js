@@ -40,6 +40,7 @@ afterAll(async () => {
     await Funds.deleteMany({});
 });
 
+jest.setTimeout(10000);
 describe('Get and filter funds', () => {
     it('GET /api/fund/ should get all funds', async () => {
         const res = await request(app)
@@ -101,7 +102,6 @@ describe('Get and filter funds', () => {
 
 describe('Get funds by id ', () => {
     it('GET /api/fund:id should filter funds by id', (done) => {
-        // this test case doesn't work! thank you in advance : D
         request(app)
             .get(`/api/fund/${fundId}`)
             .set('Content-Type', 'application/json')

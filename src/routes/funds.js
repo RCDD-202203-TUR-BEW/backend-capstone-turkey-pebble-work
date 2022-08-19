@@ -1,7 +1,10 @@
 const express = require('express');
+const FundModel = require('../models/fund');
+const { autherizationMiddleware } = require('../middleware');
 const {
     VERIFY_VALIDATION_FUND,
     VERIFY_VALIDATION_FUNDSBYID,
+    DONATE_VALIDATION_RULES,
     handleValidation,
 } = require('../utility/validation');
 
@@ -19,7 +22,20 @@ router.get(
     '/:id',
     VERIFY_VALIDATION_FUNDSBYID,
     handleValidation,
-    fundsController.getOneFund
+    fundsController.getSingleFund
+);
+router.delete(
+    '/:id',
+    VERIFY_VALIDATION_FUNDSBYID,
+    handleValidation,
+    autherizationMiddleware(FundModel),
+    fundsController.deleteFund
+);
+router.post(
+    '/:id/donate',
+    DONATE_VALIDATION_RULES,
+    handleValidation,
+    fundsController.donate
 );
 
 module.exports = router;

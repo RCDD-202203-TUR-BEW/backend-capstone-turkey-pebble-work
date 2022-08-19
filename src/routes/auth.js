@@ -78,6 +78,4 @@ router.get(
     authController.saveGoogleUser
 );
 
-router.get('/signout', authController.signOut);
-
 module.exports = router;

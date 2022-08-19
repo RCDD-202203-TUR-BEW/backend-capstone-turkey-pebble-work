@@ -1,12 +1,16 @@
 const express = require('express');
+
 const Multer = require('multer');
 const { MAX_IMAGE_SIZE } = require('../utility/variables');
 
 const {
     POST_EVENT_VALIDATION_RULES,
     GET_EVENTS_VALIDATION_RULES,
+    GET_EVENT_ID_VALIDATION_RULES,
     DELETE_EVENT_VALIDATION_RULES,
     PUT_EVENT_VALIDATION_RULES,
+    VOLUNTEERS_EVENT_VALIDATION_RULES,
+    CREATE_EVENT_VALIDATION_RULES,
     handleValidation,
 } = require('../utility/validation');
 
@@ -27,6 +31,13 @@ router.get(
     GET_EVENTS_VALIDATION_RULES,
     handleValidation,
     eventsController.getEvents
+);
+
+router.get(
+    '/:id',
+    GET_EVENT_ID_VALIDATION_RULES,
+    handleValidation,
+    eventsController.getEventById
 );
 
 router.delete(
@@ -52,6 +63,20 @@ router.post(
     handleValidation,
     autherizationMiddleware(EventModel),
     eventsController.inviteVolunteer
+);
+router.post(
+    '/:id/volunteers',
+    VOLUNTEERS_EVENT_VALIDATION_RULES,
+    handleValidation,
+    eventsController.joinedVolunteers
+);
+
+router.post(
+    '/',
+    multer.single('coverImage'),
+    CREATE_EVENT_VALIDATION_RULES,
+    handleValidation,
+    eventsController.createEvent
 );
 
 module.exports = router;

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const request = require('supertest');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
@@ -99,7 +100,7 @@ describe('DELETE /api/event/:id', () => {
             content: 'new content 1',
             coverImage: 'coverImage 1',
             date: '2023-01-01',
-            category: 'No Poverty',
+            categories: ['No Poverty'],
             confirmedVolunteers: [
                 mongoose.Types.ObjectId(dummyUsers[0].id),
                 mongoose.Types.ObjectId(dummyUsers[1].id),
@@ -121,7 +122,7 @@ describe('DELETE /api/event/:id', () => {
             content: 'new content 2',
             coverImage: 'coverImage 2',
             date: '2023-01-01',
-            category: 'No Poverty',
+            categories: ['No Poverty'],
             confirmedVolunteers: [
                 mongoose.Types.ObjectId(dummyUsers[0].id),
                 mongoose.Types.ObjectId(dummyUsers[1].id),
@@ -398,5 +399,192 @@ describe('PUT /api/event/:id', () => {
             .put(`/api/event/${dummyEvent.id}`)
             .set('Cookie', jwtToken);
         expect(response.status).toBe(403);
+    });
+});
+
+describe('POST /api/event/:id/volunteers', () => {
+    jest.setTimeout(30000);
+
+    let jwtToken;
+    let dummyEvent;
+    let dummyUser;
+
+    async function createDummyData() {
+        // create new user and get jwt token
+        const validUser = {
+            email: 'test@gmail.com',
+            password: '12345678',
+            firstName: 'Nur',
+            lastName: 'Sh',
+            dateOfBirth: '2000-01-01',
+            gender: 'male',
+            interests: ['No Poverty', 'Zero Hunger'],
+            preferredCities: ['Adana', 'Kocaeli'],
+        };
+        const res = await request(app)
+            .post('/api/auth/user/signup')
+            .field(validUser)
+            .attach('profileImage', TEST_IMAGE_PATH);
+        [jwtToken] = res.headers['set-cookie'][0].split(';');
+
+        dummyUser = await User.findOne({ email: validUser.email });
+
+        // create dummy event
+        await Event.create({
+            publisherId: dummyUser.id,
+            title: 'title',
+            content: 'new content',
+            coverImage: 'coverImage',
+            date: '2022-01-01',
+            category: 'No Poverty',
+            confirmedVolunteers: [],
+            address: {
+                city: 'Bursa',
+                country: 'Turkey',
+                addressLine: 'addressLine',
+            },
+            location: {
+                lat: 1,
+                log: 1,
+            },
+        });
+        dummyEvent = await Event.findOne({ puplisherId: dummyUser.id });
+    }
+    beforeAll(async () => {
+        await connectToMongo();
+        await createDummyData();
+    });
+
+    afterAll(async () => {
+        await Event.deleteMany({});
+        await User.deleteMany({});
+    });
+
+    it('Should reture 201 status when joined successfully', async () => {
+        const res = await request(app)
+            .post(`/api/event/${dummyEvent.id}/volunteers`)
+            .set('Content-Type', 'application/json')
+            .set('Cookie', [jwtToken]);
+
+        const UpdatedDummyEvent = await Event.findOne({
+            puplisherId: dummyUser.id,
+        });
+        expect(res.status).toBe(201);
+        expect(res.body.message).toBe('Joined Successfully');
+        expect(UpdatedDummyEvent.confirmedVolunteers[0].toString()).toBe(
+            dummyUser.id
+        );
+    });
+
+    it('Should reture 401 status when user not authorized', async () => {
+        await request(app)
+            .post(`/event/${dummyEvent.id}/volunteers`)
+            .set('Content-Type', 'application/json')
+            .then((response) => {
+                expect(response.status).toBe(401);
+            });
+    });
+
+    it('Should reture 404 status when id not found', async () => {
+        const wrongId = '62e980586aca79a3936917ef';
+        await request(app)
+            .post(`/api/event/${wrongId}/volunteers`)
+            .set('Content-Type', 'application/json')
+            .set('Cookie', [jwtToken])
+            .then((response) => {
+                expect(response.status).toBe(404);
+                expect(response.body.message).toBe('Event not found');
+            });
+    });
+
+    it('Should reture 400 status when user already joined the event', async () => {
+        await request(app)
+            .post(`/api/event/${dummyEvent.id}/volunteers`)
+            .set('Content-Type', 'application/json')
+            .set('Cookie', [jwtToken])
+            .then((response) => {
+                expect(response.status).toBe(400);
+                expect(response.body.message).toBe('User already joined');
+            });
+    });
+});
+
+describe('Fetching events by id', () => {
+    const validEvent = {
+        id: '1a34',
+        publisherId: '667',
+        title: 'Event 1',
+        content: 'Event 1 content',
+        coverImage:
+            'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+        date: '2022-01-01',
+        categories: ['No Poverty', 'Zero Hunger'],
+        address: {
+            city: 'Adana',
+            country: 'Turkey',
+            addressLine: 'X mah, Adana, Turkey',
+        },
+        confirmedVolunteers: ['12dg4', '12dg5'],
+        invitedVolunteers: ['12dg4', '12dg5', '12dg6'],
+        location: {
+            lat: 34.12,
+            log: 34.16,
+        },
+    };
+
+    beforeAll(async () => {
+        await connectToMongo();
+    });
+
+    afterAll(async () => {
+        await Event.deleteMany({});
+    });
+
+    jest.setTimeout(10000);
+
+    it('GET /api/event/:id should fetch event by id and populate', async () => {
+        request(app)
+            .get('/api/event/:id')
+            .expect('Content-Type', /json/)
+            .expect(200, (err, res) => {
+                if (err) return err;
+                expect(res.body).toBeDefined();
+                expect(res.body.id.toString()).toBe(
+                    validEvent[0].id.toString()
+                );
+                expect(res.body.publisherId.toString()).toBeDefined();
+                expect(res.body.publisherId.toString()).toBe(
+                    validEvent[0].publisherId.toString()
+                );
+                expect(res.body.confirmedVolunteers).toBeDefined();
+                expect(res.body.confirmedVolunteers).toEqual(
+                    validEvent[0].confirmedVolunteers
+                );
+                expect(res.body.invitedVolunteers).toBeDefined();
+                expect(res.body.invitedVolunteers).toEqual(
+                    validEvent[0].invitedVolunteers
+                );
+            });
+    });
+    it('GET /api/event/:id should return an error if the event is not found', async () => {
+        request(app)
+            .get('/api/event/:id')
+            .expect('Content-Type', /json/)
+            .expect(404, (err, res) => {
+                if (err) return err;
+                expect(res.body).toBeDefined();
+                expect(res.body.message).toBe('Event not found');
+            });
+    });
+    it('GET /api/event/:id should return an error if the id is not valid', async () => {
+        const id = '12dg4';
+        request(app)
+            .get(`/api/event/${id}`)
+            .expect('Content-Type', /json/)
+            .expect(404, (err, res) => {
+                if (err) return err;
+                expect(res.body).toBeDefined();
+                expect(res.body.message).toBe('Invalid event Id');
+            });
     });
 });

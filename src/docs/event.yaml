@@ -1,8 +1,51 @@
 tags:
   - name: Event
     description: API to manage the authentication.
-
 paths:
+  /api/event:
+    post:
+      tags:
+        - Event
+      summary: create a new event
+      description: create a new event
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/newEvent"
+      responses:
+        201:
+          description: Authenticated user succesfully created event.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        401:
+          description: user not sigend in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
   /api/event/:
     get:
       tags:
@@ -187,7 +230,7 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/event/:id:
+  /api/event/{id}:
     delete:
       tags:
         - Event
@@ -294,6 +337,270 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+  /api/event/{id}/volunteers:
+    post:
+      tags:
+        - Event
+      summary: Join user to an event
+      description: add user to an event as a confirmed Volunteer
+      operationId: Join user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - name: id
+          in: path
+          description: event id that user goign to join
+          required: true
+          schema:
+            type: string
+            example: 62e297b6eb2bce7177c6fefc
+      responses:
+        201:
+          description: User joined Successfully to an event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Joined Successfully
+        401:
+          description: user not sigend in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        404:
+          description: Event not found  or has an invalid value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+  /api/event/:id:
+    get:
+      tags:
+        - "Event"
+      summary: "Get event by id"
+      description: "Returns a single event"
+      operationId: "getEventById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of the event to return"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: Returns a single event with the given id.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "422":
+          description: "This status is returned when the request is missing required fields or has an invalid values."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "404":
+          description: "Event not found"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  error:
+                    type: string
+                    example: "Event not found"
+        "500":
+          description: "Internal server error"
+    delete:
+      tags:
+        - Event
+      summary: Delete an event
+      description: Delete an event by its id.
+      operationId: deleteEvent
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 5e9f8f8f8f8f8f8f8f8f8f8
+      responses:
+        403:
+          description: This status is returned when the user is not authorized to perform the operation.
+        401:
+          description: This status is returned if the user is not signed in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+    put:
+      tags:
+        - Event
+      summary: Update an event
+      description: Update an event by its id.
+      operationId: updateEvent
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 5e9f8f8f8f8f8f8f8f8f8f8
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UpdateEvent"
+            encoding:
+              categories:
+                style: form
+                explode: true
+              confirmedVolunteers:
+                style: form
+                explode: true
+              invitedVolunteers:
+                style: form
+                explode: true
+      responses:
+        204:
+          description: The updated event.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventNotPopulated"
+        403:
+          description: This status is returned when the user is not authorized to perform the operation.
+        401:
+          description: This status is returned if the user is not signed in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        422:
+          description: This status is returned when at least one of the optional fields has an invalid value.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+  /api/event/:id/volunteers:
+    post:
+      tags:
+        - Event
+      summary: Join user to an event
+      description: add user to an event as a confirmed Volunteer
+      operationId: Join user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - name: id
+          in: path
+          description: event id that user goign to join
+          required: true
+          schema:
+            type: string
+            example: 62e297b6eb2bce7177c6fefc
+      responses:
+        201:
+          description: User joined Successfully to an event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Joined Successfully
+        401:
+          description: user not sigend in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        404:
+          description: Event not found  or has an invalid value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        400:
+          description: User already joined in the event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User already joined
         500:
           description: Internal server error
 components:
@@ -405,11 +712,11 @@ components:
         content:
           type: string
           example: Event Description
-        coverImage: 
-          type: string 
+        coverImage:
+          type: string
           format: binary
-        date: 
-          type: string 
+        date:
+          type: string
           format: date
         categories:
           type: array
@@ -436,9 +743,9 @@ components:
               - Youth
               - Justice
           example: [No Poverty, Zero Hunger]
-        confirmedVolunteers: 
+        confirmedVolunteers:
           type: array
-          items: 
+          items:
             type: string
             format: mongoid
           example: [5e9f8f8f8f8f8f8f8f8f8f8, 5e9f8f8f8f8f8f8f8f8f8f8]
@@ -469,7 +776,7 @@ components:
             lon:
               type: float
               example: 28.97
-    EventNotPopulated: 
+    EventNotPopulated:
       properties:
         publisherId:
           type: string
@@ -516,13 +823,21 @@ components:
           items:
             type: string
             format: monogid
-          example: [ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"), ObjectId("5e9f8f8f8f8f8f8f8f8f84f")]
+          example:
+            [
+              ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"),
+              ObjectId("5e9f8f8f8f8f8f8f8f8f84f"),
+            ]
         invitedVolunteers:
           type: array
           items:
             type: string
             format: monogid
-          example: [ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"), ObjectId("5e9f8f8f8f8f8f8f8f8f84f")]
+          example:
+            [
+              ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"),
+              ObjectId("5e9f8f8f8f8f8f8f8f8f84f"),
+            ]
         __v:
           type: int
           example: 0
@@ -547,7 +862,90 @@ components:
             lon:
               type: float
               example: 28.97
-
+    newEvent:
+      type: object
+      required:
+        - title
+        - content
+        - coverImage
+        - date
+        - categories
+        - address
+        - location
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        coverImage:
+          type: string
+        date:
+          type: date
+        categories:
+          type: array
+          items:
+            type: string
+            enum:
+              - "No Poverty"
+              - "Zero Hunger"
+              - "Good Health And Well-Being"
+              - "Quality Education"
+              - "Gender Equality"
+              - "Clean Water And Sanitation"
+              - "Affordable And Clean Energy"
+              - "Animals"
+              - "Oceans"
+              - "Nature"
+              - "Reduced Inequalities"
+              - "Sustainable Cities And Communities"
+              - "Responsible Consumption And Production"
+              - "Climate Action"
+              - "Life Below Water"
+              - "Life On Land"
+              - "Peace"
+              - "Youth"
+              - "Justice"
+        address:
+          type: object
+          properties:
+            city:
+              type: string
+              example: City Name
+            country:
+              type: string
+              example: Country Name
+            addressLine:
+              type: string
+              example: Address Line
+        location:
+          type: object
+          properties:
+            lat:
+              type: float
+              example: 41.01
+            lon:
+              type: float
+              example: 28.97
+    ValidationError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+                example: an invalid value
+              msg:
+                type: string
+                example: a message explaining the error
+              param:
+                type: string
+                example: the parameter name that caused the error
+              location:
+                type: string
+                example: the location of the error whether it be a path, query, or body
   securitySchemes:
     auth_cookie:
       type: apiKey
