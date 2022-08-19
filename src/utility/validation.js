@@ -28,7 +28,8 @@ const VERIFY_VALIDATION_FUND = [
                     isString(category) &&
                     variables.CATEGORIES.includes(category)
             )
-        ),
+        )
+        .withMessage('categories must be an array of valid categories'),
     query('lastDate')
         .optional()
         .isDate() // example: '2000-01-01'
@@ -43,6 +44,13 @@ const VERIFY_VALIDATION_FUND = [
             return currentDate > lastDate;
         })
         .withMessage('Current date must be after last date'),
+];
+const VERIFY_VALIDATION_FUNDSBYID = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
 ];
 
 const BASE_USER_VALIDATION_RULES = [
@@ -413,6 +421,7 @@ const handleValidation = (req, res, next) => {
 
 module.exports = {
     VERIFY_VALIDATION_FUND,
+    VERIFY_VALIDATION_FUNDSBYID,
     USER_SIGNUP_VALIDATION_RULES,
     ORGANIZATION_SIGNUP_VALIDATION_RULES,
     VERIFY_VALIDATION_RULES,
