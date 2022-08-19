@@ -15,7 +15,7 @@ async function getOrgPublicProfile(req, res) {
         if (!orga) {
             return res.status(404).json({ message: 'Page not found' });
         }
-        const getOrg = await Organization.findOne(
+        const orgaProfile = await Organization.findOne(
             { _id: req.params.id },
             excludeFields
         )
@@ -36,7 +36,7 @@ async function getOrgPublicProfile(req, res) {
             .populate('createdFunds')
             .populate('rates.userId', requiredUserFields.join(' '));
 
-        return res.status(200).json(getOrg);
+        return res.status(200).json(orgaProfile);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
@@ -53,7 +53,11 @@ async function getOrgPrivateProfile(req, res) {
     ];
 
     try {
-        const orga = await Organization.findOne({ _id: req.params.id })
+        const orga = await Organization.findById(req.user.id);
+        if (!orga) {
+            return res.status(403).json({ message: 'User Not Authorised!' });
+        }
+        const orgaProfile = await Organization.findOne({ _id: req.user.id })
             .populate({
                 path: 'createdEvents',
                 populate: [
@@ -70,10 +74,8 @@ async function getOrgPrivateProfile(req, res) {
             .populate('followers', requiredUserFields.join(' '))
             .populate('createdFunds')
             .populate('rates.userId', requiredUserFields.join(' '));
-        if (!orga) {
-            return res.status(403).json({ message: 'User Not Authorised!' });
-        }
-        return res.status(200).json(orga);
+
+        return res.status(200).json(orgaProfile);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
