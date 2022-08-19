@@ -19,21 +19,8 @@ const eventsRoutes = require('./routes/events');
 
 const app = express();
 const port = process.env.PORT;
-const whitelist = ['http://localhost:3000'];
-const corsOptions = {
-    origin(origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-};
-app.use(
-    cors(corsOptions, {
-        credentials: true,
-    })
-);
+
+app.use(cors());
 
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
