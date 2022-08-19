@@ -54,9 +54,11 @@ const fundSchema = mongoose.Schema(
             },
         },
     },
-    { timestamps: true },
-    { toJSON: { virtuals: true } },
-    { toObject: { virtuals: true } }
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
+    }
 );
 
 fundSchema.virtual('gatheredFund').get(function () {
