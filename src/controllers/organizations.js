@@ -12,6 +12,7 @@ async function updateOrgProfile(req, res) {
         return res.status(403).json({ message: 'User Not Authorised!' });
     }
     try {
+        const coverImage = req.file;
         const newOrga = _.pick(req.body, [
             'email',
             'password',
@@ -21,15 +22,17 @@ async function updateOrgProfile(req, res) {
             'city',
             'websiteUrl',
         ]);
-
-        const coverImage = req.file;
+        if (newOrga.email === orga.email) {
+            return res.status(400).json({ message: 'Email already used' });
+        }
         const updateOrga = await Organization.findByIdAndUpdate(
             req.user.id,
             newOrga,
             {
                 new: true,
             }
-        );
+        ).select('-hashedPassword -provider -providerId -isVerified');
+
         if (newOrga.password) {
             const hashedPassword = await bcrypt.hash(
                 newOrga.password,
@@ -49,6 +52,7 @@ async function updateOrgProfile(req, res) {
         await updateOrga.save();
         return res.status(200).json(updateOrga);
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
     }
 }

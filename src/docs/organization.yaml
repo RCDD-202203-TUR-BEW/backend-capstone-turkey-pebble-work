@@ -26,12 +26,22 @@ paths:
                                 style: form
                                 explode: true
             responses:
-                204:
+                200:
                     description: The updated organization.
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Organization'
+                                $ref: '#/components/schemas/FullOrganization'
+                400:
+                    description: This status is returned if the email is already in use.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Email already used
                 403:
                     description: User is not authorized to perform the operation.
                     content:

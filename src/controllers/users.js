@@ -7,12 +7,13 @@ const utils = require('../utility/utils');
 const { HASH_ROUNDS } = require('../utility/variables');
 
 async function updateUserProfile(req, res) {
-    const user = await User.findOne({ _id: req.user.id });
+    const user = await User.findById(req.user.id);
     if (!user) {
         return res.status(403).json({ message: 'User Not Authorised!' });
     }
 
     try {
+        const profileImage = req.file;
         const newUser = _.pick(req.body, [
             'email',
             'firstName',
@@ -23,11 +24,14 @@ async function updateUserProfile(req, res) {
             'interests',
             'gender',
         ]);
+        if (newUser.email === user.email) {
+            return res.status(400).json({ message: 'Email already used' });
+        }
 
-        const profileImage = req.file;
         const updateUser = await User.findByIdAndUpdate(req.user.id, newUser, {
             new: true,
-        });
+        }).select('-hashedPassword -provider -providerId -isVerified');
+
         if (newUser.password) {
             const hashedPassword = await bcrypt.hash(
                 newUser.password,
@@ -44,9 +48,11 @@ async function updateUserProfile(req, res) {
             );
             updateUser.profileImage = imgUrl;
         }
+
         await updateUser.save();
         return res.status(200).json(updateUser);
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
     }
 }
