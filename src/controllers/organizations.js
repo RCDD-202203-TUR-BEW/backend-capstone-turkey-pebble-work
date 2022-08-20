@@ -1,22 +1,22 @@
 const { User } = require('../models/user');
 
-const addUserSubscription = async (req, res) => {
+const addOrganizationSubscription = async (req, res) => {
     try {
-        const { id: followUserId } = req.params;
+        const { id: followOrganizationId } = req.params;
 
         await User.findByIdAndUpdate(req.user.id, {
             $push: {
-                followedUsers: followUserId,
+                followedOrganizations: followOrganizationId,
             },
         });
 
-        await User.findByIdAndUpdate(followUserId, {
+        await User.findByIdAndUpdate(followOrganizationId, {
             $push: {
                 followers: req.user.id,
             },
         });
 
-        res.status(204).json({ message: 'Succesfully subscribed'});
+        res.status(204).json({ message: 'Succesfully subscribed' });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -24,5 +24,5 @@ const addUserSubscription = async (req, res) => {
 };
 
 module.exports = {
-    addUserSubscription,
+    addOrganizationSubscription,
 };
