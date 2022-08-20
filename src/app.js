@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 const express = require('express');
 require('dotenv').config();
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -19,6 +20,8 @@ const organizationRouter = require('./routes/organization');
 
 const app = express();
 const port = process.env.PORT;
+
+app.use(cors());
 
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
