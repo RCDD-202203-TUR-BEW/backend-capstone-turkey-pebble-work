@@ -409,6 +409,14 @@ const CREATE_EVENT_VALIDATION_RULES = [
         ),
 ];
 
+const ID_VALIDATION_RULE = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -433,5 +441,6 @@ module.exports = {
     VOLUNTEERS_EVENT_VALIDATION_RULES,
     DONATE_VALIDATION_RULES,
     CREATE_EVENT_VALIDATION_RULES,
+    ID_VALIDATION_RULE,
     handleValidation,
 };

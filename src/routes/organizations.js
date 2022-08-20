@@ -1,9 +1,18 @@
 const express = require('express');
 
-const { handleValidation } = require('../utility/validation');
+const {
+    ID_VALIDATION_RULE,
+    handleValidation,
+} = require('../utility/validation');
 
 const router = express.Router();
-const OrganizationsController = require('../controllers/organizations')
+const organizationsController = require('../controllers/organizations');
 
+router.post(
+    '/',
+    ID_VALIDATION_RULE,
+    handleValidation,
+    organizationsController.addOrganizationSubscription
+);
 
-router.post('/', handleValidation, OrganizationsController.addOrganizationSubscription)
+module.exports = router;

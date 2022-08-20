@@ -16,7 +16,7 @@ const addUserSubscription = async (req, res) => {
             },
         });
 
-        res.status(204).json({ message: 'Succesfully subscribed'});
+        res.status(204).json({ message: 'Succesfully subscribed' });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: 'Internal Server Error' });
