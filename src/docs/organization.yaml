@@ -19,7 +19,7 @@ paths:
       parameters:
         - in: path
           name: id
-          description: The fund id
+          description: The id of the organization
           required: true
           type: string
       requestBody:
@@ -81,7 +81,7 @@ paths:
                   message:
                     type: string
                     example: "Invalid Token: No authorization token was found"
-    delete: 
+    delete:
       tags:
         - Organization
       summary: Delete the rate of the organization
@@ -96,7 +96,7 @@ paths:
       parameters:
         - in: path
           name: id
-          description: The fund id
+          description: The id of the organization
           required: true
           type: string
       responses:
@@ -147,7 +147,7 @@ paths:
                   message:
                     type: string
                     example: "Invalid Token: No authorization token was found"
-  
+
 components:
   schemas:
     FullOrganization:
@@ -426,14 +426,14 @@ components:
           type: string
           example: Organization name
           description: The same as name
-        rates: 
-          type: array 
+        rates:
+          type: array
           items:
             type: object
             properties:
               userId:
                 $ref: "#/components/schemas/ShortUser"
-              rate: 
+              rate:
                 type: number
                 example: 5
               id:

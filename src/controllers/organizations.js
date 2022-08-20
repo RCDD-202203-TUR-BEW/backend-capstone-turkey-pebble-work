@@ -1,6 +1,5 @@
 const { default: mongoose } = require('mongoose');
 const { Organization, User } = require('../models/user');
-const Fund = require('../models/fund');
 
 async function getOneOrganization(req) {
     const { id: orgaId } = req.params;
@@ -11,52 +10,23 @@ async function getOneOrganization(req) {
         'email',
         'profileImage',
     ];
-    const requiredFundFields = [
-        'id',
-        'title',
-        'content',
-        'categories',
-        'targetFund',
-        'gatheredFund',
-        'address',
-        'createdAt',
-        'remainingFund',
-    ];
-    const requiredEventFields = [
-        'id',
-        'title',
-        'content',
-        'coverImage',
-        'date',
-        'categories',
-        'confirmedVolunteers',
-        'invitedVolunteers',
-        'address',
-        'location',
-        'createdAt',
-    ];
 
-    const requiredOrgaFields = {
-        id: 1,
-        createdEvents: 1,
-        followers: 1,
-        createdFunds: 1,
-        name: 1,
-        description: 1,
-        coverImage: 1,
-        categories: 1,
-        city: 1,
-        rates: 1,
-        websiteUrl: 1,
-        rate: 1,
+    const orgaExecludedFields = {
+        email: 0,
+        hashedPassword: 0,
+        provider: 0,
+        providerId: 0,
+        isVerified: 0,
     };
 
-    const organization = await Organization.findById(orgaId, requiredOrgaFields)
+    const organization = await Organization.findById(
+        orgaId,
+        orgaExecludedFields
+    )
         .populate('followers', requiredUserFields.join(' '))
-        .populate('createdFunds', requiredFundFields.join(' '))
+        .populate('createdFunds')
         .populate({
             path: 'createdEvents',
-            select: requiredEventFields.join(' '),
             populate: [
                 {
                     path: 'confirmedVolunteers',
