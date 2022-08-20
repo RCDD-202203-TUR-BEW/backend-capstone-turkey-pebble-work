@@ -4,11 +4,15 @@ const addUserSubscription = async (req, res) => {
     try {
         const { id: followUserId } = req.params;
 
-        await User.findByIdAndUpdate(req.user.id, {
+        const user = await User.findByIdAndUpdate(req.user.id, {
             $push: {
                 followedUsers: followUserId,
             },
         });
+
+        if (!user) {
+            res.status(404).json({ meesage: 'User not found' });
+        }
 
         await User.findByIdAndUpdate(followUserId, {
             $push: {

@@ -1,8 +1,14 @@
-const { User } = require('../models/user');
+const { User, Organization } = require('../models/user');
 
 const addOrganizationSubscription = async (req, res) => {
     try {
         const { id: followOrganizationId } = req.params;
+
+        const organization = await Organization.findById(followOrganizationId);
+
+        if (!organization) {
+            res.status(404).json({ message: 'Organization not found' });
+        }
 
         await User.findByIdAndUpdate(req.user.id, {
             $push: {
