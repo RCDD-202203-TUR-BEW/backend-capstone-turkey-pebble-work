@@ -9,7 +9,12 @@ async function getOrgPublicProfile(req, res) {
         'profileImage',
     ];
 
-    const excludeFields = { hashedPassword: 0, provider: 0, isVerified: 0 };
+    const excludeFields = {
+        hashedPassword: 0,
+        provider: 0,
+        providerId: 0,
+        isVerified: 0,
+    };
     try {
         const orga = await Organization.findById(req.params.id);
         if (!orga) {

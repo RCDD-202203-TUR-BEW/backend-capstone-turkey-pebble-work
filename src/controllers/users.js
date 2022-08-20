@@ -17,10 +17,14 @@ async function getUserPublicProfile(req, res) {
         'categories',
         'city',
         'rates',
-        'websiteUrl',
     ];
 
-    const excludeFields = { hashedPassword: 0, provider: 0, isVerified: 0 };
+    const excludeFields = {
+        hashedPassword: 0,
+        provider: 0,
+        providerId: 0,
+        isVerified: 0,
+    };
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
