@@ -970,9 +970,6 @@ components:
                 name:
                     type: string
                     example: Organization name
-                email:
-                    type: string
-                    example: test@gmail.com
                 description:
                     type: string
                     example: Organization description
