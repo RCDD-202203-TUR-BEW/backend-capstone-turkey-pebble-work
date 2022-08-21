@@ -34,7 +34,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/FullUser'
+                                $ref: '#/components/schemas/FullPrivateUser'
                 400:
                     description: This status is returned if the email is already in use.
                     content:
