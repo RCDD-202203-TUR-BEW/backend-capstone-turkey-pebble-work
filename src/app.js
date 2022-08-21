@@ -24,11 +24,13 @@ const whitelist = ['http://localhost:3000'];
 const corsOptions = {
     credentials: true,
     origin(origin, callback) {
+        // allow requests with no origin like browser requests to /api-docs
+        if (!origin) return callback(null, true);
+        console.log(origin, callback);
         if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
+            return callback(null, true);
         }
+        return callback(new Error('Not allowed by CORS'));
     },
 };
 
