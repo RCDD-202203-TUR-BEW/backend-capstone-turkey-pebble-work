@@ -1,8 +1,9 @@
+const mongoose = require('mongoose');
 const { User, Organization } = require('../models/user');
 
 const addOrganizationSubscription = async (req, res) => {
     try {
-        const { id: followOrganizationId } = req.params;
+        const followOrganizationId = mongoose.Types.ObjectId(req.params.id);
 
         const organization = await Organization.findById(followOrganizationId);
 
