@@ -1,18 +1,11 @@
 const { User } = require('../models/user');
 
 async function getUserPublicProfile(req, res) {
-    const requiredUserFields = [
-        'id',
-        'firstName',
-        'lastName',
-        'email',
-        'profileImage',
-    ];
+    const requiredUserFields = ['id', 'firstName', 'lastName', 'profileImage'];
     const requiredOrgaFields = [
         'id',
         'name',
         'description',
-        'email',
         'coverImage',
         'categories',
         'city',
@@ -20,6 +13,7 @@ async function getUserPublicProfile(req, res) {
     ];
 
     const excludeFields = {
+        email: 0,
         hashedPassword: 0,
         provider: 0,
         providerId: 0,
@@ -72,31 +66,33 @@ async function getUserPublicProfile(req, res) {
     }
 }
 async function getUserPrivateProfile(req, res) {
-    const requiredUserFields = [
-        'id',
-        'firstName',
-        'lastName',
-        'email',
-        'profileImage',
-    ];
+    const requiredUserFields = ['id', 'firstName', 'lastName', 'profileImage'];
     const requiredOrgaFields = [
         'id',
         'name',
         'description',
-        'email',
         'coverImage',
         'categories',
         'city',
         'rates',
         'websiteUrl',
     ];
+    const excludeFields = {
+        hashedPassword: 0,
+        provider: 0,
+        providerId: 0,
+        isVerified: 0,
+    };
 
     try {
         const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(403).json({ message: 'User Not Authorised!' });
         }
-        const userProfile = await User.findOne({ _id: req.user.id })
+        const userProfile = await User.findOne(
+            { _id: req.user.id },
+            excludeFields
+        )
             .populate({
                 path: 'createdEvents',
                 populate: [
