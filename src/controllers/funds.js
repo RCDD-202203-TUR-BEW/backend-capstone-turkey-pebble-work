@@ -11,7 +11,6 @@ async function getSingleFund(req, res) {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
 
@@ -37,7 +36,6 @@ async function getFunds(req, res) {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
         const { categories, publisherId, lastDate, currentDate } = req.query;
