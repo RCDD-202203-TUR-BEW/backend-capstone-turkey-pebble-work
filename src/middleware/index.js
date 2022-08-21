@@ -21,7 +21,11 @@ const publicRoutes = [
 const authMiddleware = jwt({
     secret: process.env.SECRET_KEY,
     algorithms: ['HS256'],
-    getToken: (req) => req.signedCookies.auth_token ?? req.cookies.auth_token,
+    getToken: (req) => {
+        console.log(req.signedCookies);
+        console.log(req.auth_token);
+        return req.signedCookies.auth_token ?? req.cookies.auth_token;
+    },
     requestProperty: 'user',
 }).unless({
     path: publicRoutes,
