@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Funds = require('../models/fund');
-const { BaseUser } = require('../models/user');
+const { BaseUser, User } = require('../models/user');
 const { sendEmail } = require('../utility/mail');
 
 async function getSingleFund(req, res) {
@@ -111,6 +111,12 @@ async function donate(req, res) {
 
         if (user) {
             donationObj.donorId = mongoose.Types.ObjectId(user.id);
+            await User.findByIdAndUpdate(user.id, {
+                // addToSet will add the id to the array if it is not already there
+                $addToSet: {
+                    followedFunds: mongoose.Types.ObjectId(existingFund.id),
+                },
+            });
         }
 
         await Funds.findByIdAndUpdate(id, {
