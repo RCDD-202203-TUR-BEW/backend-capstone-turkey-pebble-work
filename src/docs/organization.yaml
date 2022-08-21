@@ -1,0 +1,483 @@
+tags:
+  - name: Organization
+    description: API to manage the organization account.
+
+paths:
+  /api/organization/{id}/rate:
+    post:
+      tags:
+        - Organization
+      summary: Rate the organization
+      description: Rate the organization
+      operationId: rate
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - in: path
+          name: id
+          description: The id of the organization
+          required: true
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: number
+                  description: The rating
+                  format: integer
+                  example: 5.00
+      responses:
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Only users can rate
+        404:
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Organization not found
+        201:
+          description: Organization rated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FullOrganization"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+        401:
+          description: user not sigend in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+    delete:
+      tags:
+        - Organization
+      summary: Delete the rate of the organization
+      description: Delete the rate of the organization
+      operationId: deleteRate
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - in: path
+          name: id
+          description: The id of the organization
+          required: true
+          type: string
+      responses:
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Only users can rate
+        404:
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Organization not found
+        201:
+          description: Organization with the rate deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FullOrganization"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+        401:
+          description: user not sigend in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+
+components:
+  schemas:
+    FullOrganization:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 5bd8f9f8c9f8b60e48b4567
+        name:
+          type: string
+          example: Organization name
+        description:
+          type: string
+          example: Organization description
+        createdAt:
+          type: string
+          example: 2020-01-01T00:00:00.000Z
+        coverImage:
+          type: string
+          example: Organization cover image
+        categories:
+          type: array
+          items:
+            type: string
+            enum:
+              - No Poverty
+              - Zero Hunger
+              - Good Health And Well-Being
+              - Quality Education
+              - Gender Equality
+              - Clean Water And Sanitation
+              - Affordable And Clean Energy
+              - Animals
+              - Oceans
+              - Nature
+              - Reduced Inequalities
+              - Sustainable Cities And Communities
+              - Responsible Consumption And Production
+              - Climate Action
+              - Life Below Water
+              - Life On Land
+              - Peace
+              - Youth
+              - Justice And Strong Institutions
+        city:
+          type: string
+          enum:
+            - Adana
+            - Kocaeli
+            - Adiyaman
+            - Konya
+            - Afyonkarahisar
+            - Kutahya
+            - Agri
+            - Malatya
+            - Amasya
+            - Manisa
+            - Ankara
+            - Kahramanmaras
+            - Antalya
+            - Mardin
+            - Artviin
+            - Mugla
+            - Aydin
+            - Mus
+            - Balikesir
+            - Nevsehir
+            - Bilecik
+            - Nigde
+            - Bingol
+            - Ordu
+            - Bitlis
+            - Rize
+            - Bolu
+            - Sakarya
+            - Burdur
+            - Samsun
+            - Bursa
+            - Siirt
+            - Canakkale
+            - Sinop
+            - Cankiri
+            - Sivas
+            - Corum
+            - Tekirdag
+            - Denizli
+            - Tokat
+            - Diyarbakir
+            - Trabzon
+            - Edirne
+            - Tunceli
+            - Elazig
+            - Sanliurfa
+            - Erzincan
+            - Usak
+            - Erzurum
+            - Van
+            - Eskisehir
+            - Yozgat
+            - Gaziantep
+            - Zonguldak
+            - Giresun
+            - Aksaray
+            - Gumushane
+            - Bayburt
+            - Hakkari
+            - Karaman
+            - Hatay
+            - Kirikkale
+            - Isparta
+            - Batman
+            - Mersin
+            - Sirnak
+            - Istanbul
+            - Bartin
+            - Izmir
+            - Ardahan
+            - Kars
+            - Igdir
+            - Kastamonu
+            - Yalova
+            - Kayseri
+            - Karabuk
+            - Kirklareli
+            - Kilis
+            - Kirsehir
+            - Osmaniye
+            - Duzce
+        createdEvents:
+          type: array
+          items:
+            type: object
+            properties:
+              address:
+                type: object
+                properties:
+                  city:
+                    type: string
+                    example: Istanbul
+                  country:
+                    type: string
+                    example: Turkey
+                  addressLine:
+                    type: string
+                    example: Sokak No.1
+              location:
+                type: object
+                properties:
+                  lat:
+                    type: number
+                    example: 41.01277
+                  lng:
+                    type: number
+                    example: 28.94966
+              _id:
+                type: string
+                example: 5bd8f9f8c9f8b60e48b4567
+              title:
+                type: string
+                example: Event title
+              content:
+                type: string
+                example: Event content
+              coverImage:
+                type: string
+                description: Url of the event cover image
+                example: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+              date:
+                type: string
+                example: 2020-01-01T00:00:00.000Z
+              categories:
+                type: array
+                items:
+                  type: string
+                  enum:
+                    - No Poverty
+                    - Zero Hunger
+                    - Good Health And Well-Being
+                    - Quality Education
+                    - Gender Equality
+                    - Clean Water And Sanitation
+                    - Affordable And Clean Energy
+                    - Animals
+                    - Oceans
+                    - Nature
+                    - Reduced Inequalities
+                    - Sustainable Cities And Communities
+                    - Responsible Consumption And Production
+                    - Climate Action
+                    - Life Below Water
+                    - Life On Land
+                    - Peace
+                    - Youth
+                    - Justice And Strong Institutions
+              confirmedVolunteers:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShortUser"
+              invitedVolunteers:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShortUser"
+              id:
+                type: string
+                example: 5bd8f9f8c9f8b60e48b4567
+        followers:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShortUser"
+        createdFunds:
+          type: array
+          items:
+            type: object
+            properties:
+              address:
+                type: object
+                properties:
+                  city:
+                    type: string
+                    example: Istanbul
+                  country:
+                    type: string
+                    example: Turkey
+                  addressLine:
+                    type: string
+                    example: Sokak No.1
+              _id:
+                type: string
+                example: 5bd8f9f8c9f8b60e48b4567
+              title:
+                type: string
+                example: Fund title
+              content:
+                type: string
+                example: Fund content
+              categories:
+                type: array
+                items:
+                  type: string
+                  enum:
+                    - No Poverty
+                    - Zero Hunger
+                    - Good Health And Well-Being
+                    - Quality Education
+                    - Gender Equality
+                    - Clean Water And Sanitation
+                    - Affordable And Clean Energy
+                    - Animals
+                    - Oceans
+                    - Nature
+                    - Reduced Inequalities
+                    - Sustainable Cities And Communities
+                    - Responsible Consumption And Production
+                    - Climate Action
+                    - Life Below Water
+                    - Life On Land
+                    - Peace
+                    - Youth
+                    - Justice And Strong Institutions
+              targetFund:
+                type: number
+                example: 100
+              gatheredFund:
+                type: number
+                example: 5
+              remainingFund:
+                type: number
+                example: 95
+              id:
+                type: string
+                example: 5bd8f9f8c9f8b60e48b4567
+        __t:
+          type: string
+          example: Organization
+        fullName:
+          type: string
+          example: Organization name
+          description: The same as name
+        rates:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                $ref: "#/components/schemas/ShortUser"
+              rate:
+                type: number
+                example: 5
+              id:
+                type: string
+                example: 5bd8f9f8c9f8b60e48b4567
+        rate:
+          type: number
+          example: 5
+          description: The average rate of the organization (calcuated from the rates list)
+        id:
+          type: string
+          example: 5bd8f9f8c9f8b60e48b4567
+    ShortUser:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 5bd8f9f8c9f8b60e48b4567
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: test@gmail.com
+        __t:
+          type: string
+          example: User
+        profileImage:
+          type: string
+          description: Url to the profile image
+          example: https://www.example.com/image.png
+        fullName:
+          type: string
+          example: John Doe
+        id:
+          type: string
+          example: 5bd8f9f8c9f8b60e48b4567
+          description: User id (same as _id)
+
+  securitySchemes:
+    auth_cookie:
+      type: apiKey
+      in: cookie
+      name: auth_token
