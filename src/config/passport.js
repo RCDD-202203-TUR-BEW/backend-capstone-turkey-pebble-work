@@ -1,5 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
 const { User } = require('../models/user');
 
 passport.serializeUser((user, done) => {
@@ -18,6 +19,24 @@ passport.use(
             clientSecret: process.env.OAUTH2_CLIENT_SECRET,
             callbackURL:
                 'http://localhost:3000/api/google-auth/google/callback',
+        },
+        async (accessToken, refreshToken, profile, cb) => {
+            try {
+                cb(null, profile);
+            } catch (err) {
+                cb(err, null);
+            }
+        }
+    )
+);
+
+passport.use(
+    new TwitterStrategy(
+        {
+            consumerKey: process.env.OAUTH2_CLIENT_ID,
+            consumerSecret: process.env.OAUTH2_CLIENT_SECRET,
+            callbackURL:
+                'http://localhost:3000/api/twitter-auth/twitter/callback',
         },
         async (accessToken, refreshToken, profile, cb) => {
             try {

@@ -13,6 +13,7 @@ const fundRouter = require('./routes/funds');
 const eventRouter = require('./routes/events');
 
 const googleauth = require('./routes/google');
+const twitterAuth = require('./routes/twitter');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 const eventsRoutes = require('./routes/events');
@@ -49,6 +50,7 @@ app.use(
 );
 
 app.use('/api/google-auth', googleauth);
+app.use('/api/twitter-auth', twitterAuth);
 app.use(authMiddleware);
 
 app.use('/api/fund', fundRouter);
