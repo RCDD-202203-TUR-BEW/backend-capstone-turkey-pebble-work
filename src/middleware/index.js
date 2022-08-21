@@ -23,7 +23,7 @@ const authMiddleware = jwt({
     algorithms: ['HS256'],
     getToken: (req) => {
         console.log(req.signedCookies);
-        console.log(req.auth_token);
+        console.log(req.cookies.auth_token);
         return req.signedCookies.auth_token ?? req.cookies.auth_token;
     },
     requestProperty: 'user',
