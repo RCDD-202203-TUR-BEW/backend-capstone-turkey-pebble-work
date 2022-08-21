@@ -3,13 +3,7 @@ const { Organization, User } = require('../models/user');
 
 async function getOneOrganization(req) {
     const { id: orgaId } = req.params;
-    const requiredUserFields = [
-        'id',
-        'firstName',
-        'lastName',
-        'email',
-        'profileImage',
-    ];
+    const requiredUserFields = ['id', 'firstName', 'lastName', 'profileImage'];
 
     const orgaExecludedFields = {
         email: 0,
