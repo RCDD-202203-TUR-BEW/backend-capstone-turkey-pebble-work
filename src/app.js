@@ -10,13 +10,12 @@ const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
 const fundRouter = require('./routes/funds');
-const eventRouter = require('./routes/events');
 
 const googleauth = require('./routes/google');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 const eventsRouter = require('./routes/events');
-const organizationRouter = require('./routes/organization');
+const organizationRouter = require('./routes/organizations');
 
 const app = express();
 const port = process.env.PORT;
