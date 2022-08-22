@@ -16,6 +16,7 @@ const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 const eventsRouter = require('./routes/events');
 const organizationRouter = require('./routes/organizations');
+const userRouter = require('./routes/users');
 
 const app = express();
 const port = process.env.PORT;
@@ -42,6 +43,7 @@ app.use('/api/fund', fundRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventsRouter);
 app.use('/api/organization', organizationRouter);
+app.use('/api/user', userRouter);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
