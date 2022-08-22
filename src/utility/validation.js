@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable arrow-body-style */
 const { validationResult, param, body, query } = require('express-validator');
 const { isString, parseInt } = require('lodash');
 const { default: mongoose } = require('mongoose');
@@ -416,6 +418,37 @@ const CREATE_EVENT_VALIDATION_RULES = [
         ),
 ];
 
+const CREATE_FUND_VALIDATION_RULES = [
+    body('title').exists().isString().withMessage('title is required'),
+    body('content').exists().isString().withMessage('content is required'),
+    body('targetFund').exists().isInt().withMessage('targetFund is required'),
+    body('categories')
+        .exists()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    body('address')
+        .exist()
+        .isObject()
+        .custom((address) => {
+            return (
+                isString(address.addressLine) &&
+                isString(address.city) &&
+                isString(address.country)
+            );
+        })
+        .withMessage(
+            'address must be an object that contains street, city, and country properties which all must be strings'
+        ),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -440,6 +473,7 @@ module.exports = {
     VOLUNTEERS_EVENT_VALIDATION_RULES,
     DONATE_VALIDATION_RULES,
     CREATE_EVENT_VALIDATION_RULES,
+    CREATE_FUND_VALIDATION_RULES,
     POST_RATE_VALIDATION_RULES,
     DELETE_RATE_VALIDATION_RULES,
     handleValidation,
