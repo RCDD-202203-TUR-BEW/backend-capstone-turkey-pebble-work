@@ -84,4 +84,9 @@ components:
                 example: the parameter name that caused the error
               location:
                 type: string
-                example: the location of the error whether it be a path, query, or body 
+                example: the location of the error whether it be a path, query, or body
+  securitySchemes:
+    auth_cookie:
+      type: apiKey
+      in: cookie
+      name: auth_token                 
