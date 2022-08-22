@@ -24,8 +24,8 @@ async function updateUserProfile(req, res) {
             'interests',
             'gender',
         ]);
-        const usedEmail = await BaseUser.findOne({ email: newUser.email });
-        if (usedEmail) {
+        const existingUser = await BaseUser.findOne({ email: newUser.email });
+        if (existingUser) {
             return res.status(400).json({ message: 'Email already used' });
         }
 

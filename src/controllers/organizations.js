@@ -24,8 +24,8 @@ async function updateOrgProfile(req, res) {
             'websiteUrl',
         ]);
 
-        const usedEmail = await BaseUser.findOne({ email: newOrga.email });
-        if (usedEmail) {
+        const existingUser = await BaseUser.findOne({ email: newOrga.email });
+        if (existingUser) {
             return res.status(400).json({ message: 'Email already used' });
         }
 
