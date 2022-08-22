@@ -3,6 +3,77 @@ tags:
       description: API to manage the organization account.
 
 paths:
+    /api/organization/:
+        put:
+            tags:
+                - Organization
+            summery: Update an organization profile
+            description: Update information of an organization
+            operationId: updateOrga
+            consumes:
+                - multipart/form-data
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            requestBody:
+                required: true
+                content:
+                    multipart/form-data:
+                        schema:
+                            $ref: '#/components/schemas/UpdatedOrganization'
+                        encoding:
+                            categories:
+                                style: form
+                                explode: true
+            responses:
+                200:
+                    description: The updated organization.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FullPrivateOrganization'
+                400:
+                    description: This status is returned if the email is already in use.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Email already used
+                403:
+                    description: User is not authorized to perform the operation.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: User Not Authorised!
+                401:
+                    description: organization is not signed in.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                422:
+                    description: This status is returned when at least one of the optional fields has an invalid value.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                500:
+                    description: Internal server error
     /api/organization/{id}/rate:
         post:
             tags:
@@ -327,18 +398,15 @@ components:
                                         - Gender Equality
                                         - Clean Water And Sanitation
                                         - Affordable And Clean Energy
-                                        - Animals
-                                        - Oceans
-                                        - Nature
+                                        - Decent Work And Economic Growth
+                                        - Industry Innovation And Infrastructure
                                         - Reduced Inequalities
                                         - Sustainable Cities And Communities
                                         - Responsible Consumption And Production
                                         - Climate Action
                                         - Life Below Water
-                                        - Life On Land
-                                        - Peace
-                                        - Youth
-                                        - Justice And Strong Institutions
+                                        - Peace And Justice And Strong Institutions
+                                        - Partnership For The Goals
                             confirmedVolunteers:
                                 type: array
                                 items:
@@ -392,18 +460,15 @@ components:
                                         - Gender Equality
                                         - Clean Water And Sanitation
                                         - Affordable And Clean Energy
-                                        - Animals
-                                        - Oceans
-                                        - Nature
+                                        - Decent Work And Economic Growth
+                                        - Industry Innovation And Infrastructure
                                         - Reduced Inequalities
                                         - Sustainable Cities And Communities
                                         - Responsible Consumption And Production
                                         - Climate Action
                                         - Life Below Water
-                                        - Life On Land
-                                        - Peace
-                                        - Youth
-                                        - Justice And Strong Institutions
+                                        - Peace And Justice And Strong Institutions
+                                        - Partnership For The Goals
                             targetFund:
                                 type: number
                                 example: 100
@@ -469,7 +534,137 @@ components:
                     type: string
                     example: 5bd8f9f8c9f8b60e48b4567
                     description: User id (same as _id)
-
+        UpdatedOrganization:
+            type: object
+            properties:
+                email:
+                    type: string
+                    format: email
+                    example: test@gmail.com
+                password:
+                    type: string
+                    format: password
+                    example: 12341234
+                description:
+                    type: string
+                    example: This is a test organization
+                name:
+                    type: string
+                    example: Test Organization
+                city:
+                    type: string
+                    enum:
+                        - Adana
+                        - Kocaeli
+                        - Adiyaman
+                        - Konya
+                        - Afyonkarahisar
+                        - Kutahya
+                        - Agri
+                        - Malatya
+                        - Amasya
+                        - Manisa
+                        - Ankara
+                        - Kahramanmaras
+                        - Antalya
+                        - Mardin
+                        - Artviin
+                        - Mugla
+                        - Aydin
+                        - Mus
+                        - Balikesir
+                        - Nevsehir
+                        - Bilecik
+                        - Nigde
+                        - Bingol
+                        - Ordu
+                        - Bitlis
+                        - Rize
+                        - Bolu
+                        - Sakarya
+                        - Burdur
+                        - Samsun
+                        - Bursa
+                        - Siirt
+                        - Canakkale
+                        - Sinop
+                        - Cankiri
+                        - Sivas
+                        - Corum
+                        - Tekirdag
+                        - Denizli
+                        - Tokat
+                        - Diyarbakir
+                        - Trabzon
+                        - Edirne
+                        - Tunceli
+                        - Elazig
+                        - Sanliurfa
+                        - Erzincan
+                        - Usak
+                        - Erzurum
+                        - Van
+                        - Eskisehir
+                        - Yozgat
+                        - Gaziantep
+                        - Zonguldak
+                        - Giresun
+                        - Aksaray
+                        - Gumushane
+                        - Bayburt
+                        - Hakkari
+                        - Karaman
+                        - Hatay
+                        - Kirikkale
+                        - Isparta
+                        - Batman
+                        - Mersin
+                        - Sirnak
+                        - Istanbul
+                        - Bartin
+                        - Izmir
+                        - Ardahan
+                        - Kars
+                        - Igdir
+                        - Kastamonu
+                        - Yalova
+                        - Kayseri
+                        - Karabuk
+                        - Kirklareli
+                        - Kilis
+                        - Kirsehir
+                        - Osmaniye
+                        - Duzce
+                    example: Adana
+                categories:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - No Poverty
+                            - Zero Hunger
+                            - Good Health And Well-Being
+                            - Quality Education
+                            - Gender Equality
+                            - Clean Water And Sanitation
+                            - Affordable And Clean Energy
+                            - Decent Work And Economic Growth
+                            - Industry Innovation And Infrastructure
+                            - Reduced Inequalities
+                            - Sustainable Cities And Communities
+                            - Responsible Consumption And Production
+                            - Climate Action
+                            - Life Below Water
+                            - Peace And Justice And Strong Institutions
+                            - Partnership For The Goals
+                        example: [No Poverty, Zero Hunger]
+                websiteUrl:
+                    type: string
+                    format: url
+                    example: https://www.test.com
+                coverImage:
+                    type: string
+                    format: binary
     securitySchemes:
         auth_cookie:
             type: apiKey

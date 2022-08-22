@@ -15,6 +15,7 @@ const googleauth = require('./routes/google');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 const eventsRouter = require('./routes/events');
+const userRouter = require('./routes/users');
 const organizationRouter = require('./routes/organizations');
 
 const app = express();
@@ -41,6 +42,7 @@ app.use(authMiddleware);
 app.use('/api/fund', fundRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventsRouter);
+app.use('/api/user', userRouter);
 app.use('/api/organization', organizationRouter);
 
 function ErrorHandler(err, req, res, next) {
