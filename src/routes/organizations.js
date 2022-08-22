@@ -8,7 +8,7 @@ const {
 const router = express.Router();
 const organizationsController = require('../controllers/organizations');
 
-router.post(
+router.patch(
     '/',
     ID_VALIDATION_RULE,
     handleValidation,
