@@ -95,11 +95,13 @@ async function signUp(req, res) {
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
             expiresIn: FOURTEEN_DAYS_STRING,
         });
+
         res.cookie('auth_token', token, {
-            httpOnly: true, // only accessible by server
+            httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
+            sameSite: 'none',
         });
 
         const verificationToken = await new Token({
@@ -185,6 +187,7 @@ async function signIn(req, res) {
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
             secure: true,
+            sameSite: 'none',
         });
 
         const result = {};
@@ -232,12 +235,15 @@ async function saveGoogleUser(req, res) {
     const token = jwt.sign(claims, process.env.SECRET_KEY, {
         expiresIn: FOURTEEN_DAYS_STRING,
     });
+
     res.cookie('auth_token', token, {
         httpOnly: true,
         signed: true,
         expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
+        sameSite: 'none',
     });
+
     res.status(200).json({ message: 'User successfully signed in' });
 }
 
