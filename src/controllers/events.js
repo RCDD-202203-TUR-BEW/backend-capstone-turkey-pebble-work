@@ -44,7 +44,6 @@ async function getEvents(req, res) {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
 
@@ -234,7 +233,6 @@ const createEvent = async (req, res) => {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
 
@@ -258,7 +256,6 @@ async function getEventById(req, res) {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
         const event = await Event.findById(id)

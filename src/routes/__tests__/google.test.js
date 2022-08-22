@@ -15,9 +15,9 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../../app');
+const db = require('../../db/connection');
 
 const req = supertest(app);
-const db = require('../../db/connection');
 
 beforeAll(async () => {
     await db();
@@ -41,7 +41,7 @@ describe('Google Auth Endpoints', () => {
         });
 
         it('Redirects with correct scope and credentials', async () => {
-            const res = await req.get('/api/googleauth/google');
+            const res = await req.get('/api/auth/google');
             const { location } = res.header;
 
             expect(location).not.toBeNull();
