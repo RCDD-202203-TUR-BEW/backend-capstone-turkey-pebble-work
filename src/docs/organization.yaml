@@ -3,6 +3,67 @@ tags:
       description: API to manage the organization account.
 
 paths:
+    /api/organization/{id}/subscription:
+        patch:
+            tags:
+                - organization
+            summary: subscribe to the organization
+            description: subscribe to the organization
+            operationId: subscribe
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            parameters:
+                - in: path
+                  name: id
+                  description: The id of the organization to subscribe
+                  required: true
+                  type: string
+            responses:
+                200:
+                    description: Successfully subscribed
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Successfully subscribed
+                404:
+                    description: organization not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: organization not found
+                422:
+                    description: This status is returned when the request is missing required fields or has an invalid values.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                401:
+                    description: user not sigend in
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                500:
+                    description: Internal server error      
     /api/organization/{id}/rate:
         post:
             tags:
@@ -150,6 +211,26 @@ paths:
 
 components:
     schemas:
+        ValidationError:
+            type: object
+            properties:
+                errors:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            value:
+                                type: string
+                                example: an invalid value
+                            msg:
+                                type: string
+                                example: a message explaining the error
+                            param:
+                                type: string
+                                example: the parameter name that caused the error
+                            location:
+                                type: string
+                                example: the location of the error whether it be a path, query, or body
         FullOrganization:
             type: object
             properties:
