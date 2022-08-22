@@ -11,7 +11,7 @@ const router = express.Router();
 const organizationsController = require('../controllers/organizations');
 
 router.patch(
-    '/',
+    '/:id/subscription',
     ID_VALIDATION_RULE,
     handleValidation,
     organizationsController.addOrganizationSubscription
