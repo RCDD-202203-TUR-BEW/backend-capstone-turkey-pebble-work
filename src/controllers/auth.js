@@ -185,7 +185,6 @@ async function signIn(req, res) {
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
             secure: true,
-          //  sameSite: 'none',
         });
 
         const result = {};
