@@ -177,7 +177,7 @@ async function signIn(req, res) {
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
             expiresIn: FOURTEEN_DAYS_STRING,
         });
-        console.log(token);
+        // console.log(token);
 
         // set cookie
         res.cookie('auth_token', token, {
@@ -185,7 +185,10 @@ async function signIn(req, res) {
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
             secure: process.env.NODE_ENV === 'production',
+            sameSite: 'none',
         });
+
+        console.log(req.cookies);
 
         const result = {};
         if (!baseUser.isVerified) {
