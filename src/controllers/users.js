@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
-const { User } = require('../models/user');
+const { User, BaseUser } = require('../models/user');
 const storage = require('../db/storage');
 const variables = require('../utility/variables');
 const utils = require('../utility/utils');
@@ -24,7 +24,8 @@ async function updateUserProfile(req, res) {
             'interests',
             'gender',
         ]);
-        if (newUser.email === user.email) {
+        const usedEmail = await BaseUser.findOne({ email: newUser.email });
+        if (usedEmail) {
             return res.status(400).json({ message: 'Email already used' });
         }
 

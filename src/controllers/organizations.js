@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
-const { Organization } = require('../models/user');
+const { Organization, BaseUser } = require('../models/user');
 const storage = require('../db/storage');
 const variables = require('../utility/variables');
 const utils = require('../utility/utils');
@@ -11,6 +11,7 @@ async function updateOrgProfile(req, res) {
     if (!orga) {
         return res.status(403).json({ message: 'User Not Authorised!' });
     }
+
     try {
         const coverImage = req.file;
         const newOrga = _.pick(req.body, [
@@ -22,9 +23,12 @@ async function updateOrgProfile(req, res) {
             'city',
             'websiteUrl',
         ]);
-        if (newOrga.email === orga.email) {
+
+        const usedEmail = await BaseUser.findOne({ email: newOrga.email });
+        if (usedEmail) {
             return res.status(400).json({ message: 'Email already used' });
         }
+
         const updateOrga = await Organization.findByIdAndUpdate(
             req.user.id,
             newOrga,
