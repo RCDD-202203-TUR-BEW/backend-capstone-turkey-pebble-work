@@ -29,7 +29,6 @@ const createFund = async (req, res) => {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
 
