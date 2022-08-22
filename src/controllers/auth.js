@@ -186,7 +186,6 @@ async function signIn(req, res) {
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
             secure: true,
             sameSite: 'none',
-            domain: 'http://localhost:3000',
         });
 
         const result = {};
