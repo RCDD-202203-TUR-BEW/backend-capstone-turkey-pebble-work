@@ -1,8 +1,17 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable arrow-body-style */
 const { validationResult, param, body, query } = require('express-validator');
 const { isString, parseInt } = require('lodash');
 const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
 const { MAX_IMAGE_SIZE } = require('./variables');
+
+const DELETE_RATE_VALIDATION_RULES = [param('id').isMongoId()];
+
+const POST_RATE_VALIDATION_RULES = [
+    param('id').isMongoId(),
+    body('rating').isInt({ min: 1, max: 5 }),
+];
 
 const GET_EVENT_ID_VALIDATION_RULES = [
     param('id')
@@ -28,7 +37,8 @@ const VERIFY_VALIDATION_FUND = [
                     isString(category) &&
                     variables.CATEGORIES.includes(category)
             )
-        ),
+        )
+        .withMessage('categories must be an array of valid categories'),
     query('lastDate')
         .optional()
         .isDate() // example: '2000-01-01'
@@ -43,6 +53,13 @@ const VERIFY_VALIDATION_FUND = [
             return currentDate > lastDate;
         })
         .withMessage('Current date must be after last date'),
+];
+const VERIFY_VALIDATION_FUNDSBYID = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
 ];
 
 const BASE_USER_VALIDATION_RULES = [
@@ -518,6 +535,37 @@ const PUT_ORGANIZATION_VALIDATION_RULES = [
         .withMessage('websiteUrl is required'),
 ];
 
+const CREATE_FUND_VALIDATION_RULES = [
+    body('title').exists().isString().withMessage('title is required'),
+    body('content').exists().isString().withMessage('content is required'),
+    body('targetFund').exists().isInt().withMessage('targetFund is required'),
+    body('categories')
+        .exists()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    body('address')
+        .exists()
+        .isObject()
+        .custom((address) => {
+            return (
+                isString(address.addressLine) &&
+                isString(address.city) &&
+                isString(address.country)
+            );
+        })
+        .withMessage(
+            'address must be an object that contains street, city, and country properties which all must be strings'
+        ),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -530,6 +578,7 @@ const handleValidation = (req, res, next) => {
 
 module.exports = {
     VERIFY_VALIDATION_FUND,
+    VERIFY_VALIDATION_FUNDSBYID,
     USER_SIGNUP_VALIDATION_RULES,
     ORGANIZATION_SIGNUP_VALIDATION_RULES,
     VERIFY_VALIDATION_RULES,
@@ -543,5 +592,8 @@ module.exports = {
     CREATE_EVENT_VALIDATION_RULES,
     PUT_USER_VALIDATION_RULES,
     PUT_ORGANIZATION_VALIDATION_RULES,
+    CREATE_FUND_VALIDATION_RULES,
+    POST_RATE_VALIDATION_RULES,
+    DELETE_RATE_VALIDATION_RULES,
     handleValidation,
 };

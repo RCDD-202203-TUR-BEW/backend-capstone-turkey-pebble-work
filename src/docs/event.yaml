@@ -230,168 +230,6 @@ paths:
                                 $ref: '#/components/schemas/ValidationError'
                 500:
                     description: Internal server error
-    /api/event/{id}:
-        delete:
-            tags:
-                - Event
-            summary: Delete an event
-            description: Delete an event by its id.
-            operationId: deleteEvent
-            consumes:
-                - application/json
-            produces:
-                - application/json
-            security:
-                - auth_cookie: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-                      example: 5e9f8f8f8f8f8f8f8f8f8f8
-            responses:
-                403:
-                    description: This status is returned when the user is not authorized to perform the operation.
-                401:
-                    description: This status is returned if the user is not signed in.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    error:
-                                        type: boolean
-                                        example: true
-                                    message:
-                                        type: string
-                                        example: 'Invalid Token: No authorization token was found'
-                422:
-                    description: This status is returned when the request is missing required fields or has an invalid values.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ValidationError'
-                500:
-                    description: Internal server error
-        put:
-            tags:
-                - Event
-            summary: Update an event
-            description: Update an event by its id.
-            operationId: updateEvent
-            consumes:
-                - multipart/form-data
-            produces:
-                - application/json
-            security:
-                - auth_cookie: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-                      example: 5e9f8f8f8f8f8f8f8f8f8f8
-            requestBody:
-                required: true
-                content:
-                    multipart/form-data:
-                        schema:
-                            $ref: '#/components/schemas/UpdateEvent'
-                        encoding:
-                            categories:
-                                style: form
-                                explode: true
-                            confirmedVolunteers:
-                                style: form
-                                explode: true
-                            invitedVolunteers:
-                                style: form
-                                explode: true
-            responses:
-                204:
-                    description: The updated event.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/EventNotPopulated'
-                403:
-                    description: This status is returned when the user is not authorized to perform the operation.
-                401:
-                    description: This status is returned if the user is not signed in.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    error:
-                                        type: boolean
-                                        example: true
-                                    message:
-                                        type: string
-                                        example: 'Invalid Token: No authorization token was found'
-                422:
-                    description: This status is returned when at least one of the optional fields has an invalid value.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ValidationError'
-                500:
-                    description: Internal server error
-    /api/event/{id}/volunteers:
-        post:
-            tags:
-                - Event
-            summary: Join user to an event
-            description: add user to an event as a confirmed Volunteer
-            operationId: Join user
-            consumes:
-                - application/json
-            produces:
-                - application/json
-            security:
-                - auth_cookie: []
-            parameters:
-                - name: id
-                  in: path
-                  description: event id that user goign to join
-                  required: true
-                  schema:
-                      type: string
-                      example: 62e297b6eb2bce7177c6fefc
-            responses:
-                201:
-                    description: User joined Successfully to an event
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-                                        example: Joined Successfully
-                401:
-                    description: user not sigend in
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    error:
-                                        type: boolean
-                                        example: true
-                                    message:
-                                        type: string
-                                        example: 'Invalid Token: No authorization token was found'
-                404:
-                    description: Event not found  or has an invalid value
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ValidationError'
-                500:
-                    description: Internal server error
     /api/event/:id:
         get:
             tags:
@@ -544,9 +382,9 @@ paths:
         post:
             tags:
                 - Event
-            summary: Join user to an event
-            description: add user to an event as a confirmed Volunteer
-            operationId: Join user
+            summary: add or remove volunteers
+            description: add or remove volunteers to/from an event
+            operationId: addOrRemoveVolunteer
             consumes:
                 - application/json
             produces:
@@ -554,13 +392,23 @@ paths:
             security:
                 - auth_cookie: []
             parameters:
-                - name: id
-                  in: path
+                - in: path
+                  name: id
                   description: event id that user goign to join
                   required: true
                   schema:
                       type: string
                       example: 62e297b6eb2bce7177c6fefc
+                - in: body
+                  name: body
+                  required: true
+                  schema:
+                      type: object
+                      properties:
+                          operationType:
+                              type: boolean
+                              description: The action to add or remove voulnteers
+
             responses:
                 201:
                     description: User joined Successfully to an event
@@ -572,6 +420,16 @@ paths:
                                     message:
                                         type: string
                                         example: Joined Successfully
+                200:
+                    description: User unjoined Successfully from an event
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Unjoined Successfully
                 401:
                     description: user not sigend in
                     content:
@@ -630,6 +488,9 @@ components:
                     example: 62e980586aca79a3936917e6
         Event:
             properties:
+                _id:
+                    type: string
+                    example: 62e980586aca79a3936917e6
                 publisherId:
                     $ref: '#/components/schemas/ShortUser'
                 title:
@@ -676,6 +537,9 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/ShortUser'
+                id:
+                    type: string
+                    example: 62e980586aca79a3936917e6
                 __v:
                     type: int
                     example: 0
@@ -775,6 +639,9 @@ components:
                             example: 28.97
         EventNotPopulated:
             properties:
+                _id:
+                    type: string
+                    example: 62e980586aca79a3936917e6
                 publisherId:
                     type: string
                     format: monogid
@@ -835,6 +702,9 @@ components:
                             ObjectId("5e9f8f8f8f8f8f8f8f8f8f8"),
                             ObjectId("5e9f8f8f8f8f8f8f8f8f84f"),
                         ]
+                id:
+                    type: string
+                    example: 62e980586aca79a3936917e6
                 __v:
                     type: int
                     example: 0
