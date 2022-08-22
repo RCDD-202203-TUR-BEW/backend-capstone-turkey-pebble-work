@@ -16,6 +16,7 @@ const publicRoutes = [
     { url: '/api/fund/', methods: ['GET'] },
     { url: /^\/api\/event\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: /^\/api\/fund\/(?:([^/]+?))\/donate\/?$/i, methods: ['POST'] },
+    { url: /^\/api\/fund\/(?:([^/]+?))\/?$/i, methods: ['PUT'] },
 ];
 
 const authMiddleware = jwt({

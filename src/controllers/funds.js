@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+const _ = require('lodash');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Funds = require('../models/fund');
@@ -138,9 +140,45 @@ async function donate(req, res) {
     }
 }
 
+async function updateFund(req, res) {
+    const { id: fundId } = req.params;
+    const newFund = _.pick(req.body, [
+        'publisherId',
+        'title',
+        'content',
+        'categories',
+        'targetFund',
+        'donations',
+        'address',
+    ]);
+
+    try {
+        const fund = await Funds.findByIdAndUpdate(fundId, newFund, {
+            new: true,
+        });
+        await fund.save();
+        await fund.donations.forEach(async (donation) => {
+            if (donation.donerId) {
+                donation.donorId.followedFunds.pull(fundId);
+                await donation.donorId.save();
+                await sendEmail(
+                    donation.donorId.email,
+                    'Fund updated', // subject
+                    `The fund ${fund.title} you had donated has various updates.`
+                );
+            }
+        });
+        return res.status(200).json(fund);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
     getFunds,
     getSingleFund,
     deleteFund,
     donate,
+    updateFund,
 };
