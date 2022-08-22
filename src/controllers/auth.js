@@ -184,11 +184,10 @@ async function signIn(req, res) {
             httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: process.env.NODE_ENV === 'production',
-            SameSite: 'none',
+            secure: true,
+            sameSite: 'none',
+            domain: 'localhost:3000',
         });
-
-        console.log(req.cookies);
 
         const result = {};
         if (!baseUser.isVerified) {
