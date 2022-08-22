@@ -185,7 +185,7 @@ async function signIn(req, res) {
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none',
+            SameSite: 'none',
         });
 
         console.log(req.cookies);
