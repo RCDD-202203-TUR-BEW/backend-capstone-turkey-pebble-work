@@ -604,12 +604,12 @@ describe('POST /api/event/:id/volunteers', () => {
             .set('Content-Type', 'application/json')
             .set('Cookie', [jwtToken]);
 
-        const UpdatedDummyEvent = await Event.findOne({
+        const updatedDummyEvent = await Event.findOne({
             puplisherId: dummyUser.id,
         });
         expect(res.status).toBe(201);
         expect(res.body.message).toBe('Joined Successfully');
-        expect(UpdatedDummyEvent.confirmedVolunteers[0].toString()).toBe(
+        expect(updatedDummyEvent.confirmedVolunteers[0].toString()).toBe(
             dummyUser.id
         );
     });
@@ -654,12 +654,12 @@ describe('POST /api/event/:id/volunteers', () => {
             .set('Content-Type', 'application/json')
             .set('Cookie', [jwtToken]);
 
-        const UpdatedDummyEvent = await Event.findOne({
+        const updatedDummyEvent = await Event.findOne({
             puplisherId: dummyUser.id,
         });
         expect(res.status).toBe(200);
         expect(res.body.message).toBe('Unjoined Successfully');
-        expect(UpdatedDummyEvent.confirmedVolunteers[0]).toBeUndefined();
+        expect(updatedDummyEvent.confirmedVolunteers[0]).toBeUndefined();
     });
 });
 
