@@ -6,6 +6,13 @@ const { default: mongoose } = require('mongoose');
 const variables = require('./variables');
 const { MAX_IMAGE_SIZE } = require('./variables');
 
+const DELETE_RATE_VALIDATION_RULES = [param('id').isMongoId()];
+
+const POST_RATE_VALIDATION_RULES = [
+    param('id').isMongoId(),
+    body('rating').isInt({ min: 1, max: 5 }),
+];
+
 const GET_EVENT_ID_VALIDATION_RULES = [
     param('id')
         .exists()
@@ -467,5 +474,7 @@ module.exports = {
     DONATE_VALIDATION_RULES,
     CREATE_EVENT_VALIDATION_RULES,
     CREATE_FUND_VALIDATION_RULES,
+    POST_RATE_VALIDATION_RULES,
+    DELETE_RATE_VALIDATION_RULES,
     handleValidation,
 };

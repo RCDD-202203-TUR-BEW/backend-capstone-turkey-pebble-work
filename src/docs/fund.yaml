@@ -235,9 +235,6 @@ components:
         lastName:
           type: string
           example: Doe
-        email:
-          type: string
-          example: mail@example.com
         __t:
           type: string
           example: User
@@ -334,9 +331,6 @@ components:
         lastName:
           type: string
           example: Doe
-        email:
-          type: string
-          example: mail@example.com
         profileImage:
           type: string
           example: https://www.example.com/image.jpg
