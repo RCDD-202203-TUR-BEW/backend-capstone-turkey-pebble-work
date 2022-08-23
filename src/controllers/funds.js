@@ -63,6 +63,7 @@ async function getFunds(req, res) {
         return res.sendStatus(500);
     }
 }
+
 async function deleteFund(req, res) {
     try {
         const { id } = req.params;
@@ -143,32 +144,40 @@ async function donate(req, res) {
 async function updateFund(req, res) {
     const { id: fundId } = req.params;
     const newFund = _.pick(req.body, [
-        'publisherId',
         'title',
         'content',
         'categories',
         'targetFund',
-        'donations',
         'address',
     ]);
 
     try {
         const fund = await Funds.findByIdAndUpdate(fundId, newFund, {
             new: true,
+            populate: 'donations.donorId',
         });
-        await fund.save();
+
+        let updatedFundMessage = '';
+
+        Object.entries(newFund).forEach(([key, value]) => {
+            if (fund[key] !== value) {
+                updatedFundMessage += `${key} changed from ${fund[key]} to ${value} \n`;
+            }
+        });
+
         await fund.donations.forEach(async (donation) => {
-            if (donation.donerId) {
-                donation.donorId.followedFunds.pull(fundId);
-                await donation.donorId.save();
+            if (donation.donorId) {
                 await sendEmail(
                     donation.donorId.email,
-                    'Fund updated', // subject
-                    `The fund ${fund.title} you had donated has various updates.`
+                    'Fund updated',
+                    `The fund ${fund.title} you had donated has various updates. \n\n${updatedFundMessage}`
                 );
             }
         });
-        return res.status(200).json(fund);
+
+        const updatedFund = await Funds.findById(fundId);
+
+        return res.status(200).json(updatedFund);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
