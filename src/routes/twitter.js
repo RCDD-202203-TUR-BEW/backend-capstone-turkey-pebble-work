@@ -8,7 +8,7 @@ router.get('/twitter', passport.authenticate('twitter', {}));
 
 router.get(
     '/twitter/callback',
-    passport.authenticate('google', {
+    passport.authenticate('twitter', {
         failureRedirect: '/api/auth/twitter',
         session: false,
     }),

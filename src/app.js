@@ -49,8 +49,6 @@ app.use(
     swaggerUi.setup(swaggerSpec, { explorer: true })
 );
 
-app.use('/api/google-auth', googleauth);
-app.use('/api/twitter-auth', twitterAuth);
 app.use(authMiddleware);
 
 app.use('/api/fund', fundRouter);
@@ -58,6 +56,8 @@ app.use('/api/auth', authRouter);
 app.use('/api/event', eventsRouter);
 app.use('/api/user', userRouter);
 app.use('/api/organization', organizationRouter);
+app.use('/api/google-auth', googleauth);
+app.use('/api/twitter-auth', twitterAuth);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
