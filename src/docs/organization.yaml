@@ -218,7 +218,49 @@ paths:
                                     message:
                                         type: string
                                         example: 'Invalid Token: No authorization token was found'
-
+    /api/organization/{id}/sub:
+        post:
+            tags:
+                - Organization
+            summary: Delete organization sub
+            description: Delete organization sub
+            operationId: deleteSubscription
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - in: path
+                  name: id
+                  description: The id of the organization
+                  required: true
+                  type: string
+            responses:
+            # i have 2 (404) code statue in my code. how should i handle it here ? 
+                404:
+                    description: not found values
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        example: Organization not found
+                201:
+                    description: Organization Unsubscribed 
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FullOrganization'
+                422:
+                    description: This status is returned when the request is missing required fields or has an invalid values.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                500:
+                    description: Internal server error
 components:
     schemas:
         FullOrganization:

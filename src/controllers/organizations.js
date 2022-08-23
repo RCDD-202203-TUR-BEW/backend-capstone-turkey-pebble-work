@@ -205,7 +205,9 @@ async function deleteSubscription(req, res) {
                 user.followedOrganizations.pull(orgaId);
                 user.save();
             } else {
-                return res.status(404).json({ error: 'somthing not found' });
+                return res
+                    .status(404)
+                    .json({ error: 'Organization not found' });
             }
         } else {
             return res.status(404).json({ error: 'User not found' });
