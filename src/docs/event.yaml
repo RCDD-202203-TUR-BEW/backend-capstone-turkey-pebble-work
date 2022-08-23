@@ -609,6 +609,8 @@ paths:
         - Event
       summary: Invite Volunteer
       description: Invite Volunteer that share the same interests
+      security:
+        - auth_cookie: []
       consumes:
         - application/json
       produces:

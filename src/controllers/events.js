@@ -161,10 +161,9 @@ async function inviteVolunteer(req, res) {
     const filter = {};
     try {
         const event = await Event.findById(eventId);
-        console.log(event.categories);
         filter.interests = { $in: event.categories };
-        const userToInvite = await User.find(filter);
-        userToInvite.forEach(async (item) => {
+        const usersToInvite = await User.find(filter);
+        usersToInvite.forEach(async (item) => {
             await sendEmail(
                 item.email,
                 'Event Invetation', // subject
