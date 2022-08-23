@@ -179,6 +179,7 @@ async function donate(req, res) {
 
 async function updateFund(req, res) {
     const { id: fundId } = req.params;
+    const publisherIdFields = ['id', 'firstName', 'lastName', 'profileImage'];
     const newFund = _.pick(req.body, [
         'title',
         'content',
@@ -211,7 +212,10 @@ async function updateFund(req, res) {
             }
         });
 
-        const updatedFund = await Fund.findById(fundId);
+        const updatedFund = await Fund.findById(fundId).populate(
+            'publisherId',
+            publisherIdFields.join(' ')
+        );
 
         return res.status(200).json(updatedFund);
     } catch (error) {

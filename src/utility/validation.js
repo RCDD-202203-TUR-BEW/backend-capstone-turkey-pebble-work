@@ -68,11 +68,6 @@ const PUT_FUND_VALIDATION_RULES = [
         .isString()
         .custom((value) => mongoose.Types.ObjectId.isValid(value))
         .withMessage('A valid id is required'),
-    // body('publisherId')
-    //     .optional()
-    //     .isString()
-    //     .custom((value) => mongoose.Types.ObjectId.isValid(value))
-    //     .withMessage('PublisherId must be a valid id'),
     body('title').optional().isString().withMessage('title must be a string'),
     body('content')
         .optional()
@@ -94,21 +89,6 @@ const PUT_FUND_VALIDATION_RULES = [
         .optional()
         .isNumeric()
         .withMessage('targetFund must be a number'),
-    // body('donations')
-    //     .optional()
-    //     .isArray({ min: 1 })
-    //     .withMessage('donations must be an unempty array')
-    //     .custom((array) =>
-    //         array.every((donation) => {
-    //             if (!donation) return true;
-    //             return (
-    //                 isString(donation.donorId) &&
-    //                 mongoose.Types.ObjectId.isValid(donation.donorId) &&
-    //                 isNumeric(donation.amount)
-    //             );
-    //         })
-    //     )
-    //     .withMessage('donations must be an array of valid donations'),
     body('address')
         .optional()
         .isObject()
@@ -123,16 +103,6 @@ const PUT_FUND_VALIDATION_RULES = [
         .withMessage(
             'address must be an object that contains addressLine, city and country properties which all must be strings'
         ),
-    // body('location')
-    //     .optional()
-    //     .isObject()
-    //     .custom((location) => {
-    //         if (!location) return true;
-    //         return isString(location.lat) && isString(location.log);
-    //     })
-    //     .withMessage(
-    //         'location must be an object that contains lat and log properties which both must be floats'
-    //     ),
 ];
 
 const BASE_USER_VALIDATION_RULES = [
