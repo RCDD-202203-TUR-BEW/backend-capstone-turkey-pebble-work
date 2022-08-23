@@ -240,10 +240,44 @@ async function saveGoogleUser(req, res) {
     res.status(200).json({ message: 'User successfully signed in' });
 }
 
+async function saveTwitterUser(req, res) {
+    const twitterId = `twitter-${req.user._json.sub}`;
+
+    let user = await BaseUser.findOne({ providerId: twitterId });
+
+    if (!user) {
+        user = await BaseUser.create({
+            email: req.user._json.email,
+            fullName: req.user._json.name,
+            firstName: req.user._json.given_name,
+            lastName: req.user._json.family_name,
+            provider: 'twitter',
+            providerId: twitterId,
+            isVerified: true,
+        });
+    }
+
+    const claims = {
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+    };
+    const token = jwt.sign(claims, process.env.SECRET_KEY, {
+        expiresIn: FOURTEEN_DAYS_STRING,
+    });
+    res.cookie('auth_token', token, {
+        httpOnly: true,
+        signed: true,
+        expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
+        secure: process.env.NODE_ENV === 'production',
+    });
+    res.status(200).json({ message: 'User successfully signed in' });
+}
 module.exports = {
     signUp,
     verifyBaseUserEmail,
     signIn,
     signOut,
     saveGoogleUser,
+    saveTwitterUser,
 };

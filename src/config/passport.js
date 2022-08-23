@@ -33,14 +33,15 @@ passport.use(
 passport.use(
     new TwitterStrategy(
         {
-            consumerKey: process.env.OAUTH2_CLIENT_ID,
-            consumerSecret: process.env.OAUTH2_CLIENT_SECRET,
+            consumerKey: process.env.OAUTH2_CONSUMER_KEY,
+            consumerSecret: process.env.OAUTH2_CONSUMER_SECRET,
             callbackURL:
                 'http://localhost:3000/api/twitter-auth/twitter/callback',
         },
         async (accessToken, refreshToken, profile, cb) => {
             try {
                 cb(null, profile);
+                console.log(profile);
             } catch (err) {
                 cb(err, null);
             }
