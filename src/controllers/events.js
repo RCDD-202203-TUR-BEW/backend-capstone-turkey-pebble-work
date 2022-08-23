@@ -155,6 +155,27 @@ async function updateEvent(req, res) {
     }
 }
 
+async function inviteVolunteer(req, res) {
+    const { id: eventId } = req.params;
+    const filter = {};
+    try {
+        const event = await Event.findById(eventId);
+        filter.interests = { $in: event.categories };
+        const usersToInvite = await User.find(filter);
+        usersToInvite.forEach(async (item) => {
+            await sendEmail(
+                item.email,
+                'Event Invetation', // subject
+                `${event.title} is an event that you may be interested in attending.` // text
+            );
+        });
+        return res.sendStatus(200);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 async function addOrRemoveVolunteer(req, res) {
     const event = await Event.findById(req.params.id);
     if (!event) {
@@ -277,6 +298,7 @@ module.exports = {
     getEventById,
     deleteEvent,
     updateEvent,
+    inviteVolunteer,
     addOrRemoveVolunteer,
     createEvent,
 };

@@ -460,6 +460,42 @@ paths:
                     example: User already joined
         500:
           description: Internal server error
+  /api/event/{id}/invite-volunteer:
+    post:
+      tags:
+        - Event
+      summary: Invite Volunteer
+      description: Invite Volunteer that share the same interests
+      security:
+        - auth_cookie: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Authenticated user succesfully created event.
+        401:
+          description: user not sigend in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
 components:
   schemas:
     ShortUser:
