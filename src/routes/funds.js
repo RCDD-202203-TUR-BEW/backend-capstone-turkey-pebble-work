@@ -5,6 +5,7 @@ const {
     VERIFY_VALIDATION_FUND,
     VERIFY_VALIDATION_FUNDSBYID,
     DONATE_VALIDATION_RULES,
+    PUT_FUND_VALIDATION_RULES,
     CREATE_FUND_VALIDATION_RULES,
     handleValidation,
 } = require('../utility/validation');
@@ -44,6 +45,14 @@ router.post(
     DONATE_VALIDATION_RULES,
     handleValidation,
     fundsController.donate
+);
+
+router.put(
+    '/:id',
+    PUT_FUND_VALIDATION_RULES,
+    autherizationMiddleware(FundModel),
+    handleValidation,
+    fundsController.updateFund
 );
 
 module.exports = router;

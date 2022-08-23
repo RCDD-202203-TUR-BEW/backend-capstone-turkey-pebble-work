@@ -62,6 +62,49 @@ const VERIFY_VALIDATION_FUNDSBYID = [
         .withMessage('A valid id is required'),
 ];
 
+const PUT_FUND_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+    body('title').optional().isString().withMessage('title must be a string'),
+    body('content')
+        .optional()
+        .isString()
+        .withMessage('content must be a string'),
+    body('categories')
+        .optional()
+        .isArray({ min: 1 })
+        .withMessage('categories must be an unempty array')
+        .custom((array) =>
+            array.every(
+                (category) =>
+                    isString(category) &&
+                    variables.CATEGORIES.includes(category)
+            )
+        )
+        .withMessage('categories must be an array of valid categories'),
+    body('targetFund')
+        .optional()
+        .isNumeric()
+        .withMessage('targetFund must be a number'),
+    body('address')
+        .optional()
+        .isObject()
+        .custom((address) => {
+            if (!address) return true;
+            return (
+                isString(address.addressLine) &&
+                isString(address.city) &&
+                isString(address.country)
+            );
+        })
+        .withMessage(
+            'address must be an object that contains addressLine, city and country properties which all must be strings'
+        ),
+];
+
 const BASE_USER_VALIDATION_RULES = [
     body('email').exists().isEmail().withMessage('email is required'),
     body('password')
@@ -579,6 +622,7 @@ const handleValidation = (req, res, next) => {
 module.exports = {
     VERIFY_VALIDATION_FUND,
     VERIFY_VALIDATION_FUNDSBYID,
+    PUT_FUND_VALIDATION_RULES,
     USER_SIGNUP_VALIDATION_RULES,
     ORGANIZATION_SIGNUP_VALIDATION_RULES,
     VERIFY_VALIDATION_RULES,

@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand */
+const _ = require('lodash');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Fund = require('../models/fund');
@@ -10,10 +10,10 @@ const createFund = async (req, res) => {
         const { title, content, targetFund, categories, address } = req.body;
         const fund = await Fund.create({
             publisherId: req.user.id,
-            title: title,
-            content: content,
-            targetFund: targetFund,
-            categories: categories,
+            title,
+            content,
+            targetFund,
+            categories,
             address: {
                 city: address.city,
                 country: address.country,
@@ -99,6 +99,7 @@ async function getFunds(req, res) {
         return res.sendStatus(500);
     }
 }
+
 async function deleteFund(req, res) {
     try {
         const { id } = req.params;
@@ -176,10 +177,58 @@ async function donate(req, res) {
     }
 }
 
+async function updateFund(req, res) {
+    const { id: fundId } = req.params;
+    const publisherIdFields = ['id', 'firstName', 'lastName', 'profileImage'];
+    const newFund = _.pick(req.body, [
+        'title',
+        'content',
+        'categories',
+        'targetFund',
+        'address',
+    ]);
+
+    try {
+        const fund = await Fund.findByIdAndUpdate(fundId, newFund, {
+            new: true,
+            populate: 'donations.donorId',
+        });
+
+        let updatedFundMessage = '';
+
+        Object.entries(newFund).forEach(([key, value]) => {
+            if (fund[key] !== value) {
+                updatedFundMessage += `${key} changed from ${fund[key]} to ${value} \n`;
+            }
+        });
+
+        await fund.donations.forEach(async (donation) => {
+            if (donation.donorId) {
+                await sendEmail(
+                    donation.donorId.email,
+                    'Fund updated',
+                    `The fund ${fund.title} you had donated has various updates. \n\n${updatedFundMessage}`
+                );
+            }
+        });
+
+        const updatedFund = await Fund.findById(fundId).populate(
+            'publisherId',
+            publisherIdFields.join(' ')
+        );
+
+        return res.status(200).json(updatedFund);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
     getFunds,
     getSingleFund,
     deleteFund,
     donate,
+    updateFund,
     createFund,
 };
