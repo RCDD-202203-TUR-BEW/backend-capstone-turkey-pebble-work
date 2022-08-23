@@ -1,5 +1,6 @@
 const express = require('express');
 const Multer = require('multer');
+
 const userController = require('../controllers/organizations');
 const organizationController = require('../controllers/organizations');
 const { MAX_IMAGE_SIZE } = require('../utility/variables');
@@ -12,6 +13,7 @@ const multer = Multer({
 });
 const {
     handleValidation,
+    VERIFY_VALIDATION_FUNDSBYID,
     PUT_ORGANIZATION_VALIDATION_RULES,
     POST_RATE_VALIDATION_RULES,
     DELETE_RATE_VALIDATION_RULES,
@@ -39,6 +41,13 @@ router.delete(
     DELETE_RATE_VALIDATION_RULES,
     handleValidation,
     organizationController.deleteRate
+);
+
+router.delete(
+    '/:id/sub',
+    VERIFY_VALIDATION_FUNDSBYID,
+    handleValidation,
+    organizationController.deleteSubscription
 );
 
 module.exports = router;

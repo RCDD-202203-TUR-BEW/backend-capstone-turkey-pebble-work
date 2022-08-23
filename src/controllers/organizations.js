@@ -195,8 +195,30 @@ async function updateOrgProfile(req, res) {
     }
 }
 
+async function deleteSubscription(req, res) {
+    try {
+        const { id: orgaId } = req.params;
+        const { id: userId } = req.user;
+        const user = await User.findById(userId);
+        if (user) {
+            if (Organization.findById(orgaId)) {
+                user.followedOrganizations.pull(orgaId);
+                user.save();
+            } else {
+                return res.status(404).json({ error: 'somthing not found' });
+            }
+        } else {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        return res.status(200).json({ message: 'Unsubscribed Successfully!' });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
 module.exports = {
     rate,
     deleteRate,
     updateOrgProfile,
+    deleteSubscription,
 };
