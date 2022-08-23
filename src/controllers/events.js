@@ -44,7 +44,6 @@ async function getEvents(req, res) {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
 
@@ -156,34 +155,75 @@ async function updateEvent(req, res) {
     }
 }
 
-async function joinedVolunteers(req, res) {
+async function inviteVolunteer(req, res) {
+    const { id: eventId } = req.params;
+    const filter = {};
     try {
-        const event = await Event.findById(req.params.id);
-        if (!event) {
-            return res.status(404).json({ message: 'Event not found' });
-        }
-        const joinedUser = await Event.findOne({
-            $and: [
-                { _id: req.params.id },
-                {
-                    confirmedVolunteers: { $in: req.user.id },
-                },
-            ],
+        const event = await Event.findById(eventId);
+        filter.interests = { $in: event.categories };
+        const usersToInvite = await User.find(filter);
+        usersToInvite.forEach(async (item) => {
+            await sendEmail(
+                item.email,
+                'Event Invetation', // subject
+                `${event.title} is an event that you may be interested in attending.` // text
+            );
         });
-        if (joinedUser) {
-            return res.status(400).json({ message: 'User already joined' });
-        }
-        await Event.findByIdAndUpdate(req.params.id, {
-            $push: { confirmedVolunteers: req.user.id },
-        });
-        await User.findByIdAndUpdate(req.user.id, {
-            $push: { followedEvents: req.params.id },
-        });
-        return res.status(201).json({ message: 'Joined Successfully' });
+        return res.sendStatus(200);
     } catch (err) {
-        return res.sendStatus(500);
+        console.log(err);
+        return res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+async function addOrRemoveVolunteer(req, res) {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+    }
+
+    const { operationType } = req.body;
+    if (operationType === true) {
+        try {
+            const joinedUser = await Event.findOne({
+                $and: [
+                    { _id: req.params.id },
+                    {
+                        confirmedVolunteers: { $in: req.user.id },
+                    },
+                ],
+            });
+            if (joinedUser) {
+                return res.status(400).json({ message: 'User already joined' });
+            }
+            await Event.findByIdAndUpdate(req.params.id, {
+                $push: { confirmedVolunteers: req.user.id },
+            });
+            await User.findByIdAndUpdate(req.user.id, {
+                $push: { followedEvents: req.params.id },
+            });
+            return res.status(201).json({ message: 'Joined Successfully' });
+        } catch (err) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    if (operationType === false) {
+        try {
+            await Event.findByIdAndUpdate(req.params.id, {
+                $pull: { confirmedVolunteers: req.user.id },
+            });
+            await User.findByIdAndUpdate(req.user.id, {
+                $pull: { followedEvents: req.params.id },
+            });
+            return res.status(200).json({ message: 'Unjoined Successfully' });
+        } catch (err) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+    return operationType;
+}
+
 const createEvent = async (req, res) => {
     try {
         const event = await Event.create({
@@ -214,7 +254,6 @@ const createEvent = async (req, res) => {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
 
@@ -238,7 +277,6 @@ async function getEventById(req, res) {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
         const event = await Event.findById(id)
@@ -260,6 +298,7 @@ module.exports = {
     getEventById,
     deleteEvent,
     updateEvent,
-    joinedVolunteers,
+    inviteVolunteer,
+    addOrRemoveVolunteer,
     createEvent,
 };

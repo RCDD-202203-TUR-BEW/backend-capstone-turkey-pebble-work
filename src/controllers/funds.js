@@ -1,8 +1,48 @@
+const _ = require('lodash');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const Funds = require('../models/fund');
-const { BaseUser } = require('../models/user');
+const Fund = require('../models/fund');
+const { BaseUser, User } = require('../models/user');
 const { sendEmail } = require('../utility/mail');
+
+const createFund = async (req, res) => {
+    try {
+        const { title, content, targetFund, categories, address } = req.body;
+        const fund = await Fund.create({
+            publisherId: req.user.id,
+            title,
+            content,
+            targetFund,
+            categories,
+            address: {
+                city: address.city,
+                country: address.country,
+                addressLine: address.addressLine,
+            },
+        });
+
+        await BaseUser.findByIdAndUpdate(req.user.id, {
+            $push: { createdFunds: fund.id },
+        });
+
+        const requiredUserField = [
+            'id',
+            'firstName',
+            'lastName',
+            'profileImage',
+        ];
+
+        const populatedFund = await Fund.findById(fund.id).populate(
+            'publisherId',
+            requiredUserField.join(' ')
+        );
+
+        res.status(201).json(populatedFund);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 async function getSingleFund(req, res) {
     try {
@@ -11,11 +51,10 @@ async function getSingleFund(req, res) {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
 
-        const fund = await Funds.findById(id).populate(
+        const fund = await Fund.findById(id).populate(
             'publisherId',
             requiredUserField.join(' ')
         );
@@ -37,7 +76,6 @@ async function getFunds(req, res) {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
         const { categories, publisherId, lastDate, currentDate } = req.query;
@@ -51,7 +89,7 @@ async function getFunds(req, res) {
         if (lastDate && currentDate) {
             filter.createdAt = { $gte: currentDate, $lte: lastDate };
         }
-        const filteredItem = await Funds.find(filter).populate(
+        const filteredItem = await Fund.find(filter).populate(
             'publisherId',
             requiredUserField.join(' ')
         );
@@ -61,10 +99,11 @@ async function getFunds(req, res) {
         return res.sendStatus(500);
     }
 }
+
 async function deleteFund(req, res) {
     try {
         const { id } = req.params;
-        const fund = await Funds.findById(id).populate('donations.donorId');
+        const fund = await Fund.findById(id).populate('donations.donorId');
         await fund.donations.forEach(async (donation) => {
             if (donation.donerId) {
                 donation.donorId.followedFunds.pull(id);
@@ -82,7 +121,7 @@ async function deleteFund(req, res) {
                 createdFunds: id,
             },
         });
-        await Funds.findByIdAndDelete(id);
+        await Fund.findByIdAndDelete(id);
 
         return res.status(204).json({ message: 'Fund deleted' });
     } catch (err) {
@@ -99,7 +138,7 @@ async function donate(req, res) {
         }
         const { id } = req.params;
         const { amount } = req.body;
-        const existingFund = await Funds.findById(id);
+        const existingFund = await Fund.findById(id);
 
         if (!existingFund) {
             return res.status(404).json({ message: 'Fund not found' });
@@ -111,9 +150,15 @@ async function donate(req, res) {
 
         if (user) {
             donationObj.donorId = mongoose.Types.ObjectId(user.id);
+            await User.findByIdAndUpdate(user.id, {
+                // addToSet will add the id to the array if it is not already there
+                $addToSet: {
+                    followedFunds: mongoose.Types.ObjectId(existingFund.id),
+                },
+            });
         }
 
-        await Funds.findByIdAndUpdate(id, {
+        await Fund.findByIdAndUpdate(id, {
             $push: {
                 donations: donationObj,
             },
@@ -132,9 +177,58 @@ async function donate(req, res) {
     }
 }
 
+async function updateFund(req, res) {
+    const { id: fundId } = req.params;
+    const publisherIdFields = ['id', 'firstName', 'lastName', 'profileImage'];
+    const newFund = _.pick(req.body, [
+        'title',
+        'content',
+        'categories',
+        'targetFund',
+        'address',
+    ]);
+
+    try {
+        const fund = await Fund.findByIdAndUpdate(fundId, newFund, {
+            new: true,
+            populate: 'donations.donorId',
+        });
+
+        let updatedFundMessage = '';
+
+        Object.entries(newFund).forEach(([key, value]) => {
+            if (fund[key] !== value) {
+                updatedFundMessage += `${key} changed from ${fund[key]} to ${value} \n`;
+            }
+        });
+
+        await fund.donations.forEach(async (donation) => {
+            if (donation.donorId) {
+                await sendEmail(
+                    donation.donorId.email,
+                    'Fund updated',
+                    `The fund ${fund.title} you had donated has various updates. \n\n${updatedFundMessage}`
+                );
+            }
+        });
+
+        const updatedFund = await Fund.findById(fundId).populate(
+            'publisherId',
+            publisherIdFields.join(' ')
+        );
+
+        return res.status(200).json(updatedFund);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
     getFunds,
     getSingleFund,
     deleteFund,
     donate,
+    updateFund,
+    createFund,
 };

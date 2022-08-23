@@ -1,6 +1,5 @@
 /* eslint-disable consistent-return */
 const request = require('supertest');
-const moment = require('moment');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
@@ -403,8 +402,7 @@ describe('PUT /api/event/:id', () => {
 });
 
 describe('POST /api/event/:id/volunteers', () => {
-    jest.setTimeout(30000);
-
+    jest.setTimeout(10000);
     let jwtToken;
     let dummyEvent;
     let dummyUser;
@@ -463,15 +461,16 @@ describe('POST /api/event/:id/volunteers', () => {
     it('Should reture 201 status when joined successfully', async () => {
         const res = await request(app)
             .post(`/api/event/${dummyEvent.id}/volunteers`)
+            .send({ operationType: true })
             .set('Content-Type', 'application/json')
             .set('Cookie', [jwtToken]);
 
-        const UpdatedDummyEvent = await Event.findOne({
+        const updatedDummyEvent = await Event.findOne({
             puplisherId: dummyUser.id,
         });
         expect(res.status).toBe(201);
         expect(res.body.message).toBe('Joined Successfully');
-        expect(UpdatedDummyEvent.confirmedVolunteers[0].toString()).toBe(
+        expect(updatedDummyEvent.confirmedVolunteers[0].toString()).toBe(
             dummyUser.id
         );
     });
@@ -500,12 +499,28 @@ describe('POST /api/event/:id/volunteers', () => {
     it('Should reture 400 status when user already joined the event', async () => {
         await request(app)
             .post(`/api/event/${dummyEvent.id}/volunteers`)
+            .send({ operationType: true })
             .set('Content-Type', 'application/json')
             .set('Cookie', [jwtToken])
             .then((response) => {
                 expect(response.status).toBe(400);
                 expect(response.body.message).toBe('User already joined');
             });
+    });
+
+    it('Should reture 200 status when unjoined successfully', async () => {
+        const res = await request(app)
+            .post(`/api/event/${dummyEvent.id}/volunteers`)
+            .send({ operationType: false })
+            .set('Content-Type', 'application/json')
+            .set('Cookie', [jwtToken]);
+
+        const updatedDummyEvent = await Event.findOne({
+            puplisherId: dummyUser.id,
+        });
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe('Unjoined Successfully');
+        expect(updatedDummyEvent.confirmedVolunteers[0]).toBeUndefined();
     });
 });
 

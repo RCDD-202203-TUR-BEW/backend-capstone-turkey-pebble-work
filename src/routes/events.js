@@ -56,11 +56,19 @@ router.put(
     eventsController.updateEvent
 );
 
+// ADD OR REMOVE volunteers
+router.post(
+    '/:id/invite-volunteer',
+    VOLUNTEERS_EVENT_VALIDATION_RULES,
+    handleValidation,
+    autherizationMiddleware(EventModel),
+    eventsController.inviteVolunteer
+);
 router.post(
     '/:id/volunteers',
     VOLUNTEERS_EVENT_VALIDATION_RULES,
     handleValidation,
-    eventsController.joinedVolunteers
+    eventsController.addOrRemoveVolunteer
 );
 
 router.post(
