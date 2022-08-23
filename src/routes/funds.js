@@ -6,12 +6,20 @@ const {
     VERIFY_VALIDATION_FUNDSBYID,
     DONATE_VALIDATION_RULES,
     PUT_FUND_VALIDATION_RULES,
+    CREATE_FUND_VALIDATION_RULES,
     handleValidation,
 } = require('../utility/validation');
 
 const router = express.Router();
 
 const fundsController = require('../controllers/funds');
+
+router.post(
+    '/',
+    CREATE_FUND_VALIDATION_RULES,
+    handleValidation,
+    fundsController.createFund
+);
 
 router.get(
     '/',

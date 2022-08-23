@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
@@ -15,12 +14,26 @@ const googleauth = require('./routes/google');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 const eventsRouter = require('./routes/events');
+const userRouter = require('./routes/users');
 const organizationRouter = require('./routes/organizations');
 
 const app = express();
 const port = process.env.PORT;
 
-app.use(cors());
+const whitelist = ['http://localhost:3000'];
+const corsOptions = {
+    credentials: true,
+    origin(origin, callback) {
+        // allow requests with no origin like browser requests to /api-docs
+        if (!origin) return callback(null, true);
+        if (whitelist.indexOf(origin) !== -1) {
+            return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+    },
+};
+
+app.use(cors(corsOptions));
 
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
@@ -41,6 +54,7 @@ app.use(authMiddleware);
 app.use('/api/fund', fundRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/event', eventsRouter);
+app.use('/api/user', userRouter);
 app.use('/api/organization', organizationRouter);
 
 function ErrorHandler(err, req, res, next) {
