@@ -10,7 +10,7 @@ paths:
             description: show public information of an organization
             operationId: getOrganization
             consumes:
-                - multipart/form-data
+                - application/json
             produces:
                 - application/json
             parameters:
@@ -28,15 +28,21 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/FullPublicOrganization'
                 404:
-                    description: Organization not found  or has an invalid value
+                    description: Organization not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Page not found
+                422:
+                    description: Organization has an invalid value
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ValidationError'
-                                properties:
-                                    error:
-                                        type: string
-                                        example: Page not found
                 500:
                     description: Internal server error
     /api/organization/:
@@ -47,7 +53,7 @@ paths:
             description: show private information of an organization
             operationId: getOrganization
             consumes:
-                - multipart/form-data
+                - application/json
             produces:
                 - application/json
             security:
