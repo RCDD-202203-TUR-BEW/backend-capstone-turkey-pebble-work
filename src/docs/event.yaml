@@ -2,7 +2,7 @@ tags:
   - name: Event
     description: API to manage the authentication.
 paths:
-  /api/event:
+  /api/event/:
     post:
       tags:
         - Event
@@ -46,7 +46,6 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/event/:
     get:
       tags:
         - Event
@@ -230,7 +229,7 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/event/:id:
+  /api/event/{id}:
     get:
       tags:
         - "Event"
@@ -378,7 +377,7 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/event/:id/volunteers:
+  /api/event/{id}/volunteers:
     post:
       tags:
         - Event
