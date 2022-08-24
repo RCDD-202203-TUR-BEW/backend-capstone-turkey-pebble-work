@@ -22,10 +22,10 @@ paths:
             schema:
               $ref: "#/components/schemas/UpdatedUser"
             encoding:
-              preferredCities:
+              preferredCities[]:
                 style: form
                 explode: true
-              interests:
+              interests[]:
                 style: form
                 explode: true
       responses:
@@ -193,7 +193,7 @@ components:
             - female
             - other
           example: female
-        preferredCities:
+        preferredCities[]:
           type: array
           items:
             type: string
@@ -280,7 +280,7 @@ components:
               - Osmaniye
               - Duzce
           example: [Osmaniye, Duzce]
-        interests:
+        interests[]:
           type: array
           items:
             type: string

@@ -1,6 +1,6 @@
 tags:
-    - name: Event
-      description: API to manage events.
+  - name: Event
+    description: API to manage events.
 
 paths:
   /api/event/:
@@ -19,6 +19,11 @@ paths:
           multipart/form-data:
             schema:
               $ref: "#/components/schemas/newEvent"
+            encoding:
+              categories[]:
+                style: form
+                explode: true
+
       responses:
         201:
           description: Authenticated user succesfully created event.
@@ -58,7 +63,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: categories
+        - name: categories[]
           in: query
           schema:
             type: array
@@ -336,7 +341,7 @@ paths:
             schema:
               $ref: "#/components/schemas/UpdateEvent"
             encoding:
-              categories:
+              categories[]:
                 style: form
                 explode: true
               confirmedVolunteers:
@@ -609,7 +614,7 @@ components:
         date:
           type: string
           format: date
-        categories:
+        categories[]:
           type: array
           items:
             type: string
@@ -760,19 +765,23 @@ components:
         - content
         - coverImage
         - date
-        - categories
+        - categories[]
         - address
         - location
       properties:
         title:
           type: string
+          example: Event Title
         content:
           type: string
+          example: Event Description
         coverImage:
           type: string
+          format: binary
         date:
           type: date
-        categories:
+          example: 2022-01-01
+        categories[]:
           type: array
           items:
             type: string
@@ -793,6 +802,7 @@ components:
               - Life Below Water
               - Peace And Justice And Strong Institutions
               - Partnership For The Goals
+          example: [No Poverty, Zero Hunger]
         address:
           type: object
           properties:
