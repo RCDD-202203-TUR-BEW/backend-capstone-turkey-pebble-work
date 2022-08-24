@@ -49,7 +49,7 @@ async function getOrgPublicProfile(req, res) {
     }
 }
 
-async function getOrgPrivateProfile(req, res) {
+async function getPrivateOrga(req) {
     const requiredUserFields = ['id', 'firstName', 'lastName', 'profileImage'];
     const excludeFields = {
         email: 0,
@@ -58,31 +58,35 @@ async function getOrgPrivateProfile(req, res) {
         providerId: 0,
         isVerified: 0,
     };
+
+    const orga = await Organization.findOne({ _id: req.user.id }, excludeFields)
+        .populate({
+            path: 'createdEvents',
+            populate: [
+                {
+                    path: 'confirmedVolunteers',
+                    select: requiredUserFields.join(' '),
+                },
+                {
+                    path: 'invitedVolunteers',
+                    select: requiredUserFields.join(' '),
+                },
+            ],
+        })
+        .populate('followers', requiredUserFields.join(' '))
+        .populate('createdFunds')
+        .populate('rates.userId', requiredUserFields.join(' '));
+
+    return orga;
+}
+
+async function getOrgPrivateProfile(req, res) {
     try {
         const orga = await Organization.findById(req.user.id);
         if (!orga) {
             return res.status(403).json({ message: 'User Not Authorised!' });
         }
-        const orgaProfile = await Organization.findOne(
-            { _id: req.user.id },
-            excludeFields
-        )
-            .populate({
-                path: 'createdEvents',
-                populate: [
-                    {
-                        path: 'confirmedVolunteers',
-                        select: requiredUserFields.join(' '),
-                    },
-                    {
-                        path: 'invitedVolunteers',
-                        select: requiredUserFields.join(' '),
-                    },
-                ],
-            })
-            .populate('followers', requiredUserFields.join(' '))
-            .populate('createdFunds')
-            .populate('rates.userId', requiredUserFields.join(' '));
+        const orgaProfile = await getPrivateOrga(req);
 
         return res.status(200).json(orgaProfile);
     } catch (error) {
@@ -285,4 +289,5 @@ module.exports = {
     updateOrgProfile,
     getOrgPublicProfile,
     getOrgPrivateProfile,
+    getPrivateOrga,
 };

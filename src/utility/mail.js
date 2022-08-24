@@ -24,6 +24,22 @@ async function sendEmail(email, subject, text) {
     }
 }
 
+async function sendHtmlEmail(email, subject, html) {
+    const mailOptions = {
+        from: process.env.OUTLOOK_EMAIL,
+        to: email,
+        subject,
+        html,
+    };
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (err) {
+        console.log('Email not sent');
+        console.log(err);
+    }
+}
+
 module.exports = {
     sendEmail,
+    sendHtmlEmail,
 };

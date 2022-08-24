@@ -71,7 +71,8 @@ async function getUserPublicProfile(req, res) {
         return res.status(500).json({ error: 'Internal server error' });
     }
 }
-async function getUserPrivateProfile(req, res) {
+
+async function getPrivateUser(req) {
     const requiredUserFields = ['id', 'firstName', 'lastName', 'profileImage'];
     const requiredOrgaFields = [
         'id',
@@ -90,47 +91,49 @@ async function getUserPrivateProfile(req, res) {
         isVerified: 0,
     };
 
+    const userProfile = await User.findOne({ _id: req.user.id }, excludeFields)
+        .populate({
+            path: 'createdEvents',
+            populate: [
+                {
+                    path: 'confirmedVolunteers',
+                    select: requiredUserFields.join(' '),
+                },
+                {
+                    path: 'invitedVolunteers',
+                    select: requiredUserFields.join(' '),
+                },
+            ],
+        })
+        .populate('followers', requiredUserFields.join(' '))
+        .populate('createdFunds')
+        .populate({
+            path: 'followedEvents',
+            populate: [
+                {
+                    path: 'confirmedVolunteers',
+                    select: requiredUserFields.join(' '),
+                },
+                {
+                    path: 'invitedVolunteers',
+                    select: requiredUserFields.join(' '),
+                },
+            ],
+        })
+        .populate('followedFunds')
+        .populate('followedUsers', requiredUserFields.join(' '))
+        .populate('followedOrganizations', requiredOrgaFields.join(' '));
+
+    return userProfile;
+}
+
+async function getUserPrivateProfile(req, res) {
     try {
         const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(403).json({ message: 'User Not Authorised!' });
         }
-        const userProfile = await User.findOne(
-            { _id: req.user.id },
-            excludeFields
-        )
-            .populate({
-                path: 'createdEvents',
-                populate: [
-                    {
-                        path: 'confirmedVolunteers',
-                        select: requiredUserFields.join(' '),
-                    },
-                    {
-                        path: 'invitedVolunteers',
-                        select: requiredUserFields.join(' '),
-                    },
-                ],
-            })
-            .populate('followers', requiredUserFields.join(' '))
-            .populate('createdFunds')
-            .populate({
-                path: 'followedEvents',
-                populate: [
-                    {
-                        path: 'confirmedVolunteers',
-                        select: requiredUserFields.join(' '),
-                    },
-                    {
-                        path: 'invitedVolunteers',
-                        select: requiredUserFields.join(' '),
-                    },
-                ],
-            })
-            .populate('followedFunds')
-            .populate('followedUsers', requiredUserFields.join(' '))
-            .populate('followedOrganizations', requiredOrgaFields.join(' '));
-
+        const userProfile = await getPrivateUser(req);
         return res.status(200).json(userProfile);
     } catch (error) {
         console.log(error);
@@ -194,4 +197,5 @@ module.exports = {
     getUserPublicProfile,
     getUserPrivateProfile,
     updateUserProfile,
+    getPrivateUser,
 };
