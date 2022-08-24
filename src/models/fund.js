@@ -27,18 +27,21 @@ const fundSchema = mongoose.Schema(
             type: Number,
             required: true,
         },
-        donations: [
-            {
-                donorId: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'user',
+        donations: {
+            type: [
+                {
+                    donorId: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'User',
+                    },
+                    amount: {
+                        type: Number,
+                        required: false,
+                    },
                 },
-                amount: {
-                    type: Number,
-                    required: false,
-                },
-            },
-        ],
+            ],
+            default: [],
+        },
         address: {
             city: {
                 type: String,
@@ -62,10 +65,12 @@ const fundSchema = mongoose.Schema(
 );
 
 fundSchema.virtual('gatheredFund').get(function () {
-    let sum;
-    this.donations.forEach((donation) => {
-        sum += donation.amount;
-    });
+    let sum = 0;
+    if (this.donations) {
+        this.donations.forEach((donation) => {
+            sum += donation.amount;
+        });
+    }
     return sum;
 });
 

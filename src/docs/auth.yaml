@@ -105,7 +105,7 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/auth/signin: 
+  /api/auth/signin:
     post:
       tags:
         - Auth
@@ -132,7 +132,7 @@ paths:
                   format: password
                   example: 12341234
       responses:
-        400: 
+        400:
           description: This status is returned if the email or password is incorrect.
           content:
             application/json:
@@ -164,7 +164,7 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/auth/verify/:id/:token: 
+  /api/auth/verify/{id}/{token}:
     get:
       tags:
         - Auth
@@ -219,7 +219,7 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/auth/signout: 
+  /api/auth/signout:
     get:
       tags:
         - Auth
@@ -380,18 +380,15 @@ components:
               - Gender Equality
               - Clean Water And Sanitation
               - Affordable And Clean Energy
-              - Animals
-              - Oceans
-              - Nature
+              - Decent Work And Economic Growth
+              - Industry Innovation And Infrastructure
               - Reduced Inequalities
               - Sustainable Cities And Communities
               - Responsible Consumption And Production
               - Climate Action
               - Life Below Water
-              - Life On Land
-              - Peace
-              - Youth
-              - Justice
+              - Peace And Justice And Strong Institutions
+              - Partnership For The Goals
           example: [No Poverty, Zero Hunger]
         websiteUrl:
           type: string
@@ -554,21 +551,18 @@ components:
               - Gender Equality
               - Clean Water And Sanitation
               - Affordable And Clean Energy
-              - Animals
-              - Oceans
-              - Nature
+              - Decent Work And Economic Growth
+              - Industry Innovation And Infrastructure
               - Reduced Inequalities
               - Sustainable Cities And Communities
               - Responsible Consumption And Production
               - Climate Action
               - Life Below Water
-              - Life On Land
-              - Peace
-              - Youth
-              - Justice
+              - Peace And Justice And Strong Institutions
+              - Partnership For The Goals
           example: [No Poverty, Zero Hunger]
-  securitySchemes: 
-    auth_cookie: 
+  securitySchemes:
+    auth_cookie:
       type: apiKey
       in: cookie
       name: auth_token

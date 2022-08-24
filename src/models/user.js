@@ -81,9 +81,8 @@ const baseUser = mongoose.Schema(
             default: [],
         },
     },
-
     {
-        timestamps: true,
+        timestamp: true,
         toJSON: { virtuals: true },
         toObject: { virtuals: true },
     }

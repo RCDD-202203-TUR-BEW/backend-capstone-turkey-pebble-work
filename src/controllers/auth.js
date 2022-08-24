@@ -95,11 +95,13 @@ async function signUp(req, res) {
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
             expiresIn: FOURTEEN_DAYS_STRING,
         });
+
         res.cookie('auth_token', token, {
-            httpOnly: true, // only accessible by server
+            httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
+            sameSite: 'none',
         });
 
         const verificationToken = await new Token({
@@ -141,12 +143,13 @@ async function verifyBaseUserEmail(req, res) {
             return res.status(400).json({ message: 'Invalid link' });
         }
 
-        await BaseUser.updateOne({ _id: baseUser.id, isVerified: true });
+        await BaseUser.updateOne({ _id: baseUser.id }, { isVerified: true });
         await Token.findByIdAndDelete(token.id);
 
         return res.status(200).json({ message: 'User verified' });
     } catch (error) {
-        return res.sendStatus(500);
+        console.log(error);
+        return res.sendStatus(500).json({ error: 'Internal server error' });
     }
 }
 
@@ -176,13 +179,15 @@ async function signIn(req, res) {
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
             expiresIn: FOURTEEN_DAYS_STRING,
         });
+        // console.log(token);
 
         // set cookie
         res.cookie('auth_token', token, {
             httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
+            sameSite: 'none',
         });
 
         const result = {};
@@ -223,17 +228,22 @@ async function saveGoogleUser(req, res) {
     }
 
     const claims = {
+        id: user.id,
         email: user.email,
         fullName: user.fullName,
-        providerId: user.providerId,
     };
     const token = jwt.sign(claims, process.env.SECRET_KEY, {
-        expiresIn: '14d',
+        expiresIn: FOURTEEN_DAYS_STRING,
     });
-    res.cookie('token', token, {
+
+    res.cookie('auth_token', token, {
         httpOnly: true,
         signed: true,
+        expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
+        secure: true,
+        sameSite: 'none',
     });
+
     res.status(200).json({ message: 'User successfully signed in' });
 }
 

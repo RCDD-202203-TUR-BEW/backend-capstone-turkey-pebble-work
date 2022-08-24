@@ -2,6 +2,7 @@ const { expressjwt: jwt } = require('express-jwt');
 const mongoose = require('mongoose');
 
 const publicRoutes = [
+    '/api/google-auth/google',
     '/api/auth/user/signup',
     '/api/auth/organization/signup',
     '/api/auth/signin',
@@ -10,8 +11,10 @@ const publicRoutes = [
     // this is a regex, so it will match any path similar to /api/auth/verify/324/123456789
     // https://forbeslindesay.github.io/express-route-tester/
     /^\/api\/auth\/verify\/(?:([^/]+?))\/(?:([^/]+?))\/?$/i,
+    { url: /^\/api\/fund\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: '/api/event/', methods: ['GET'] },
     { url: '/api/fund/', methods: ['GET'] },
+    { url: /^\/api\/event\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: /^\/api\/user\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: /^\/api\/organization\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: /^\/api\/fund\/(?:([^/]+?))\/donate\/?$/i, methods: ['POST'] },

@@ -1,5 +1,6 @@
 const express = require('express');
 require('dotenv').config();
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -8,15 +9,30 @@ const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/users');
 const organizationRouter = require('./routes/organizations');
-const eventRouter = require('./routes/events');
-
+const fundRouter = require('./routes/funds');
+const eventsRouter = require('./routes/events');
 const googleauth = require('./routes/google');
-const fundsRouter = require('./routes/funds');
+
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 
 const app = express();
 const port = process.env.PORT;
+
+const whitelist = ['http://localhost:3000'];
+const corsOptions = {
+    credentials: true,
+    origin(origin, callback) {
+        // allow requests with no origin like browser requests to /api-docs
+        if (!origin) return callback(null, true);
+        if (whitelist.indexOf(origin) !== -1) {
+            return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+    },
+};
+
+app.use(cors(corsOptions));
 
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
@@ -31,14 +47,14 @@ app.use(
     swaggerUi.setup(swaggerSpec, { explorer: true })
 );
 
-app.use('/api/googleauth', googleauth);
+app.use('/api/google-auth', googleauth);
 app.use(authMiddleware);
 
+app.use('/api/fund', fundRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/organization', organizationRouter);
-app.use('/api/event', eventRouter);
-app.use('/api/fund', fundsRouter);
+app.use('/api/event', eventsRouter);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {

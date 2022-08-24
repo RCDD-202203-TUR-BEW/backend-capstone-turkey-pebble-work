@@ -2,7 +2,97 @@ tags:
   - name: Fund
     description: API to manage funds.
 paths:
-  /api/fund/:id/donate:
+  /api/fund/:
+    get:
+      tags:
+        - Fund
+      description: Filter funds.
+      parameters:
+        - in: query
+          name: publisherId
+          type: integer
+          collectionFormat: multi
+        - name: categories
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              example: "category1"
+              collectionFormat: multi
+        - name: lastDate
+          in: query
+          schema:
+            type: string
+            format: date
+            example: 2022-01-01
+        - name: currentDate
+          in: query
+          schema:
+            type: string
+            format: date
+            example: 2022-01-05
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fund"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal Server Error
+    post:
+      tags:
+        - Fund
+      summary: create a new fund
+      description: create a new fund
+      security:
+        - auth_cookie: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/newFund"
+      responses:
+        201:
+          description: Authenticated user succesfully created fund.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fund"
+        401:
+          description: user not sigend in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+  /api/fund/{id}/donate:
     post:
       tags:
         - Fund
@@ -35,11 +125,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Donation successful
+                $ref: "#/components/schemas/Fund"
         422:
           description: This status is returned when the request is missing required fields or has an invalid values.
           content:
@@ -48,47 +134,219 @@ paths:
                 $ref: "#/components/schemas/ValidationError"
         500:
           description: Internal server error
-  /api/funds/:
+  /api/fund/{id}:
     get:
       tags:
         - Fund
-      description: "funds route"
+      summary: Get a fund
+      description: Get a fund by its id.
+      operationId: getFund
+      consumes:
+        - application/json
+      produces:
+        - application/json
       parameters:
-        - in: query
-          name: publisherId
-          type: integer
-          collectionFormat: multi
-        - name: categories
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-              example: "category1"
-              collectionFormat: multi
-        - name: lastDate
-          in: query
+        - name: id
+          in: path
+          required: true
           schema:
             type: string
-            format: date
-            example: 2022-01-01
-        - name: currentDate
-          in: query
-          schema:
-            type: string
-            format: date
-            example: 2022-01-05
+            example: 5e9f8f8f8f8f8f8f8f8f8f8
       responses:
-        "200":
-          description: OK
+        200:
+          description: The Fund object with the specified Id.
           content:
             application/json:
               schema:
-                $ref: "#/components/schema/Fund"
-        "400":
-          description: Not Found
+                $ref: "#/components/schemas/Fund"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+    delete:
+      tags:
+        - Fund
+      summary: Delete a fund
+      description: Delete a fund by its id.
+      operationId: deleteFund
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 5e9f8f8f8f8f8f8f8f8f8f8
+      responses:
+        204:
+          description: The fund was deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Fund deleted"
+        403:
+          description: This status is returned when the user is not authorized to perform the operation.
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        500:
+          description: Internal server error
+        401:
+          description: This status is returned if the user is not signed in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+    put:
+      tags:
+        - Fund
+      summary: Update a fund
+      description: Update a fund by its id.
+      operationId: updateFund
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 5e9f8f8f8f8f8f8f8f8f8f8
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetFund:
+                  type: integer
+                  example: 100
+                content:
+                  type: string
+                  example: "This is a test fund"
+                title:
+                  type: string
+                  example: "Test Fund"
+                categories:
+                  type: array
+                  items:
+                    type: "string"
+                    description: "Fund categories"
+                    enum:
+                      - No Poverty
+                      - Zero Hunger
+                      - Good Health And Well-Being
+                      - Quality Education
+                      - Gender Equality
+                      - Clean Water And Sanitation
+                      - Affordable And Clean Energy
+                      - Animals
+                      - Oceans
+                      - Nature
+                      - Reduced Inequalities
+                      - Sustainable Cities And Communities
+                      - Responsible Consumption And Production
+                      - Climate Action
+                      - Life Below Water
+                      - Life On Land
+                      - Peace
+                      - Youth
+                      - Justice
+                adress:
+                  type: object
+                  properties:
+                    city:
+                      type: string
+                      example: "New York"
+                    country:
+                      type: string
+                      example: "US"
+                    adressLine:
+                      type: string
+                      example: "123 Main Street"
+      responses:
+        201:
+          description: The updated fund.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fund"
+        422:
+          description: This status is returned when the request is missing required fields or has an invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        403:
+          description: This status is returned when the user is not authorized to perform the operation.
+        401:
+          description: This status is returned if the user is not signed in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        500:
+          description: Internal server error
 components:
   schemas:
+    ShortUser:
+      properties:
+        _id:
+          type: string
+          example: 62e980586aca79a3936917e6
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        __t:
+          type: string
+          example: User
+        profileImage:
+          type: string
+          example: https://www.example.com/image.jpg
+        fullName:
+          type: string
+          example: John Doe
+        id:
+          type: string
+          example: 62e980586aca79a3936917e6
     ValidationError:
       type: object
       properties:
@@ -113,7 +371,7 @@ components:
       type: object
       properties:
         publisherId:
-          type: string
+          $ref: "#/components/schemas/ShortUser"
         targetFund:
           type: integer
         content:
@@ -142,24 +400,84 @@ components:
               - Gender Equality
               - Clean Water And Sanitation
               - Affordable And Clean Energy
-              - Animals
-              - Oceans
-              - Nature
+              - Decent Work And Economic Growth
+              - Industry Innovation And Infrastructure
               - Reduced Inequalities
               - Sustainable Cities And Communities
               - Responsible Consumption And Production
               - Climate Action
               - Life Below Water
               - Life On Land
-              - Peace
-              - Youth
-              - Justice
-        adress:
+              - Peace, Justice And Strong Institutions
+              - Partnerships For The Goals
+        address:
           type: object
           properties:
             city:
               type: string
             country:
-              type: integer
-            adressLine:
               type: string
+            addressLine:
+              type: string
+        gatheredFund:
+          type: integer
+        remainingFund:
+          type: integer
+    newFund:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 62e980586aca79a3936917e6
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        profileImage:
+          type: string
+          example: https://www.example.com/image.jpg
+        targetFund:
+          type: integer
+        content:
+          type: string
+        title:
+          type: string
+        categories:
+          type: array
+          items:
+            type: "string"
+            description: "Fund categories"
+            enum:
+              - No Poverty
+              - Zero Hunger
+              - Good Health And Well-Being
+              - Quality Education
+              - Gender Equality
+              - Clean Water And Sanitation
+              - Affordable And Clean Energy
+              - Decent Work And Economic Growth
+              - Industry Innovation And Infrastructure
+              - Reduced Inequalities
+              - Sustainable Cities And Communities
+              - Responsible Consumption And Production
+              - Climate Action
+              - Life Below Water
+              - Life On Land
+              - Peace, Justice And Strong Institutions
+              - Partnerships For The Goals
+        address:
+          type: object
+          properties:
+            city:
+              type: string
+            country:
+              type: string
+            addressLine:
+              type: string
+  securitySchemes:
+    auth_cookie:
+      type: apiKey
+      in: cookie
+      name: auth_token

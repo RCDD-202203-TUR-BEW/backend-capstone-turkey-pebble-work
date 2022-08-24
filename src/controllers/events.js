@@ -1,11 +1,16 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-console */
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const Event = require('../models/event');
-const { User } = require('../models/user');
+const { User, BaseUser } = require('../models/user');
 const { sendEmail } = require('../utility/mail');
 const storage = require('../db/storage');
 const variables = require('../utility/variables');
 const utils = require('../utility/utils');
+const { uploadImage } = require('../db/storage');
+const { getFileExtension } = require('../utility/utils');
+const { EVENT_IMAGE_DIR } = require('../utility/variables');
 
 async function getEvents(req, res) {
     const { categories, city, publisherId, fromDate, toDate, to, from } =
@@ -39,7 +44,6 @@ async function getEvents(req, res) {
             'id',
             'firstName',
             'lastName',
-            'email',
             'profileImage',
         ];
 
@@ -89,7 +93,7 @@ async function deleteEvent(req, res) {
             );
         });
 
-        await User.findByIdAndUpdate(userId, {
+        await BaseUser.findByIdAndUpdate(userId, {
             $pull: {
                 createdEvents: eventId,
             },
@@ -151,38 +155,150 @@ async function updateEvent(req, res) {
     }
 }
 
-async function joinedVolunteers(req, res) {
+async function inviteVolunteer(req, res) {
+    const { id: eventId } = req.params;
+    const filter = {};
     try {
-        const event = await Event.findById(req.params.id);
-        if (!event) {
-            return res.status(404).json({ message: 'Event not found' });
-        }
-        const joinedUser = await Event.findOne({
-            $and: [
-                { _id: req.params.id },
-                {
-                    confirmedVolunteers: { $in: req.user.id },
-                },
-            ],
+        const event = await Event.findById(eventId);
+        filter.interests = { $in: event.categories };
+        const usersToInvite = await User.find(filter);
+        usersToInvite.forEach(async (item) => {
+            await sendEmail(
+                item.email,
+                'Event Invetation', // subject
+                `${event.title} is an event that you may be interested in attending.` // text
+            );
         });
-        if (joinedUser) {
-            return res.status(400).json({ message: 'User already joined' });
-        }
-        await Event.findByIdAndUpdate(req.params.id, {
-            $push: { confirmedVolunteers: req.user.id },
-        });
-        await User.findByIdAndUpdate(req.user.id, {
-            $push: { followedEvents: req.params.id },
-        });
-        return res.status(201).json({ message: 'Joined Successfully' });
+        return res.sendStatus(200);
     } catch (err) {
-        return res.sendStatus(500);
+        console.log(err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function addOrRemoveVolunteer(req, res) {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+    }
+
+    const { operationType } = req.body;
+    if (operationType === true) {
+        try {
+            const joinedUser = await Event.findOne({
+                $and: [
+                    { _id: req.params.id },
+                    {
+                        confirmedVolunteers: { $in: req.user.id },
+                    },
+                ],
+            });
+            if (joinedUser) {
+                return res.status(400).json({ message: 'User already joined' });
+            }
+            await Event.findByIdAndUpdate(req.params.id, {
+                $push: { confirmedVolunteers: req.user.id },
+            });
+            await User.findByIdAndUpdate(req.user.id, {
+                $push: { followedEvents: req.params.id },
+            });
+            return res.status(201).json({ message: 'Joined Successfully' });
+        } catch (err) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    if (operationType === false) {
+        try {
+            await Event.findByIdAndUpdate(req.params.id, {
+                $pull: { confirmedVolunteers: req.user.id },
+            });
+            await User.findByIdAndUpdate(req.user.id, {
+                $pull: { followedEvents: req.params.id },
+            });
+            return res.status(200).json({ message: 'Unjoined Successfully' });
+        } catch (err) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+    return operationType;
+}
+
+const createEvent = async (req, res) => {
+    try {
+        const event = await Event.create({
+            publisherId: req.user.id,
+            title: req.body.title,
+            content: req.body.content,
+            date: req.body.date,
+            category: req.body.category,
+            address: req.body.address,
+            location: req.body.location,
+            coverImage: 'placeholder',
+        });
+
+        const imageUrl = await uploadImage(
+            req.file,
+            `${EVENT_IMAGE_DIR}/${event.id}.${getFileExtension(
+                req.file.originalname
+            )}`
+        );
+        event.coverImage = imageUrl;
+        await event.save();
+
+        await BaseUser.findByIdAndUpdate(req.user.id, {
+            $push: { createdEvents: event.id },
+        });
+
+        const requiredUserField = [
+            'id',
+            'firstName',
+            'lastName',
+            'profileImage',
+        ];
+
+        // pubulate the event with the publisher
+        const populatedEvent = await Event.findById(event.id).populate(
+            'publisherId',
+            requiredUserField.join(' ')
+        );
+
+        res.status(201).json(populatedEvent);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+async function getEventById(req, res) {
+    const { id } = req.params;
+    try {
+        const requiredUserField = [
+            'id',
+            'firstName',
+            'lastName',
+            'profileImage',
+        ];
+        const event = await Event.findById(id)
+            .populate('publisherId', requiredUserField.join(' '))
+            .populate('confirmedVolunteers', requiredUserField.join(' '))
+            .populate('invitedVolunteers', requiredUserField.join(' '));
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+        return res.status(200).json(event);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
     }
 }
 
 module.exports = {
     getEvents,
+    getEventById,
     deleteEvent,
     updateEvent,
-    joinedVolunteers,
+    inviteVolunteer,
+    addOrRemoveVolunteer,
+    createEvent,
 };

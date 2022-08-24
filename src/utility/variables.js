@@ -89,18 +89,16 @@ const CATEGORIES = [
     'Gender Equality',
     'Clean Water And Sanitation',
     'Affordable And Clean Energy',
-    'Animals',
-    'Oceans',
-    'Nature',
+    'Decent Work And Economic Growth',
+    'Industry Innovation And Infrastructure',
     'Reduced Inequalities',
     'Sustainable Cities And Communities',
     'Responsible Consumption And Production',
     'Climate Action',
     'Life Below Water',
     'Life On Land',
-    'Peace',
-    'Youth',
-    'Justice',
+    'Peace And Justice And Strong Institutions',
+    'Partnership For The Goals',
 ];
 
 const MAX_IMAGE_SIZE = 1024 * 1024 * 10; // 10MB

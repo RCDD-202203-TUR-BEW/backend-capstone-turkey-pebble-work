@@ -1,22 +1,17 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: 'Outlook365',
     secure: true,
     auth: {
-        type: 'OAuth2',
-        user: process.env.EMAIL,
-        pass: process.env.EAMIL_PASSWORD,
-        clientId: process.env.OAUTH2_CLIENT_ID,
-        clientSecret: process.env.OAUTH2_CLIENT_SECRET,
-        refreshToken: process.env.OAUTH2_REFRESH_TOKEN,
-        accessToken: process.env.OAUTH2_ACCESS_TOKEN,
+        user: process.env.OUTLOOK_EMAIL,
+        pass: process.env.OUTLOOK_PASSWORD,
     },
 });
 
 async function sendEmail(email, subject, text) {
     const mailOptions = {
-        from: process.env.EMAIL,
+        from: process.env.OUTLOOK_EMAIL,
         to: email,
         subject,
         text,
