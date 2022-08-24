@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 const express = require('express');
 require('dotenv').config();
+const passport = require('passport');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -42,13 +43,17 @@ app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// require('./config/passport');
+// app.use(passport.initialize());
+// app.use(passport.session());
 const swaggerSpec = swaggerJsdoc(SWAGGER_OPTIONS);
 app.use(
     '/api-docs',
     swaggerUi.serve,
     swaggerUi.setup(swaggerSpec, { explorer: true })
 );
-
+app.use('/api/google-auth', googleauth);
+app.use('/api/twitter-auth', twitterAuth);
 app.use(authMiddleware);
 
 app.use('/api/fund', fundRouter);

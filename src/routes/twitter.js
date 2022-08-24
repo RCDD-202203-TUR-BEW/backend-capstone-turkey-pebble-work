@@ -4,7 +4,10 @@ const { passport } = require('../config/passport');
 
 const router = express.Router();
 
-router.get('/twitter', passport.authenticate('twitter', {}));
+router.get(
+    '/twitter',
+    passport.authenticate('twitter', { scope: ['profile', 'email', 'openid'] })
+);
 
 router.get(
     '/twitter/callback',
