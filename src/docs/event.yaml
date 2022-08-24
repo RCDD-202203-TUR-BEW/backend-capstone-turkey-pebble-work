@@ -9,6 +9,8 @@ paths:
         - Event
       summary: create a new event
       description: create a new event
+      security:
+        - auth_cookie: []
       consumes:
         - multipart/form-data
       produces:

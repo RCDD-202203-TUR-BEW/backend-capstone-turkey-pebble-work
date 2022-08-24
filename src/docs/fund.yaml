@@ -6,7 +6,8 @@ paths:
     get:
       tags:
         - Fund
-      description: Filter funds.
+      summary: Filter funds
+      description: Filter funds
       parameters:
         - in: query
           name: publisherId
