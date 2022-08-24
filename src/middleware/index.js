@@ -15,13 +15,14 @@ const publicRoutes = [
     { url: '/api/event/', methods: ['GET'] },
     { url: '/api/fund/', methods: ['GET'] },
     { url: /^\/api\/event\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
+    { url: /^\/api\/user\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
+    { url: /^\/api\/organization\/(?:([^/]+?))\/?$/i, methods: ['GET'] },
     { url: /^\/api\/fund\/(?:([^/]+?))\/donate\/?$/i, methods: ['POST'] },
 ];
 
 const authMiddleware = jwt({
     secret: process.env.SECRET_KEY,
     algorithms: ['HS256'],
-    // eslint-disable-next-line arrow-body-style
     getToken: (req) => req.signedCookies.auth_token ?? req.cookies.auth_token,
     requestProperty: 'user',
 }).unless({

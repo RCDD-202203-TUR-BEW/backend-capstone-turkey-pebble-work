@@ -1,0 +1,1134 @@
+tags:
+    - name: User
+      description: API to manage user profile.
+paths:
+    /api/user/:id:
+        get:
+            tags:
+                - User
+            summary: View user public profile
+            description: show public information of a user
+            operationId: getUser
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                      example: 5e9f8f8f8f8f8f8f8f8f8f8
+            responses:
+                200:
+                    description: The user Profile.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FullPublicUser'
+                404:
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Page not found
+                422:
+                    description: User has an invalid value
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                500:
+                    description: Internal server error
+    /api/user/:
+        get:
+            tags:
+                - User
+            summary: View user private profile
+            description: show private information of a user
+            operationId: getUser
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            responses:
+                200:
+                    description: The user private profile.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FullPrivateUser'
+                403:
+                    description: User is not authorized to perform the operation.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: User Not Authorised!
+                401:
+                    description: User is not signed in.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                500:
+                    description: Internal server error
+
+components:
+    schemas:
+        FullPublicUser:
+            type: object
+            properties:
+                _id:
+                    type: string
+                    example: 5bd8f9f8c9f8b60e48b4567
+                firstName:
+                    type: string
+                    example: Sara
+                lastName:
+                    type: string
+                    example: Smith
+                dateOfBirth:
+                    type: string
+                    example: 2000-01-01
+                gender:
+                    type: string
+                    enum:
+                        - male
+                        - female
+                        - other
+                    example: female
+                preferredCities:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - Adana
+                            - Kocaeli
+                            - Adiyaman
+                            - Konya
+                            - Afyonkarahisar
+                            - Kutahya
+                            - Agri
+                            - Malatya
+                            - Amasya
+                            - Manisa
+                            - Ankara
+                            - Kahramanmaras
+                            - Antalya
+                            - Mardin
+                            - Artviin
+                            - Mugla
+                            - Aydin
+                            - Mus
+                            - Balikesir
+                            - Nevsehir
+                            - Bilecik
+                            - Nigde
+                            - Bingol
+                            - Ordu
+                            - Bitlis
+                            - Rize
+                            - Bolu
+                            - Sakarya
+                            - Burdur
+                            - Samsun
+                            - Bursa
+                            - Siirt
+                            - Canakkale
+                            - Sinop
+                            - Cankiri
+                            - Sivas
+                            - Corum
+                            - Tekirdag
+                            - Denizli
+                            - Tokat
+                            - Diyarbakir
+                            - Trabzon
+                            - Edirne
+                            - Tunceli
+                            - Elazig
+                            - Sanliurfa
+                            - Erzincan
+                            - Usak
+                            - Erzurum
+                            - Van
+                            - Eskisehir
+                            - Yozgat
+                            - Gaziantep
+                            - Zonguldak
+                            - Giresun
+                            - Aksaray
+                            - Gumushane
+                            - Bayburt
+                            - Hakkari
+                            - Karaman
+                            - Hatay
+                            - Kirikkale
+                            - Isparta
+                            - Batman
+                            - Mersin
+                            - Sirnak
+                            - Istanbul
+                            - Bartin
+                            - Izmir
+                            - Ardahan
+                            - Kars
+                            - Igdir
+                            - Kastamonu
+                            - Yalova
+                            - Kayseri
+                            - Karabuk
+                            - Kirklareli
+                            - Kilis
+                            - Kirsehir
+                            - Osmaniye
+                            - Duzce
+                    example: [Osmaniye, Duzce]
+                interests:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - No Poverty
+                            - Zero Hunger
+                            - Good Health And Well-Being
+                            - Quality Education
+                            - Gender Equality
+                            - Clean Water And Sanitation
+                            - Affordable And Clean Energy
+                            - Animals
+                            - Oceans
+                            - Nature
+                            - Reduced Inequalities
+                            - Sustainable Cities And Communities
+                            - Responsible Consumption And Production
+                            - Climate Action
+                            - Life Below Water
+                            - Life On Land
+                            - Peace
+                            - Youth
+                            - Justice
+                    example: [No Poverty, Zero Hunger]
+                followedEvents:
+                    type: array
+                    items:
+                        tyep: object
+                        properties:
+                            address:
+                                type: object
+                                properties:
+                                    city:
+                                        type: string
+                                        example: Istanbul
+                                    country:
+                                        type: string
+                                        example: Turkey
+                                    addressLine:
+                                        type: string
+                                        example: Sokak No.1
+                            location:
+                                type: object
+                                properties:
+                                    lat:
+                                        type: number
+                                        example: 41.01277
+                                    lng:
+                                        type: number
+                                        example: 28.94966
+                            _id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                            title:
+                                type: string
+                                example: Event title
+                            content:
+                                type: string
+                                example: Event content
+                            coverImage:
+                                type: string
+                                description: Url of the event cover image
+                                example: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+                            date:
+                                type: string
+                                example: 2020-01-01T00:00:00.000Z
+                            categories:
+                                type: array
+                                items:
+                                    type: string
+                                    enum:
+                                        - No Poverty
+                                        - Zero Hunger
+                                        - Good Health And Well-Being
+                                        - Quality Education
+                                        - Gender Equality
+                                        - Clean Water And Sanitation
+                                        - Affordable And Clean Energy
+                                        - Animals
+                                        - Oceans
+                                        - Nature
+                                        - Reduced Inequalities
+                                        - Sustainable Cities And Communities
+                                        - Responsible Consumption And Production
+                                        - Climate Action
+                                        - Life Below Water
+                                        - Life On Land
+                                        - Peace
+                                        - Youth
+                                        - Justice And Strong Institutions
+                            confirmedVolunteers:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ShortUser'
+                            invitedVolunteers:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ShortUser'
+                            id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                followedFunds:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            address:
+                                type: object
+                                properties:
+                                    city:
+                                        type: string
+                                        example: Istanbul
+                                    country:
+                                        type: string
+                                        example: Turkey
+                                    addressLine:
+                                        type: string
+                                        example: Sokak No.1
+                            _id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                            title:
+                                type: string
+                                example: Fund title
+                            content:
+                                type: string
+                                example: Fund content
+                            categories:
+                                type: array
+                                items:
+                                    type: string
+                                    enum:
+                                        - No Poverty
+                                        - Zero Hunger
+                                        - Good Health And Well-Being
+                                        - Quality Education
+                                        - Gender Equality
+                                        - Clean Water And Sanitation
+                                        - Affordable And Clean Energy
+                                        - Animals
+                                        - Oceans
+                                        - Nature
+                                        - Reduced Inequalities
+                                        - Sustainable Cities And Communities
+                                        - Responsible Consumption And Production
+                                        - Climate Action
+                                        - Life Below Water
+                                        - Life On Land
+                                        - Peace
+                                        - Youth
+                                        - Justice And Strong Institutions
+                            targetFund:
+                                type: number
+                                example: 100
+                            gatheredFund:
+                                type: number
+                                example: 5
+                            remainingFund:
+                                type: number
+                                example: 95
+                            id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                followedUsers:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ShortUser'
+                followedOrganizations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ShortOrganization'
+                followers:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ShortUser'
+                createdEvents:
+                    type: array
+                    items:
+                        tyep: object
+                        properties:
+                            address:
+                                type: object
+                                properties:
+                                    city:
+                                        type: string
+                                        example: Istanbul
+                                    country:
+                                        type: string
+                                        example: Turkey
+                                    addressLine:
+                                        type: string
+                                        example: Sokak No.1
+                            location:
+                                type: object
+                                properties:
+                                    lat:
+                                        type: number
+                                        example: 41.01277
+                                    lng:
+                                        type: number
+                                        example: 28.94966
+                            _id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                            title:
+                                type: string
+                                example: Event title
+                            content:
+                                type: string
+                                example: Event content
+                            coverImage:
+                                type: string
+                                description: Url of the event cover image
+                                example: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+                            date:
+                                type: string
+                                example: 2020-01-01T00:00:00.000Z
+                            categories:
+                                type: array
+                                items:
+                                    type: string
+                                    enum:
+                                        - No Poverty
+                                        - Zero Hunger
+                                        - Good Health And Well-Being
+                                        - Quality Education
+                                        - Gender Equality
+                                        - Clean Water And Sanitation
+                                        - Affordable And Clean Energy
+                                        - Animals
+                                        - Oceans
+                                        - Nature
+                                        - Reduced Inequalities
+                                        - Sustainable Cities And Communities
+                                        - Responsible Consumption And Production
+                                        - Climate Action
+                                        - Life Below Water
+                                        - Life On Land
+                                        - Peace
+                                        - Youth
+                                        - Justice And Strong Institutions
+                            confirmedVolunteers:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ShortUser'
+                            invitedVolunteers:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ShortUser'
+                            id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                createdFunds:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            address:
+                                type: object
+                                properties:
+                                    city:
+                                        type: string
+                                        example: Istanbul
+                                    country:
+                                        type: string
+                                        example: Turkey
+                                    addressLine:
+                                        type: string
+                                        example: Sokak No.1
+                            _id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                            title:
+                                type: string
+                                example: Fund title
+                            content:
+                                type: string
+                                example: Fund content
+                            categories:
+                                type: array
+                                items:
+                                    type: string
+                                    enum:
+                                        - No Poverty
+                                        - Zero Hunger
+                                        - Good Health And Well-Being
+                                        - Quality Education
+                                        - Gender Equality
+                                        - Clean Water And Sanitation
+                                        - Affordable And Clean Energy
+                                        - Animals
+                                        - Oceans
+                                        - Nature
+                                        - Reduced Inequalities
+                                        - Sustainable Cities And Communities
+                                        - Responsible Consumption And Production
+                                        - Climate Action
+                                        - Life Below Water
+                                        - Life On Land
+                                        - Peace
+                                        - Youth
+                                        - Justice And Strong Institutions
+                            targetFund:
+                                type: number
+                                example: 100
+                            gatheredFund:
+                                type: number
+                                example: 5
+                            remainingFund:
+                                type: number
+                                example: 95
+                            id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                profileImage:
+                    type: string
+                    description: Url of the user profile image
+                fullName:
+                    type: string
+                    example: Sara Smith
+                id:
+                    type: string
+                    example: 5bd8f9f8c9f8b60e48b4567
+                createdAt:
+                    type: string
+                    example: 2020-01-01T00:00:00.000Z
+        FullPrivateUser:
+            type: object
+            properties:
+                _id:
+                    type: string
+                    example: 5bd8f9f8c9f8b60e48b4567
+                email:
+                    type: string
+                    example: test@gmail.com
+                firstName:
+                    type: string
+                    example: Sara
+                lastName:
+                    type: string
+                    example: Smith
+                dateOfBirth:
+                    type: string
+                    example: 2000-01-01
+                gender:
+                    type: string
+                    enum:
+                        - male
+                        - female
+                        - other
+                    example: female
+                preferredCities:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - Adana
+                            - Kocaeli
+                            - Adiyaman
+                            - Konya
+                            - Afyonkarahisar
+                            - Kutahya
+                            - Agri
+                            - Malatya
+                            - Amasya
+                            - Manisa
+                            - Ankara
+                            - Kahramanmaras
+                            - Antalya
+                            - Mardin
+                            - Artviin
+                            - Mugla
+                            - Aydin
+                            - Mus
+                            - Balikesir
+                            - Nevsehir
+                            - Bilecik
+                            - Nigde
+                            - Bingol
+                            - Ordu
+                            - Bitlis
+                            - Rize
+                            - Bolu
+                            - Sakarya
+                            - Burdur
+                            - Samsun
+                            - Bursa
+                            - Siirt
+                            - Canakkale
+                            - Sinop
+                            - Cankiri
+                            - Sivas
+                            - Corum
+                            - Tekirdag
+                            - Denizli
+                            - Tokat
+                            - Diyarbakir
+                            - Trabzon
+                            - Edirne
+                            - Tunceli
+                            - Elazig
+                            - Sanliurfa
+                            - Erzincan
+                            - Usak
+                            - Erzurum
+                            - Van
+                            - Eskisehir
+                            - Yozgat
+                            - Gaziantep
+                            - Zonguldak
+                            - Giresun
+                            - Aksaray
+                            - Gumushane
+                            - Bayburt
+                            - Hakkari
+                            - Karaman
+                            - Hatay
+                            - Kirikkale
+                            - Isparta
+                            - Batman
+                            - Mersin
+                            - Sirnak
+                            - Istanbul
+                            - Bartin
+                            - Izmir
+                            - Ardahan
+                            - Kars
+                            - Igdir
+                            - Kastamonu
+                            - Yalova
+                            - Kayseri
+                            - Karabuk
+                            - Kirklareli
+                            - Kilis
+                            - Kirsehir
+                            - Osmaniye
+                            - Duzce
+                    example: [Osmaniye, Duzce]
+                interests:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - No Poverty
+                            - Zero Hunger
+                            - Good Health And Well-Being
+                            - Quality Education
+                            - Gender Equality
+                            - Clean Water And Sanitation
+                            - Affordable And Clean Energy
+                            - Animals
+                            - Oceans
+                            - Nature
+                            - Reduced Inequalities
+                            - Sustainable Cities And Communities
+                            - Responsible Consumption And Production
+                            - Climate Action
+                            - Life Below Water
+                            - Life On Land
+                            - Peace
+                            - Youth
+                            - Justice
+                    example: [No Poverty, Zero Hunger]
+                followedEvents:
+                    type: array
+                    items:
+                        tyep: object
+                        properties:
+                            address:
+                                type: object
+                                properties:
+                                    city:
+                                        type: string
+                                        example: Istanbul
+                                    country:
+                                        type: string
+                                        example: Turkey
+                                    addressLine:
+                                        type: string
+                                        example: Sokak No.1
+                            location:
+                                type: object
+                                properties:
+                                    lat:
+                                        type: number
+                                        example: 41.01277
+                                    lng:
+                                        type: number
+                                        example: 28.94966
+                            _id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                            title:
+                                type: string
+                                example: Event title
+                            content:
+                                type: string
+                                example: Event content
+                            coverImage:
+                                type: string
+                                description: Url of the event cover image
+                                example: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+                            date:
+                                type: string
+                                example: 2020-01-01T00:00:00.000Z
+                            categories:
+                                type: array
+                                items:
+                                    type: string
+                                    enum:
+                                        - No Poverty
+                                        - Zero Hunger
+                                        - Good Health And Well-Being
+                                        - Quality Education
+                                        - Gender Equality
+                                        - Clean Water And Sanitation
+                                        - Affordable And Clean Energy
+                                        - Animals
+                                        - Oceans
+                                        - Nature
+                                        - Reduced Inequalities
+                                        - Sustainable Cities And Communities
+                                        - Responsible Consumption And Production
+                                        - Climate Action
+                                        - Life Below Water
+                                        - Life On Land
+                                        - Peace
+                                        - Youth
+                                        - Justice And Strong Institutions
+                            confirmedVolunteers:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ShortUser'
+                            invitedVolunteers:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ShortUser'
+                            id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                followedFunds:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            address:
+                                type: object
+                                properties:
+                                    city:
+                                        type: string
+                                        example: Istanbul
+                                    country:
+                                        type: string
+                                        example: Turkey
+                                    addressLine:
+                                        type: string
+                                        example: Sokak No.1
+                            _id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                            title:
+                                type: string
+                                example: Fund title
+                            content:
+                                type: string
+                                example: Fund content
+                            categories:
+                                type: array
+                                items:
+                                    type: string
+                                    enum:
+                                        - No Poverty
+                                        - Zero Hunger
+                                        - Good Health And Well-Being
+                                        - Quality Education
+                                        - Gender Equality
+                                        - Clean Water And Sanitation
+                                        - Affordable And Clean Energy
+                                        - Animals
+                                        - Oceans
+                                        - Nature
+                                        - Reduced Inequalities
+                                        - Sustainable Cities And Communities
+                                        - Responsible Consumption And Production
+                                        - Climate Action
+                                        - Life Below Water
+                                        - Life On Land
+                                        - Peace
+                                        - Youth
+                                        - Justice And Strong Institutions
+                            targetFund:
+                                type: number
+                                example: 100
+                            gatheredFund:
+                                type: number
+                                example: 5
+                            remainingFund:
+                                type: number
+                                example: 95
+                            id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                followedUsers:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ShortUser'
+                followedOrganizations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ShortOrganization'
+                followers:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ShortUser'
+                createdEvents:
+                    type: array
+                    items:
+                        tyep: object
+                        properties:
+                            address:
+                                type: object
+                                properties:
+                                    city:
+                                        type: string
+                                        example: Istanbul
+                                    country:
+                                        type: string
+                                        example: Turkey
+                                    addressLine:
+                                        type: string
+                                        example: Sokak No.1
+                            location:
+                                type: object
+                                properties:
+                                    lat:
+                                        type: number
+                                        example: 41.01277
+                                    lng:
+                                        type: number
+                                        example: 28.94966
+                            _id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                            title:
+                                type: string
+                                example: Event title
+                            content:
+                                type: string
+                                example: Event content
+                            coverImage:
+                                type: string
+                                description: Url of the event cover image
+                                example: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+                            date:
+                                type: string
+                                example: 2020-01-01T00:00:00.000Z
+                            categories:
+                                type: array
+                                items:
+                                    type: string
+                                    enum:
+                                        - No Poverty
+                                        - Zero Hunger
+                                        - Good Health And Well-Being
+                                        - Quality Education
+                                        - Gender Equality
+                                        - Clean Water And Sanitation
+                                        - Affordable And Clean Energy
+                                        - Animals
+                                        - Oceans
+                                        - Nature
+                                        - Reduced Inequalities
+                                        - Sustainable Cities And Communities
+                                        - Responsible Consumption And Production
+                                        - Climate Action
+                                        - Life Below Water
+                                        - Life On Land
+                                        - Peace
+                                        - Youth
+                                        - Justice And Strong Institutions
+                            confirmedVolunteers:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ShortUser'
+                            invitedVolunteers:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ShortUser'
+                            id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                createdFunds:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            address:
+                                type: object
+                                properties:
+                                    city:
+                                        type: string
+                                        example: Istanbul
+                                    country:
+                                        type: string
+                                        example: Turkey
+                                    addressLine:
+                                        type: string
+                                        example: Sokak No.1
+                            _id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                            title:
+                                type: string
+                                example: Fund title
+                            content:
+                                type: string
+                                example: Fund content
+                            categories:
+                                type: array
+                                items:
+                                    type: string
+                                    enum:
+                                        - No Poverty
+                                        - Zero Hunger
+                                        - Good Health And Well-Being
+                                        - Quality Education
+                                        - Gender Equality
+                                        - Clean Water And Sanitation
+                                        - Affordable And Clean Energy
+                                        - Animals
+                                        - Oceans
+                                        - Nature
+                                        - Reduced Inequalities
+                                        - Sustainable Cities And Communities
+                                        - Responsible Consumption And Production
+                                        - Climate Action
+                                        - Life Below Water
+                                        - Life On Land
+                                        - Peace
+                                        - Youth
+                                        - Justice And Strong Institutions
+                            targetFund:
+                                type: number
+                                example: 100
+                            gatheredFund:
+                                type: number
+                                example: 5
+                            remainingFund:
+                                type: number
+                                example: 95
+                            id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                profileImage:
+                    type: string
+                    description: Url of the user profile image
+                fullName:
+                    type: string
+                    example: Sara Smith
+                id:
+                    type: string
+                    example: 5bd8f9f8c9f8b60e48b4567
+                createdAt:
+                    type: string
+                    example: 2020-01-01T00:00:00.000Z
+        ShortOrganization:
+            properties:
+                _id:
+                    type: string
+                    example: 62e980586aca79a3936917e6
+                name:
+                    type: string
+                    example: Organization name
+                description:
+                    type: string
+                    example: Organization description
+                createdAt:
+                    type: string
+                    example: 2020-01-01T00:00:00.000Z
+                coverImage:
+                    type: string
+                    example: Organization cover image
+                categories:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - No Poverty
+                            - Zero Hunger
+                            - Good Health And Well-Being
+                            - Quality Education
+                            - Gender Equality
+                            - Clean Water And Sanitation
+                            - Affordable And Clean Energy
+                            - Animals
+                            - Oceans
+                            - Nature
+                            - Reduced Inequalities
+                            - Sustainable Cities And Communities
+                            - Responsible Consumption And Production
+                            - Climate Action
+                            - Life Below Water
+                            - Life On Land
+                            - Peace
+                            - Youth
+                            - Justice And Strong Institutions
+                        example: [No Poverty, Zero Hunger]
+                city:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - Adana
+                            - Kocaeli
+                            - Adiyaman
+                            - Konya
+                            - Afyonkarahisar
+                            - Kutahya
+                            - Agri
+                            - Malatya
+                            - Amasya
+                            - Manisa
+                            - Ankara
+                            - Kahramanmaras
+                            - Antalya
+                            - Mardin
+                            - Artviin
+                            - Mugla
+                            - Aydin
+                            - Mus
+                            - Balikesir
+                            - Nevsehir
+                            - Bilecik
+                            - Nigde
+                            - Bingol
+                            - Ordu
+                            - Bitlis
+                            - Rize
+                            - Bolu
+                            - Sakarya
+                            - Burdur
+                            - Samsun
+                            - Bursa
+                            - Siirt
+                            - Canakkale
+                            - Sinop
+                            - Cankiri
+                            - Sivas
+                            - Corum
+                            - Tekirdag
+                            - Denizli
+                            - Tokat
+                            - Diyarbakir
+                            - Trabzon
+                            - Edirne
+                            - Tunceli
+                            - Elazig
+                            - Sanliurfa
+                            - Erzincan
+                            - Usak
+                            - Erzurum
+                            - Van
+                            - Eskisehir
+                            - Yozgat
+                            - Gaziantep
+                            - Zonguldak
+                            - Giresun
+                            - Aksaray
+                            - Gumushane
+                            - Bayburt
+                            - Hakkari
+                            - Karaman
+                            - Hatay
+                            - Kirikkale
+                            - Isparta
+                            - Batman
+                            - Mersin
+                            - Sirnak
+                            - Istanbul
+                            - Bartin
+                            - Izmir
+                            - Ardahan
+                            - Kars
+                            - Igdir
+                            - Kastamonu
+                            - Yalova
+                            - Kayseri
+                            - Karabuk
+                            - Kirklareli
+                            - Kilis
+                            - Kirsehir
+                            - Osmaniye
+                            - Duzce
+                        example: [Osmaniye, Duzce]
+                rates:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            userId:
+                                $ref: '#/components/schemas/ShortUser'
+                            rate:
+                                type: number
+                                example: 5
+                            id:
+                                type: string
+                                example: 5bd8f9f8c9f8b60e48b4567
+                rate:
+                    type: number
+                    example: 5
+                    description: The average rate of the organization (calcuated from the rates list)
+                fullName:
+                    type: string
+                    description: Organization full name
+                websiteUrl:
+                    type: string
+                    example: www.orga.com
+                id:
+                    type: string
+                    example: 62e980586aca79a3936917e6
+                __t:
+                    type: string
+                    example: Organization
+
+securitySchemes:
+    auth_cookie:
+        type: apiKey
+        in: cookie
+        name: auth_token

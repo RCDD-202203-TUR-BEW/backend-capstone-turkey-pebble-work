@@ -609,6 +609,22 @@ const CREATE_FUND_VALIDATION_RULES = [
         ),
 ];
 
+const GET_USER_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
+
+const GET_ORGANIZATION_VALIDATION_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
+
 const handleValidation = (req, res, next) => {
     const validationResults = validationResult(req);
     if (!validationResults.isEmpty()) {
@@ -639,5 +655,7 @@ module.exports = {
     CREATE_FUND_VALIDATION_RULES,
     POST_RATE_VALIDATION_RULES,
     DELETE_RATE_VALIDATION_RULES,
+    GET_ORGANIZATION_VALIDATION_RULES,
+    GET_USER_VALIDATION_RULES,
     handleValidation,
 };

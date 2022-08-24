@@ -1,6 +1,7 @@
 tags:
-  - name: Event
-    description: API to manage the authentication.
+    - name: Event
+      description: API to manage events.
+
 paths:
   /api/event/:
     post:
