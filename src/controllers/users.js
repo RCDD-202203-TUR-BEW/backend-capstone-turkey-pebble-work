@@ -58,6 +58,28 @@ async function updateUserProfile(req, res) {
     }
 }
 
+async function unFolowUser(req, res) {
+    try {
+        const { id: userToUnfollowId } = req.params;
+        const { id: userId } = req.user;
+        const user = await User.findById(userId);
+        if (user) {
+            if (User.findById(userToUnfollowId)) {
+                user.followedUsers.pull(userToUnfollowId);
+                user.save();
+            } else {
+                return res.status(404).json({ error: 'User not found' });
+            }
+        } else {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        return res.status(200).json({ message: 'Unfollowed Successfully!' });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
 module.exports = {
     updateUserProfile,
+    unFolowUser,
 };

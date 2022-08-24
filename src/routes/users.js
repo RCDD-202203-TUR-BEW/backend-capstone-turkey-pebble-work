@@ -11,6 +11,7 @@ const multer = Multer({
 });
 const {
     PUT_USER_VALIDATION_RULES,
+    VERIFY_VALIDATION_FUNDSBYID,
 
     handleValidation,
 } = require('../utility/validation');
@@ -23,6 +24,13 @@ router.put(
     PUT_USER_VALIDATION_RULES,
     handleValidation,
     userController.updateUserProfile
+);
+
+router.delete(
+    '/:id/sub',
+    VERIFY_VALIDATION_FUNDSBYID,
+    handleValidation,
+    userController.unFolowUser
 );
 
 module.exports = router;

@@ -247,7 +247,7 @@ paths:
                                     error:
                                         type: string
                                         example: Organization not found
-                201:
+                200:
                     description: Organization Unsubscribed 
                     content:
                         application/json:
