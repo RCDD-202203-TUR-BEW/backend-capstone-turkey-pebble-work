@@ -70,8 +70,6 @@ app.use('/api/auth', authRouter);
 app.use('/api/event', eventsRouter);
 app.use('/api/user', userRouter);
 app.use('/api/organization', organizationRouter);
-app.use('/api/google-auth', googleauth);
-app.use('/api/twitter-auth', twitterAuth);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {

@@ -34,14 +34,12 @@ passport.use(
         {
             consumerKey: process.env.OAUTH2_CONSUMER_KEY,
             consumerSecret: process.env.OAUTH2_CONSUMER_SECRET,
-            callbackURL:
-                'http://localhost:3000/api/twitter-auth/twitter/callback',
+            callbackURL: `${process.env.BASE_URL}/api/twitter-auth/twitter/callback`,
             includeEmail: true,
         },
         async (accessToken, refreshToken, profile, cb) => {
             try {
                 cb(null, profile);
-                console.log(profile);
             } catch (err) {
                 cb(err, null);
             }
