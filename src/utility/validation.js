@@ -49,7 +49,7 @@ const VERIFY_VALIDATION_FUND = [
         .withMessage('Enter a valid date')
         .custom((currentDte, { req }) => {
             const currentDate = new Date(currentDte);
-            const lastDate = new Date(req.body.lastDate);
+            const lastDate = new Date(req.query.lastDate);
             return currentDate > lastDate;
         })
         .withMessage('Current date must be after last date'),
