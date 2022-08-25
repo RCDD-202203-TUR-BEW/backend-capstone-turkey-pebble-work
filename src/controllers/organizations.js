@@ -195,7 +195,7 @@ async function updateOrgProfile(req, res) {
     }
 }
 
-async function deleteSubscription(req, res) {
+async function unFollowOrga(req, res) {
     try {
         const { id: orgaId } = req.params;
         const { id: userId } = req.user;
@@ -212,7 +212,7 @@ async function deleteSubscription(req, res) {
         } else {
             return res.status(404).json({ error: 'User not found' });
         }
-        return res.status(200).json({ message: 'Unsubscribed Successfully!' });
+        return res.status(200).json({ message: 'Unfollowed Successfully!' });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
@@ -222,5 +222,5 @@ module.exports = {
     rate,
     deleteRate,
     updateOrgProfile,
-    deleteSubscription,
+    unFollowOrga,
 };

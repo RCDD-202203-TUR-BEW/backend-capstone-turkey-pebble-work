@@ -27,10 +27,10 @@ router.put(
 );
 
 router.delete(
-    '/:id/sub',
+    '/:id/unfollow',
     VERIFY_VALIDATION_FUNDSBYID,
     handleValidation,
-    userController.unFolowUser
+    userController.unFollowUser
 );
 
 module.exports = router;

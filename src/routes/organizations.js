@@ -47,7 +47,7 @@ router.delete(
     '/:id/sub',
     VERIFY_VALIDATION_FUNDSBYID,
     handleValidation,
-    organizationController.deleteSubscription
+    organizationController.unFollowOrga
 );
 
 module.exports = router;

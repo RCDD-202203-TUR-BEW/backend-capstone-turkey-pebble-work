@@ -224,7 +224,7 @@ paths:
                 - Organization
             summary: Delete organization sub
             description: Delete organization sub
-            operationId: deleteSubscription
+            operationId: unFollowOrga
             consumes:
                 - application/json
             produces:
@@ -236,7 +236,6 @@ paths:
                   required: true
                   type: string
             responses:
-            # i have 2 (404) code statue in my code. how should i handle it here ? 
                 404:
                     description: not found values
                     content:
@@ -248,17 +247,23 @@ paths:
                                         type: string
                                         example: Organization not found
                 200:
-                    description: Organization Unsubscribed 
+                    description: Organization Unsubscribed
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/FullOrganization'
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Unfollowed Successfully!                
                 422:
                     description: This status is returned when the request is missing required fields or has an invalid values.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ValidationError'
+                403:
+                    description: This status is returned when the user is not authorized to perform the operation.
                 500:
                     description: Internal server error
 components:

@@ -58,7 +58,7 @@ async function updateUserProfile(req, res) {
     }
 }
 
-async function unFolowUser(req, res) {
+async function unFollowUser(req, res) {
     try {
         const { id: userToUnfollowId } = req.params;
         const { id: userId } = req.user;
@@ -81,5 +81,5 @@ async function unFolowUser(req, res) {
 }
 module.exports = {
     updateUserProfile,
-    unFolowUser,
+    unFollowUser,
 };
