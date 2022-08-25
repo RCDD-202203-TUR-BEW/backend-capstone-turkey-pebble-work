@@ -4,6 +4,7 @@ require('dotenv').config();
 const passport = require('passport');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
@@ -43,9 +44,17 @@ app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// require('./config/passport');
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(
+    session({
+        secret: process.env.SECRET_KEY,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {},
+    })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 const swaggerSpec = swaggerJsdoc(SWAGGER_OPTIONS);
 app.use(
     '/api-docs',

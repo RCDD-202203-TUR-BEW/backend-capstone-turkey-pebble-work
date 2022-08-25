@@ -36,6 +36,7 @@ passport.use(
             consumerSecret: process.env.OAUTH2_CONSUMER_SECRET,
             callbackURL:
                 'http://localhost:3000/api/twitter-auth/twitter/callback',
+            includeEmail: true,
         },
         async (accessToken, refreshToken, profile, cb) => {
             try {
