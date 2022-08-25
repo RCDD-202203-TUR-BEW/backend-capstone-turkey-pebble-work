@@ -114,7 +114,7 @@ async function signUp(req, res) {
             httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: true,
+            secure: process.env.DEPLOYED === 'yes',
             sameSite: 'none',
         });
 
@@ -203,7 +203,7 @@ async function signIn(req, res) {
             httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: true,
+            secure: process.env.DEPLOYED === 'yes',
             sameSite: 'none',
         });
 
@@ -258,7 +258,7 @@ async function saveGoogleUser(req, res) {
         httpOnly: true,
         signed: true,
         expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-        secure: true,
+        secure: process.env.DEPLOYED === 'yes',
         sameSite: 'none',
     });
 

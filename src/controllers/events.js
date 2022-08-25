@@ -47,6 +47,17 @@ async function getEvents(req, res) {
             'profileImage',
         ];
 
+        // publisher could be a user or an organization
+        // both of them have the following fields
+        const publisherIdFields = [
+            'id',
+            'firstName',
+            'lastName',
+            'profileImage',
+            'coverImage',
+            'name',
+        ];
+
         // due to the validation, we are sure that "from" and "to" are defined together
         if (from) {
             const limit = _.parseInt(to) - _.parseInt(from);
@@ -55,13 +66,13 @@ async function getEvents(req, res) {
                 .sort({ date: 1 })
                 .limit(limit)
                 .skip(skip)
-                .populate('publisherId', requiredUserField.join(' '))
+                .populate('publisherId', publisherIdFields.join(' '))
                 .populate('confirmedVolunteers', requiredUserField.join(' '))
                 .populate('invitedVolunteers', requiredUserField.join(' '));
         } else {
             events = await Event.find(filter)
                 .sort({ date: 1 })
-                .populate('publisherId', requiredUserField.join(' '))
+                .populate('publisherId', publisherIdFields.join(' '))
                 .populate('confirmedVolunteers', requiredUserField.join(' '))
                 .populate('invitedVolunteers', requiredUserField.join(' '));
         }
