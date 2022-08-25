@@ -27,12 +27,12 @@ async function sendVerificationEmail(user, token) {
 }
 
 async function getUser(req, payload) {
+    req.user = payload;
+    const currentUser = await BaseUser.findById(req.user.id);
     let userToReturn;
-    if (req.path === '/user/signup') {
-        req.user = payload;
+    if (currentUser.__t === 'User') {
         userToReturn = await getPrivateUser(req);
-    } else {
-        req.user = payload;
+    } else if (currentUser.__t === 'Organization') {
         userToReturn = await getPrivateOrga(req);
     }
     return userToReturn;
