@@ -27,12 +27,12 @@ async function sendVerificationEmail(user, token) {
 }
 
 async function getUser(req, payload) {
+    req.user = payload;
+    const currentUser = await BaseUser.findById(req.user.id);
     let userToReturn;
-    if (req.path === '/user/signup') {
-        req.user = payload;
+    if (currentUser.__t === 'User') {
         userToReturn = await getPrivateUser(req);
-    } else {
-        req.user = payload;
+    } else if (currentUser.__t === 'Organization') {
         userToReturn = await getPrivateOrga(req);
     }
     return userToReturn;
@@ -114,7 +114,7 @@ async function signUp(req, res) {
             httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: true,
+            secure: process.env.DEPLOYED === 'yes',
             sameSite: 'none',
         });
 
@@ -203,7 +203,7 @@ async function signIn(req, res) {
             httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: true,
+            secure: process.env.DEPLOYED === 'yes',
             sameSite: 'none',
         });
 
@@ -258,7 +258,7 @@ async function saveGoogleUser(req, res) {
         httpOnly: true,
         signed: true,
         expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-        secure: true,
+        secure: process.env.DEPLOYED === 'yes',
         sameSite: 'none',
     });
 

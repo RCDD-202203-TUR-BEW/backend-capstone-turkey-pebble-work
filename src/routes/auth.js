@@ -64,18 +64,5 @@ APIs.forEach((api) => {
         api.controller
     );
 });
-router.get(
-    '/google',
-    passport.authenticate('google', { scope: ['profile', 'email', 'openid'] })
-);
-
-router.get(
-    '/google/callback',
-    passport.authenticate('google', {
-        failureRedirect: '/api/auth/google',
-        session: false,
-    }),
-    authController.saveGoogleUser
-);
 
 module.exports = router;
