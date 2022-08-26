@@ -64,11 +64,19 @@ router.post(
     autherizationMiddleware(EventModel),
     eventsController.inviteVolunteer
 );
+
 router.post(
     '/:id/volunteers',
     VOLUNTEERS_EVENT_VALIDATION_RULES,
     handleValidation,
-    eventsController.addOrRemoveVolunteer
+    eventsController.addVolunteer
+);
+
+router.delete(
+    '/:id/volunteers',
+    VOLUNTEERS_EVENT_VALIDATION_RULES,
+    handleValidation,
+    eventsController.deleteVolunteer
 );
 
 router.post(
