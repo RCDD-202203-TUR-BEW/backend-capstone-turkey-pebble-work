@@ -28,7 +28,6 @@ const corsOptions = {
     credentials: true,
     origin(origin, callback) {
         // allow requests with no origin like browser requests to /api-docs
-        console.log(origin);
         if (!origin) return callback(null, true);
         if (whitelist.indexOf(origin) !== -1) {
             return callback(null, true);
