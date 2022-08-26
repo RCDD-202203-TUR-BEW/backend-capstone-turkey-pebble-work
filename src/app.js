@@ -19,11 +19,16 @@ const { SWAGGER_OPTIONS } = require('./utility/variables');
 const app = express();
 const port = process.env.PORT;
 
-const whitelist = ['http://localhost:3000'];
+const whitelist = [
+    'http://localhost:3000',
+    // this url is an origin for the swagger-ui
+    'https://pebble-work.herokuapp.com',
+];
 const corsOptions = {
     credentials: true,
     origin(origin, callback) {
         // allow requests with no origin like browser requests to /api-docs
+        console.log(origin);
         if (!origin) return callback(null, true);
         if (whitelist.indexOf(origin) !== -1) {
             return callback(null, true);
