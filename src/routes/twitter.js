@@ -12,7 +12,7 @@ router.get(
 router.get(
     '/twitter/callback',
     passport.authenticate('twitter', {
-        failureRedirect: '/api/auth/twitter',
+        failureRedirect: '/api/twitter-auth/twitter',
         session: false,
     }),
     authController.saveTwitterUser
