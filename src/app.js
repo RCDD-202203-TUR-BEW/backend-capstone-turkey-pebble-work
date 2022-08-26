@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const express = require('express');
 require('dotenv').config();
 const passport = require('passport');
@@ -10,15 +9,14 @@ const swaggerUi = require('swagger-ui-express');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
+const userRouter = require('./routes/users');
+const organizationRouter = require('./routes/organizations');
 const fundRouter = require('./routes/funds');
-
+const eventsRouter = require('./routes/events');
 const googleauth = require('./routes/google');
 const twitterAuth = require('./routes/twitter');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
-const eventsRouter = require('./routes/events');
-const userRouter = require('./routes/users');
-const organizationRouter = require('./routes/organizations');
 
 const app = express();
 const port = process.env.PORT;
@@ -67,9 +65,9 @@ app.use(authMiddleware);
 
 app.use('/api/fund', fundRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/event', eventsRouter);
 app.use('/api/user', userRouter);
 app.use('/api/organization', organizationRouter);
+app.use('/api/event', eventsRouter);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {

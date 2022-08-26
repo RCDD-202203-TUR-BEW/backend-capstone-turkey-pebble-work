@@ -16,3 +16,5 @@ paths:
                                     message:
                                         type: string
                                         example: User successfully signed in
+                                    User:
+                                        $ref: '#/components/schemas/FullPrivateUser'

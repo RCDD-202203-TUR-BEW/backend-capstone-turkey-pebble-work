@@ -220,6 +220,9 @@ organization.virtual('fullName').get(function () {
 });
 
 organization.virtual('rate').get(function () {
+    // only selected fileds are visible here
+    // so we want to return the rate, only if the rates array is not empty
+    if (!this.rates) return 0;
     if (!this.rates.length) return 0;
     return (
         this.rates.reduce((acc, curr) => acc + curr.rate, 0) / this.rates.length
