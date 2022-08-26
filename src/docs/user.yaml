@@ -302,6 +302,9 @@ components:
               - Peace And Justice And Strong Institutions
               - Partnership For The Goals
           example: [No Poverty, Zero Hunger]
+        profileImage:
+          type: string
+          format: binary
     FullPublicUser:
       type: object
       properties:
