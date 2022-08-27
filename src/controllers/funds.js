@@ -136,9 +136,9 @@ async function donate(req, res) {
         if (token) {
             user = jwt.verify(token, process.env.SECRET_KEY);
         }
-        const { id } = req.params;
+        const { id: fundId } = req.params;
         const { amount } = req.body;
-        const existingFund = await Fund.findById(id);
+        const existingFund = await Fund.findById(fundId);
 
         if (!existingFund) {
             return res.status(404).json({ message: 'Fund not found' });
@@ -158,13 +158,25 @@ async function donate(req, res) {
             });
         }
 
-        await Fund.findByIdAndUpdate(id, {
+        await Fund.findByIdAndUpdate(fundId, {
             $push: {
                 donations: donationObj,
             },
         });
 
-        return res.status(201).json({ message: 'Donation successful' });
+        const requiredUserField = [
+            'id',
+            'firstName',
+            'lastName',
+            'profileImage',
+        ];
+
+        const updatedFund = await Fund.findById(fundId).populate(
+            'publisherId',
+            requiredUserField.join(' ')
+        );
+
+        return res.status(201).json(updatedFund);
     } catch (err) {
         console.log(err);
         if (err.name === 'UnauthorizedError') {

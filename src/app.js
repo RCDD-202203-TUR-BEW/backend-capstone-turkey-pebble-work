@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
@@ -8,19 +7,23 @@ const swaggerUi = require('swagger-ui-express');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const connectToMongo = require('./db/connection');
 const authRouter = require('./routes/auth');
-const fundRouter = require('./routes/funds');
-
-const googleauth = require('./routes/google');
-const { authMiddleware } = require('./middleware');
-const { SWAGGER_OPTIONS } = require('./utility/variables');
-const eventsRouter = require('./routes/events');
 const userRouter = require('./routes/users');
 const organizationRouter = require('./routes/organizations');
+const fundRouter = require('./routes/funds');
+const eventsRouter = require('./routes/events');
+const googleauth = require('./routes/google');
+
+const { authMiddleware } = require('./middleware');
+const { SWAGGER_OPTIONS } = require('./utility/variables');
 
 const app = express();
 const port = process.env.PORT;
 
-const whitelist = ['http://localhost:3000'];
+const whitelist = [
+    'http://localhost:3000',
+    // this url is an origin for the swagger-ui
+    'https://pebble-work.herokuapp.com',
+];
 const corsOptions = {
     credentials: true,
     origin(origin, callback) {
@@ -53,9 +56,9 @@ app.use(authMiddleware);
 
 app.use('/api/fund', fundRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/event', eventsRouter);
 app.use('/api/user', userRouter);
 app.use('/api/organization', organizationRouter);
+app.use('/api/event', eventsRouter);
 
 function ErrorHandler(err, req, res, next) {
     if (err.name === 'UnauthorizedError') {

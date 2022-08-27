@@ -15,7 +15,8 @@
         "lint": "eslint --ignore-path .gitignore .",
         "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
         "validate": "yarn format && yarn lint",
-        "validate-staged": "lint-staged"
+        "validate-staged": "lint-staged",
+        "deploy": "git push --force heroku dev:main"
     },
     "dependencies": {
         "@google-cloud/storage": "^6.2.3",

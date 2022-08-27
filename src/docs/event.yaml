@@ -1,6 +1,7 @@
 tags:
   - name: Event
-    description: API to manage the authentication.
+    description: API to manage events.
+
 paths:
   /api/event/:
     post:
@@ -8,6 +9,8 @@ paths:
         - Event
       summary: create a new event
       description: create a new event
+      security:
+        - auth_cookie: []
       consumes:
         - multipart/form-data
       produces:
@@ -18,6 +21,11 @@ paths:
           multipart/form-data:
             schema:
               $ref: "#/components/schemas/newEvent"
+            encoding:
+              categories[]:
+                style: form
+                explode: true
+
       responses:
         201:
           description: Authenticated user succesfully created event.
@@ -57,7 +65,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: categories
+        - name: categories[]
           in: query
           schema:
             type: array
@@ -71,18 +79,15 @@ paths:
                 - Gender Equality
                 - Clean Water And Sanitation
                 - Affordable And Clean Energy
-                - Animals
-                - Oceans
-                - Nature
+                - Decent Work And Economic Growth
+                - Industry Innovation And Infrastructure
                 - Reduced Inequalities
                 - Sustainable Cities And Communities
                 - Responsible Consumption And Production
                 - Climate Action
                 - Life Below Water
-                - Life On Land
-                - Peace
-                - Youth
-                - Justice
+                - Peace And Justice And Strong Institutions
+                - Partnership For The Goals
             example: [No Poverty, Zero Hunger]
         - name: city
           in: query
@@ -338,7 +343,7 @@ paths:
             schema:
               $ref: "#/components/schemas/UpdateEvent"
             encoding:
-              categories:
+              categories[]:
                 style: form
                 explode: true
               confirmedVolunteers:
@@ -381,9 +386,9 @@ paths:
     post:
       tags:
         - Event
-      summary: add or remove volunteers
-      description: add or remove volunteers to/from an event
-      operationId: addOrRemoveVolunteer
+      summary: Add volunteer
+      description: Add volunteer to an event
+      operationId: addVolunteer
       consumes:
         - application/json
       produces:
@@ -393,23 +398,14 @@ paths:
       parameters:
         - in: path
           name: id
-          description: event id that user goign to join
+          description: event id that the user going to join
           required: true
           schema:
             type: string
             example: 62e297b6eb2bce7177c6fefc
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: object
-            properties:
-              operationType:
-                type: boolean
-                description: The action to add or remove voulnteers
 
       responses:
-        201:
+        200:
           description: User joined Successfully to an event
           content:
             application/json:
@@ -419,6 +415,59 @@ paths:
                   message:
                     type: string
                     example: Joined Successfully
+        401:
+          description: user not sigend in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid Token: No authorization token was found"
+        404:
+          description: Event not found  or has an invalid value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        400:
+          description: User already joined in the event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User already joined
+        500:
+          description: Internal server error
+    delete:
+      tags:
+        - Event
+      summary: Remove volunteer
+      description: remove volunteer from an event
+      operationId: deleteVolunteer
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - auth_cookie: []
+      parameters:
+        - in: path
+          name: id
+          description: event id that the user is going to leave
+          required: true
+          schema:
+            type: string
+            example: 62e297b6eb2bce7177c6fefc
+
+      responses:
         200:
           description: User unjoined Successfully from an event
           content:
@@ -552,18 +601,15 @@ components:
               - Gender Equality
               - Clean Water And Sanitation
               - Affordable And Clean Energy
-              - Animals
-              - Oceans
-              - Nature
+              - Decent Work And Economic Growth
+              - Industry Innovation And Infrastructure
               - Reduced Inequalities
               - Sustainable Cities And Communities
               - Responsible Consumption And Production
               - Climate Action
               - Life Below Water
-              - Life On Land
-              - Peace
-              - Youth
-              - Justice
+              - Peace And Justice And Strong Institutions
+              - Partnership For The Goals
         confirmedVolunteers:
           type: array
           items:
@@ -614,7 +660,7 @@ components:
         date:
           type: string
           format: date
-        categories:
+        categories[]:
           type: array
           items:
             type: string
@@ -626,18 +672,15 @@ components:
               - Gender Equality
               - Clean Water And Sanitation
               - Affordable And Clean Energy
-              - Animals
-              - Oceans
-              - Nature
+              - Decent Work And Economic Growth
+              - Industry Innovation And Infrastructure
               - Reduced Inequalities
               - Sustainable Cities And Communities
               - Responsible Consumption And Production
               - Climate Action
               - Life Below Water
-              - Life On Land
-              - Peace
-              - Youth
-              - Justice
+              - Peace And Justice And Strong Institutions
+              - Partnership For The Goals
           example: [No Poverty, Zero Hunger]
         confirmedVolunteers:
           type: array
@@ -705,18 +748,15 @@ components:
               - Gender Equality
               - Clean Water And Sanitation
               - Affordable And Clean Energy
-              - Animals
-              - Oceans
-              - Nature
+              - Decent Work And Economic Growth
+              - Industry Innovation And Infrastructure
               - Reduced Inequalities
               - Sustainable Cities And Communities
               - Responsible Consumption And Production
               - Climate Action
               - Life Below Water
-              - Life On Land
-              - Peace
-              - Youth
-              - Justice
+              - Peace And Justice And Strong Institutions
+              - Partnership For The Goals
         confirmedVolunteers:
           type: array
           items:
@@ -771,42 +811,44 @@ components:
         - content
         - coverImage
         - date
-        - categories
+        - categories[]
         - address
         - location
       properties:
         title:
           type: string
+          example: Event Title
         content:
           type: string
+          example: Event Description
         coverImage:
           type: string
+          format: binary
         date:
           type: date
-        categories:
+          example: 2022-01-01
+        categories[]:
           type: array
           items:
             type: string
             enum:
-              - "No Poverty"
-              - "Zero Hunger"
-              - "Good Health And Well-Being"
-              - "Quality Education"
-              - "Gender Equality"
-              - "Clean Water And Sanitation"
-              - "Affordable And Clean Energy"
-              - "Animals"
-              - "Oceans"
-              - "Nature"
-              - "Reduced Inequalities"
-              - "Sustainable Cities And Communities"
-              - "Responsible Consumption And Production"
-              - "Climate Action"
-              - "Life Below Water"
-              - "Life On Land"
-              - "Peace"
-              - "Youth"
-              - "Justice"
+              - No Poverty
+              - Zero Hunger
+              - Good Health And Well-Being
+              - Quality Education
+              - Gender Equality
+              - Clean Water And Sanitation
+              - Affordable And Clean Energy
+              - Decent Work And Economic Growth
+              - Industry Innovation And Infrastructure
+              - Reduced Inequalities
+              - Sustainable Cities And Communities
+              - Responsible Consumption And Production
+              - Climate Action
+              - Life Below Water
+              - Peace And Justice And Strong Institutions
+              - Partnership For The Goals
+          example: [No Poverty, Zero Hunger]
         address:
           type: object
           properties:

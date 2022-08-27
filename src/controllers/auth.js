@@ -4,9 +4,11 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
 const { User, Organization, BaseUser, Token } = require('../models/user');
-const { sendEmail } = require('../utility/mail');
+const { sendHtmlEmail } = require('../utility/mail');
 const storage = require('../db/storage');
 const { getFileExtension } = require('../utility/utils');
+const { getPrivateUser } = require('./users');
+const { getPrivateOrga } = require('./organizations');
 
 const {
     HASH_ROUNDS,
@@ -19,9 +21,21 @@ const {
 
 async function sendVerificationEmail(user, token) {
     const verificationLink = `${process.env.BASE_URL}/api/auth/verify/${user.id}/${token.token}`;
-    const text = `Hello ${user.fullName},\n\nPlease verify your account by clicking the link below:\n${verificationLink}`;
+    const html = `<dev>Hello ${user.fullName}</dev> <br> <br> <dev>Please click on the following link to verify your email:</dev> <br> <br> <a href="${verificationLink}">Link</a> <br> <br> <dev>If you did not request this, please ignore this email.</dev> <br> <br> <dev>Thanks,</dev> <br> <dev>PebbleWork Team</dev>`;
     const subject = EMAIL_VERIFY_SUBJECT;
-    return sendEmail(user.email, subject, text);
+    return sendHtmlEmail(user.email, subject, html);
+}
+
+async function getUser(req, payload) {
+    req.user = payload;
+    const currentUser = await BaseUser.findById(req.user.id);
+    let userToReturn;
+    if (currentUser.__t === 'User') {
+        userToReturn = await getPrivateUser(req);
+    } else if (currentUser.__t === 'Organization') {
+        userToReturn = await getPrivateOrga(req);
+    }
+    return userToReturn;
 }
 
 async function signUp(req, res) {
@@ -100,7 +114,7 @@ async function signUp(req, res) {
             httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: true,
+            secure: process.env.DEPLOYED === 'yes',
             sameSite: 'none',
         });
 
@@ -111,9 +125,12 @@ async function signUp(req, res) {
 
         await sendVerificationEmail(newBaseUser, verificationToken);
 
+        const userToReturn = await getUser(req, payload);
+
         return res.status(200).json({
             message:
                 'User successfully signed up and a verification email sent',
+            user: userToReturn,
         });
     } catch (error) {
         return res.sendStatus(500);
@@ -186,7 +203,7 @@ async function signIn(req, res) {
             httpOnly: true,
             signed: true,
             expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-            secure: true,
+            secure: process.env.DEPLOYED === 'yes',
             sameSite: 'none',
         });
 
@@ -195,6 +212,7 @@ async function signIn(req, res) {
             result.warning = 'User not verified';
         }
         result.message = 'User signed in';
+        result.user = await getUser(req, payload);
         return res.status(200).json(result);
     } catch (error) {
         return res.sendStatus(500);
@@ -227,12 +245,12 @@ async function saveGoogleUser(req, res) {
         });
     }
 
-    const claims = {
+    const payload = {
         id: user.id,
         email: user.email,
         fullName: user.fullName,
     };
-    const token = jwt.sign(claims, process.env.SECRET_KEY, {
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {
         expiresIn: FOURTEEN_DAYS_STRING,
     });
 
@@ -240,11 +258,16 @@ async function saveGoogleUser(req, res) {
         httpOnly: true,
         signed: true,
         expires: new Date(Date.now() + FOURTEEN_DAYS_MILLISECONDS),
-        secure: true,
+        secure: process.env.DEPLOYED === 'yes',
         sameSite: 'none',
     });
 
-    res.status(200).json({ message: 'User successfully signed in' });
+    const userToReturn = await getUser(req, payload);
+
+    res.status(200).json({
+        message: 'User successfully signed in',
+        user: userToReturn,
+    });
 }
 
 module.exports = {
