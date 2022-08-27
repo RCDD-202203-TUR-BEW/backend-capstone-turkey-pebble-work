@@ -1,7 +1,9 @@
 const express = require('express');
 require('dotenv').config();
+const passport = require('passport');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
@@ -12,7 +14,7 @@ const organizationRouter = require('./routes/organizations');
 const fundRouter = require('./routes/funds');
 const eventsRouter = require('./routes/events');
 const googleauth = require('./routes/google');
-
+const twitterAuth = require('./routes/twitter');
 const { authMiddleware } = require('./middleware');
 const { SWAGGER_OPTIONS } = require('./utility/variables');
 
@@ -44,14 +46,25 @@ app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+app.use(
+    session({
+        secret: process.env.SECRET_KEY,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {},
+    })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 const swaggerSpec = swaggerJsdoc(SWAGGER_OPTIONS);
 app.use(
     '/api-docs',
     swaggerUi.serve,
     swaggerUi.setup(swaggerSpec, { explorer: true })
 );
-
 app.use('/api/google-auth', googleauth);
+app.use('/api/twitter-auth', twitterAuth);
 app.use(authMiddleware);
 
 app.use('/api/fund', fundRouter);

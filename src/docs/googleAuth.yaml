@@ -1,18 +1,20 @@
 paths:
-  /api/google-auth/google:
-    get:
-      tags:
-        - OAuth2
-      summary: Signin a user
-      description: Signin a user
-      responses:
-        200:
-          description: User successfully signed in
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: User successfully signed in
+    /api/google-auth/google:
+        get:
+            tags:
+                - OAuth2
+            summary: Authenticate a user using google 3rd party authentication service
+            description: Signin a user
+            responses:
+                200:
+                    description: User successfully signed in
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: User successfully signed in
+                                    User:
+                                        $ref: '#/components/schemas/FullPrivateUser'
