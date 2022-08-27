@@ -22,6 +22,19 @@
 
 1. [About the Project](#about-the-project)
     - [Project Features](#project-features)
+    - [Tools and Technologies](#tools-and-technologies)
+    - [Design Diagrams](#design-diagrams)
+        - [System Architecture Diagram](#system-architecture-diagram)
+        - [Database Schema Design](#database-schema-design)
+2. [Installation Guide](#installation-guide)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+3. [Linked Frontend Application](#linked-frontend-application)
+4. [Contributing Guide](#contributing-guide)
+5. [Contributors](#contributors)
+6. [License](#license)
+7. [Acknowledgments](#acknowledgments)
+8. [Contact](#contact)
 
 ## About the Project
 
@@ -89,9 +102,37 @@ This is known as a UML diagram, and it shows the collections used in the databas
 
 ### Prerequisites
 
+1. [Node.js](https://nodejs.org/en/)
+2. [Yarn](https://yarnpkg.com/)
+3. [Git](https://git-scm.com/)
+
 ### Installation
 
+1. Clone the repo
+    ```sh
+    git clone https://github.com/RCDD-202203-TUR-BEW/backend-capstone-turkey-pebble-work.git
+    ```
+2. Navigate to the project folder
+
+    ```sh
+    cd backend-capstone-turkey-pebble-work
+    ```
+
+3. Install dependencies
+    ```sh
+    yarn
+    ```
+4. Run the project
+    ```sh
+    yarn start
+    ```
+5. Run checks and tests
+    ```sh
+    yarn test
+    ```
+
 ## Documentation
+
 Explore our interactive documentation API [here](https://pebble-work.herokuapp.com/api-docs/).
 
 ![Swagger Documentation](src/assets/swagger-doc.png)
@@ -99,6 +140,7 @@ Explore our interactive documentation API [here](https://pebble-work.herokuapp.c
 ## Linked Frontend Application
 
 ## Contributing Guide
+
 Contributions are what make the open source community such a wonderful place to learn, be motivated, and create. Your contributions are **deeply appreciated**.
 
 1. Fork the Project
@@ -106,19 +148,33 @@ Contributions are what make the open source community such a wonderful place to 
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
 ## Contributors
-| <img alt="halit" src="src/assets/halit.png" width="115">	| <img alt="lara" src="src/assets/lara.png" width="115">	| <img alt="mehmet" src="src/assets/mehmet.png" width="115">| <img alt="nur" src="src/assets/nur.png" width="115">      | <img alt="rama" src="src/assets/rama.png" width="115">    | <img alt="sara" src="src/assets/sara.png" width="115">    |
-|-----------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|
-| Lead Engineer                                             | Junior Engineer                                           | Junior Engineer                                           | Junior Engineer                                           | Junior Engineer                                           | Junior Engineer                                           |
-| [Halit Batur](https://github.com/halitbatur)              | [Lara Gurol](https://github.com/laragurol)                | [Mehmet Baki](https://github.com/mehmettbaki)             | [Muhammed Şihebi](https://github.com/muhammed-shihebi)    | [Rama Alshaban](https://github.com/ramaalshaban)          | [Sara Hamoud](https://github.com/sarahmood)               |
+
+| <img alt="halit" src="src/assets/halit.png" width="115"> | <img alt="lara" src="src/assets/lara.png" width="115"> | <img alt="mehmet" src="src/assets/mehmet.png" width="115"> | <img alt="nur" src="src/assets/nur.png" width="115">   | <img alt="rama" src="src/assets/rama.png" width="115"> | <img alt="sara" src="src/assets/sara.png" width="115"> |
+| -------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------ | ------------------------------------------------------ |
+| Lead Engineer                                            | Junior Engineer                                        | Junior Engineer                                            | Junior Engineer                                        | Junior Engineer                                        | Junior Engineer                                        |
+| [Halit Batur](https://github.com/halitbatur)             | [Lara Gurol](https://github.com/laragurol)             | [Mehmet Baki](https://github.com/mehmettbaki)              | [Muhammed Şihebi](https://github.com/muhammed-shihebi) | [Rama Alshaban](https://github.com/ramaalshaban)       | [Sara Hamoud](https://github.com/sarahmood)            |
+
 ## License
+
+Distributed under the MIT License. See [LICENSE](https://choosealicense.com/licenses/mit/) for more information.
 
 ## Acknowledgments
 
+-   [![google-shield]][google-link]
+-   [![stackoverflow-shield]][stackoverflow-link]
+
 ## Contact
+
+### PebbleWork Team
+
+**Email:** pebbleworkplatform@gmail.com
 
 <!-- Links -->
 
+[stackoverflow-shield]: https://img.shields.io/badge/stackoverflow-F8F9F9?style=flat&logo=stackoverflow
+[stackoverflow-link]: https://stackoverflow.com/
 [heroku-shield]: https://img.shields.io/badge/heroku-7D4E89?style=flat&logo=heroku
 [heroku-link]: https://www.heroku.com
 [yarn-shield]: https://img.shields.io/badge/yarn-FFFFFF?style=flat&logo=yarn
@@ -171,12 +227,3 @@ Contributions are what make the open source community such a wonderful place to 
 [cron-link]: https://en.wikipedia.org/wiki/Cron
 [aws-shield]: https://img.shields.io/badge/Amazon_AWS-232F3E?style=flate&logo=Amazon-AWS&logoColor=white
 [aws-link]: https://en.wikipedia.org/wiki/Amazon_Web_Services
-
-
-
-<!-- Contributors -->
-
-
-
-
-
