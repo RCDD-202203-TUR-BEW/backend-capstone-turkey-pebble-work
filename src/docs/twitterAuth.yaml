@@ -1,0 +1,37 @@
+paths:
+    /api/twitter-auth/twitter:
+        get:
+            tags:
+                - OAuth2
+            summary: Authenticate a user using twitter 3rd party authentication service
+            responses:
+                200:
+                    description: User successfully signed in
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: User successfully signed in
+                                    User:
+                                        $ref: '#/components/schemas/FullPrivateUser'
+    /api/twitter-auth/twitter/callback:
+        get:
+            tags:
+                - OAuth2
+            summary: Retrive user information from twitter
+            responses:
+                200:
+                    description: User successfully signed in
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: User successfully signed in
+                                    User:
+                                        $ref: '#/components/schemas/FullPrivateUser'

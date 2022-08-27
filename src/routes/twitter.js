@@ -5,19 +5,17 @@ const { passport } = require('../config/passport');
 const router = express.Router();
 
 router.get(
-    '/google',
-    passport.authenticate('google', {
-        scope: ['profile', 'email', 'openid'],
-    })
+    '/twitter',
+    passport.authenticate('twitter', { scope: ['profile', 'email', 'openid'] })
 );
 
 router.get(
-    '/google/callback',
-    passport.authenticate('google', {
-        failureRedirect: '/api/google-auth/google',
+    '/twitter/callback',
+    passport.authenticate('twitter', {
+        failureRedirect: '/api/twitter-auth/twitter',
         session: false,
     }),
-    authController.saveGoogleUser
+    authController.saveTwitterUser
 );
 
 module.exports = router;

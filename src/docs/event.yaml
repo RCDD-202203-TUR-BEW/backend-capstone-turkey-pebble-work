@@ -57,7 +57,7 @@ paths:
         get:
             tags:
                 - Event
-            summary: Filter events based on the given criteria
+            summary: Filter events based on a given criteria
             description: Filter events based on categories, publishers, cities, dates and locations
             operationId: getEvents
             consumes:
@@ -272,7 +272,7 @@ paths:
                                     message:
                                         type: string
                                         example: 'Event not found'
-                '500':
+                500:
                     description: 'Internal server error'
         delete:
             tags:
@@ -386,9 +386,9 @@ paths:
         post:
             tags:
                 - Event
-            summary: add or remove volunteers
-            description: add or remove volunteers to/from an event
-            operationId: addOrRemoveVolunteer
+            summary: Add a volunteer to an event
+            description: Add a volunteer to an event
+            operationId: addVolunteer
             consumes:
                 - application/json
             produces:
@@ -403,16 +403,6 @@ paths:
                   schema:
                       type: string
                       example: 62e297b6eb2bce7177c6fefc
-                - in: body
-                  name: body
-                  required: true
-                  schema:
-                      type: object
-                      properties:
-                          operationType:
-                              type: boolean
-                              description: The action to add or remove voulnteers
-
             responses:
                 201:
                     description: User joined Successfully to an event
@@ -424,16 +414,6 @@ paths:
                                     message:
                                         type: string
                                         example: Joined Successfully
-                200:
-                    description: User unjoined Successfully from an event
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-                                        example: Unjoined Successfully
                 401:
                     description: user not sigend in
                     content:
@@ -463,6 +443,58 @@ paths:
                                     message:
                                         type: string
                                         example: User already joined
+                500:
+                    description: Internal server error
+        delete:
+            tags:
+                - Event
+            summary: Remove a volunteer from an event
+            description: Remove a volunteer from an event
+            operationId: removeVolunteer
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            parameters:
+                - in: path
+                  name: id
+                  description: event id that user goign to join
+                  required: true
+                  schema:
+                      type: string
+                      example: 62e297b6eb2bce7177c6fefc
+            responses:
+                200:
+                    description: User unjoined Successfully from an event
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Unjoined Successfully
+                401:
+                    description: user not sigend in
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                404:
+                    description: Event not found  or has an invalid value
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
                 500:
                     description: Internal server error
     /api/event/{id}/invite-volunteer:

@@ -34,6 +34,8 @@ paths:
                                     message:
                                         type: string
                                         example: User successfully signed up and a verification email sent
+                                    Organization:
+                                        $ref: '#/components/schemas/FullPrivateOrganization'
                 400:
                     description: This status is returned if the email is already in use.
                     content:
@@ -87,6 +89,8 @@ paths:
                                     message:
                                         type: string
                                         example: User successfully signed up and a verification email sent
+                                    User:
+                                        $ref: '#/components/schemas/FullPrivateUser'
                 400:
                     description: This status is returned if the email is already in use.
                     content:
@@ -156,6 +160,12 @@ paths:
                                         type: string
                                         example: User not verified
                                         defult: undefined
+                                    oneOf:
+                                    Organization:
+                                        $ref: '#/components/schemas/FullPrivateOrganization'
+                                    User:
+                                        $ref: '#/components/schemas/FullPrivateUser'
+
                 422:
                     description: This status is returned when the request is missing required fields or has an invalid values.
                     content:
