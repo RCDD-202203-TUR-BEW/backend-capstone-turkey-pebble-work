@@ -27,7 +27,7 @@ router.put(
 );
 
 router.delete(
-    '/:id/unfollow',
+    '/:id/sub',
     VERIFY_VALIDATION_FUNDSBYID,
     handleValidation,
     userController.unFollowUser

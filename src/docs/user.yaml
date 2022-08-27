@@ -78,8 +78,8 @@ paths:
                     description: Internal server error
         
 
-    /api/user/{id}/unfollow:
-        post:
+    /api/user/{id}/sub:
+        delete:
             tags:
                 - User
             summary: Unfollow Users
