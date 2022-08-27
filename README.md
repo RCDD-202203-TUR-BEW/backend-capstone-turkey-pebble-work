@@ -37,12 +37,11 @@
 8. [Contact](#contact)
 
 ## About the Project
-
 The ideology behind Pebblework is creating significant outcome by gathering community members together to be a part of collective effort.
 
 This platform is for everyone who wants to bring something big to life by giving their time, energy or financial support whether they are an organization,a volunteer or a donor.
 
-On Pebblework, you can create an event and find volunteers that want to be a part of it or you can search for events to contribute your local community by searching categories that fit your interests based on location and time. If you don’t have time or energy but still want to support an event you can take a look at the target and remaining funds of the events and donate anonymously. Pebblework is a great platform for creating solid impact while feeling the warmth of being one with your community!
+On Pebblework, you can create an event and find volunteers that want to be a part of it or you can search for events to contribute your local community by searching categories that fit your interests based on location and time. If you don’t have time or energy but still want to support a fund you can take a look at the target and remaining funds of the funds and donate anonymously. Pebblework is a great platform for creating solid impact while feeling the warmth of being one with your community!
 
 ### Project Features
 
