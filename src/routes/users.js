@@ -5,6 +5,7 @@ const userController = require('../controllers/users');
 const { MAX_IMAGE_SIZE } = require('../utility/variables');
 
 const {
+    VERIFY_VALIDATION_FUNDSBYID,
     PUT_USER_VALIDATION_RULES,
     GET_USER_VALIDATION_RULES,
     handleValidation,
@@ -36,6 +37,13 @@ router.put(
     PUT_USER_VALIDATION_RULES,
     handleValidation,
     userController.updateUserProfile
+);
+
+router.delete(
+    '/:id/sub',
+    VERIFY_VALIDATION_FUNDSBYID,
+    handleValidation,
+    userController.unFollowUser
 );
 
 module.exports = router;
