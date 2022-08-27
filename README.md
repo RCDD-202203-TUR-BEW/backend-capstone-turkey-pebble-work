@@ -18,111 +18,125 @@
   </p>
 </div>
 
-### Table of Contents  
+### Table of Contents
+
 1. [About the Project](#about-the-project)
     - [Project Features](#project-features)
 
-
 ## About the Project
+
 The ideology behind Pebblework is creating significant outcome by gathering community members together to be a part of collective effort.
 
 This platform is for everyone who wants to bring something big to life by giving their time, energy or financial support whether they are an organization,a volunteer or a donor.
 
 On Pebblework, you can create an event and find volunteers that want to be a part of it or you can search for events to contribute your local community by searching categories that fit your interests based on location and time. If you don’t have time or energy but still want to support an event you can take a look at the target and remaining funds of the events and donate anonymously. Pebblework is a great platform for creating solid impact while feeling the warmth of being one with your community!
+
 ### Project Features
-- CRUD Events 
-- CRUD Funds 
-- Sign in/up/out 
-- Volunteer for an Event
-- Invite Volunteers to an Event
-- Donate to a Fund 
-- Create an Account
+
+-   CRUD Events
+-   CRUD Funds
+-   Sign in/up/out
+-   Volunteer for an Event
+-   Invite Volunteers to an Event
+-   Donate to a Fund
+-   Create a user or an organization account
+-   Edit user or organization account
+-   Rate an organization
+-   Subscribe or unsubscribe to an organization or a user
+-   Get public profile of a user or organization
+-   Sign in/up with Google
+-   Sign in/up with Twitter
 
 ### Tools and Technologies
-- [![Figma-shield]][Figma-link]
-- [![Github-shield]][Github-link]
-- [![Git-shield]][Git-link]
-- [![Prettier-shield]][Prettier-link]
-- [![Eslint-shield]][Eslint-link]
-- [![mongodb-shield]][mongodb-link]
-- [![nodejs-shield]][nodejs-link]
-- [![express-shield]][express-link]
-- [![express-validator-shield]][express-validator-link]
-- [![swagger-shield]][swagger-link]
-- [![Jest-shield]][Jest-link]
-- [![JWT-shield]][JWT-link]
-- [![Passport-shield]][Passport-link]
-- [![Postman-shield]][Postman-link]
-- [![heroku-shield]][heroku-link]
-- [![yarn-shield]][yarn-link]
-- [![nodemailer-shield]][nodemailer-link]
-- [![google-shield]][google-link]
-- [![twitter-shield]][twitter-link]
-- [![firebase-shield]][firebase-link]
-- [![husky-shield]][Husky-link]
 
+-   [![Figma-shield]][figma-link]
+-   [![Github-shield]][github-link]
+-   [![Git-shield]][git-link]
+-   [![Prettier-shield]][prettier-link]
+-   [![Eslint-shield]][eslint-link]
+-   [![mongodb-shield]][mongodb-link]
+-   [![nodejs-shield]][nodejs-link]
+-   [![express-shield]][express-link]
+-   [![express-validator-shield]][express-validator-link]
+-   [![swagger-shield]][swagger-link]
+-   [![Jest-shield]][jest-link]
+-   [![JWT-shield]][jwt-link]
+-   [![Passport-shield]][passport-link]
+-   [![Postman-shield]][postman-link]
+-   [![heroku-shield]][heroku-link]
+-   [![yarn-shield]][yarn-link]
+-   [![nodemailer-shield]][nodemailer-link]
+-   [![google-shield]][google-link]
+-   [![twitter-shield]][twitter-link]
+-   [![firebase-shield]][firebase-link]
+-   [![husky-shield]][husky-link]
 
 ### Design Diagrams
+
 #### System Architecture Diagram
+
 In this diagram, you can see the various components of our REST API, such as API routers, services, and utils, as well as our MongoDB database and how it is integrated with the rest of the project.
 
 ![System Architecture Diagram](src/assets/architecture_diagram.png)
 
 #### Database Schema Design
+
 This is known as a UML diagram, and it shows the collections used in the database, their properties, the relationships between them, and the functionality that each collection (class) can have. We chose this diagram because it contains a lot of information and will help us organize our thoughts as we implement our application.
 
 ![Database Schema Design](src/assets/database_diagram.png)
 
-## Installation Guide 
+## Installation Guide
 
 ### Prerequisites
 
 ### Installation
 
 ## Documentation
+Explore our interactive documentation API [here](https://pebble-work.herokuapp.com/api-docs/).
+
+![Swagger Documentation](src/assets/swagger-doc.png)
 
 ## Linked Frontend Application
 
 ## Contributing Guide
+Contributions are what make the open source community such a wonderful place to learn, be motivated, and create. Your contributions are **deeply appreciated**.
 
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 ## Contributors
-
+| <img alt="halit" src="src/assets/halit.png" width="115">	| <img alt="lara" src="src/assets/lara.png" width="115">	| <img alt="mehmet" src="src/assets/mehmet.png" width="115">| <img alt="nur" src="src/assets/nur.png" width="115">      | <img alt="rama" src="src/assets/rama.png" width="115">    | <img alt="sara" src="src/assets/sara.png" width="115">    |
+|-----------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|
+| Lead Engineer                                             | Junior Engineer                                           | Junior Engineer                                           | Junior Engineer                                           | Junior Engineer                                           | Junior Engineer                                           |
+| [Halit Batur](https://github.com/halitbatur)              | [Lara Gurol](https://github.com/laragurol)                | [Mehmet Baki](https://github.com/mehmettbaki)             | [Muhammed Şihebi](https://github.com/muhammed-shihebi)    | [Rama Alshaban](https://github.com/ramaalshaban)          | [Sara Hamoud](https://github.com/sarahmood)               |
 ## License
 
 ## Acknowledgments
 
 ## Contact
 
-
-
 <!-- Links -->
+
 [heroku-shield]: https://img.shields.io/badge/heroku-7D4E89?style=flat&logo=heroku
 [heroku-link]: https://www.heroku.com
-
 [yarn-shield]: https://img.shields.io/badge/yarn-FFFFFF?style=flat&logo=yarn
 [yarn-link]: https://yarnpkg.com/
-
 [nodemailer-shield]: https://img.shields.io/badge/nodemailer-22B573?style=flat&logo=nodemailer
 [nodemailer-link]: https://nodemailer.com/
-
 [google-shield]: https://img.shields.io/badge/google-FFFFFF?style=flat&logo=google
 [google-link]: https://www.google.com/
-
 [twitter-shield]: https://img.shields.io/badge/twitter-FFFFFF?style=flat&logo=twitter
 [twitter-link]: https://www.twitter.com/
-
 [firebase-shield]: https://img.shields.io/badge/firebase-FFFFFF?style=flat&logo=firebase
 [firebase-link]: https://firebase.google.com/
-
 [husky-shield]: https://img.shields.io/badge/husky-FFFFFF?style=flat&logo=husky
 [husky-link]: https://www.npmjs.com/package/husky
-
 [postman-shield]: https://img.shields.io/badge/postman-FFFFFF?style=flat&logo=postman
 [postman-link]: https://www.postman.com/
-
 [passport-shield]: https://img.shields.io/badge/passport-FFFFFF?style=flat&logo=passport
 [passport-link]: https://www.passportjs.org/
-
 [react-shield]: https://img.shields.io/badge/react-61DAFB?style=flat&logo=react&logoColor=white
 [react-link]: https://reactjs.org/
 [html-shield]: https://img.shields.io/badge/html-E34F26?style=flat&logo=html5&logoColor=white
@@ -157,3 +171,12 @@ This is known as a UML diagram, and it shows the collections used in the databas
 [cron-link]: https://en.wikipedia.org/wiki/Cron
 [aws-shield]: https://img.shields.io/badge/Amazon_AWS-232F3E?style=flate&logo=Amazon-AWS&logoColor=white
 [aws-link]: https://en.wikipedia.org/wiki/Amazon_Web_Services
+
+
+
+<!-- Contributors -->
+
+
+
+
+
