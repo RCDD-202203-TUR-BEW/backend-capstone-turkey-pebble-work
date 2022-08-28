@@ -3,7 +3,7 @@ tags:
       description: API to manage the organization account.
 
 paths:
-    /api/organization/{id}/subscription:
+    /api/organization/{id}/sub:
         patch:
             tags:
                 - organization

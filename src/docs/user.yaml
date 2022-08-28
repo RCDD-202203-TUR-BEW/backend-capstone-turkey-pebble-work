@@ -2,7 +2,7 @@ tags:
     - name: User
       description: API to manage the user account.
 paths:
-    /api/user/{id}/subscription:
+    /api/user/{id}/sub:
         patch:
             tags:
                 - user
