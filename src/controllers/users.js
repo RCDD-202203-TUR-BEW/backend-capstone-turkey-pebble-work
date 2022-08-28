@@ -3,9 +3,9 @@ const { User } = require('../models/user');
 
 const addUserSubscription = async (req, res) => {
     try {
-        const UserExist = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id);
 
-        if (!UserExist) {
+        if (!user) {
             res.status(404).json({ message: 'User not found' });
         }
 
