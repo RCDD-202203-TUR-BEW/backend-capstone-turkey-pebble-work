@@ -3,18 +3,19 @@ const { User } = require('../models/user');
 
 const addUserSubscription = async (req, res) => {
     try {
-        const followUserId = mongoose.Types.ObjectId(req.params.id);
-        const user = await User.findByIdAndUpdate(req.user.id, {
-            $push: {
-                followedUsers: followUserId,
-            },
-        });
+        const UserExist = await User.findById(req.params.id);
 
-        if (!user) {
+        if (!UserExist) {
             res.status(404).json({ message: 'User not found' });
         }
 
-        await User.findByIdAndUpdate(followUserId, {
+        await User.findByIdAndUpdate(req.user.id, {
+            $addToSet: {
+                followedUsers: req.params.id,
+            },
+        });
+
+        await User.findByIdAndUpdate(req.params.id, {
             $push: {
                 followers: req.user.id,
             },

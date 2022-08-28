@@ -3,22 +3,20 @@ const { User, Organization } = require('../models/user');
 
 const addOrganizationSubscription = async (req, res) => {
     try {
-        const followOrganizationId = mongoose.Types.ObjectId(req.params.id);
-
-        const organization = await Organization.findById(followOrganizationId);
+        const organization = await Organization.findById(req.params.id);
 
         if (!organization) {
             res.status(404).json({ message: 'Organization not found' });
         }
 
         await User.findByIdAndUpdate(req.user.id, {
-            $push: {
-                followedOrganizations: followOrganizationId,
+            $addToSet: {
+                followedOrganizations: req.params.id,
             },
         });
 
-        await User.findByIdAndUpdate(followOrganizationId, {
-            $push: {
+        await Organization.findByIdAndUpdate(req.params.id, {
+            $addToSet: {
                 followers: req.user.id,
             },
         });
