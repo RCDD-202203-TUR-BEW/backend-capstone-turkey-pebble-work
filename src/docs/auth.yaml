@@ -165,6 +165,7 @@ paths:
                                         $ref: '#/components/schemas/FullPrivateOrganization'
                                     User:
                                         $ref: '#/components/schemas/FullPrivateUser'
+
                 422:
                     description: This status is returned when the request is missing required fields or has an invalid values.
                     content:
@@ -462,7 +463,7 @@ components:
                         - female
                         - other
                     example: female
-                preferredCities:
+                preferredCities[]:
                     type: array
                     items:
                         type: string
@@ -549,7 +550,7 @@ components:
                             - Osmaniye
                             - Duzce
                     example: [Osmaniye, Duzce]
-                interests:
+                interests[]:
                     type: array
                     items:
                         type: string
