@@ -15,7 +15,10 @@ router.get(
     '/google/callback',
     passport.authenticate('google', {
         failureRedirect: '/api/google-auth/google',
-        successRedirect: 'http://localhost:3000',
+        successRedirect:
+            process.env.DEPLOYED === 'yes'
+                ? 'https://pebble-proj.netlify.app/' // production
+                : 'http://localhost:3000/', // development
         session: false,
     }),
     authController.saveGoogleUser
