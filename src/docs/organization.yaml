@@ -308,9 +308,9 @@ paths:
   /api/organization/{id}/sub:
     post:
             tags:
-                - organization
-            summary: subscribe to the organization
-            description: subscribe to the organization
+                - Organization
+            summary: subscribe to an organization
+            description: subscribe to an organization
             operationId: subscribe
             consumes:
                 - application/json
@@ -326,7 +326,7 @@ paths:
                   type: string
             responses:
                 200:
-                    description: Successfully subscribed
+                    description: User subscribed successfully
                     content:
                         application/json:
                             schema:
@@ -334,7 +334,7 @@ paths:
                                 properties:
                                     message:
                                         type: string
-                                        example: Successfully subscribed
+                                        example: Subscribed Successfully
                 404:
                     description: organization not found
                     content:
@@ -344,7 +344,7 @@ paths:
                                 properties:
                                     message:
                                         type: string
-                                        example: organization not found
+                                        example: Page not found
                 422:
                     description: This status is returned when the request is missing required fields or has an invalid values.
                     content:
@@ -364,6 +364,16 @@ paths:
                                     message:
                                         type: string
                                         example: 'Invalid Token: No authorization token was found'
+                400:
+                    description: User already a follower 
+                    content:
+                        application/json:
+                          schema:
+                            type: object
+                            properties:
+                              message:
+                                type: string
+                                example: User already exist                        
                 500:
                     description: Internal server error 
     delete:
