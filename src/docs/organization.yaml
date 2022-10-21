@@ -306,6 +306,66 @@ paths:
                     type: string
                     example: "Invalid Token: No authorization token was found"
   /api/organization/{id}/sub:
+    post:
+            tags:
+                - organization
+            summary: subscribe to the organization
+            description: subscribe to the organization
+            operationId: subscribe
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            parameters:
+                - in: path
+                  name: id
+                  description: The id of the organization to subscribe
+                  required: true
+                  type: string
+            responses:
+                200:
+                    description: Successfully subscribed
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Successfully subscribed
+                404:
+                    description: organization not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: organization not found
+                422:
+                    description: This status is returned when the request is missing required fields or has an invalid values.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                401:
+                    description: user not sigend in
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                500:
+                    description: Internal server error 
     delete:
       tags:
         - Organization

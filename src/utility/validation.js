@@ -390,7 +390,7 @@ const VOLUNTEERS_EVENT_VALIDATION_RULES = [
         .withMessage('A valid id is required'),
 ];
 
-const SUB_ORGANIZATION_RULES = [
+const SUB_RULES = [
     param('id')
         .exists()
         .isString()
@@ -656,7 +656,7 @@ module.exports = {
     DELETE_EVENT_VALIDATION_RULES,
     PUT_EVENT_VALIDATION_RULES,
     VOLUNTEERS_EVENT_VALIDATION_RULES,
-    SUB_ORGANIZATION_RULES,
+    SUB_RULES,
     DONATE_VALIDATION_RULES,
     CREATE_EVENT_VALIDATION_RULES,
     PUT_USER_VALIDATION_RULES,

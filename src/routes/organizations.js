@@ -11,7 +11,7 @@ const {
     POST_RATE_VALIDATION_RULES,
     DELETE_RATE_VALIDATION_RULES,
     GET_ORGANIZATION_VALIDATION_RULES,
-    SUB_ORGANIZATION_RULES,
+    SUB_RULES,
     handleValidation,
 } = require('../utility/validation');
 
@@ -66,7 +66,7 @@ router.delete(
 
 router.post(
     '/:id/sub',
-    SUB_ORGANIZATION_RULES,
+    SUB_RULES,
     handleValidation,
     organizationController.followOrga
 );
