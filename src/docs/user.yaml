@@ -6,7 +6,7 @@ paths:
         put:
             tags:
                 - User
-            summery: Update a user profile
+            summary: Update a user profile
             description: Update information of a user
             operationId: updateUser
             consumes:
@@ -166,7 +166,7 @@ paths:
     /api/user/{id}/sub:
         post:
             tags:
-                - user
+                - User
             summary: subscribe to a user
             description: subscribe a the user
             operationId: subscribe
@@ -237,13 +237,15 @@ paths:
         delete:
             tags:
                 - User
-            summary: Unfollow Users
-            description: Unfollow Users
+            summary: Delete user sub
+            description: Delete user sub
             operationId: unFollowUser
             consumes:
                 - application/json
             produces:
                 - application/json
+            security:
+                - auth_cookie: []
             parameters:
                 - in: path
                   name: id
