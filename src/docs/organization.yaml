@@ -378,53 +378,53 @@ paths:
                     description: Internal server error
         delete:
             tags:
-              - Organization
+                - Organization
             summary: Delete the subscription of the organization
             description: Delete the subscription of the organization
             operationId: unFollowOrga
             consumes:
-              - application/json
+                - application/json
             produces:
-              - application/json
+                - application/json
             security:
-              - auth_cookie: []
+                - auth_cookie: []
             parameters:
-              - in: path
-              name: id
-              description: The id of the organization
-              required: true
-              type: string
+                - in: path
+                  name: id
+                  description: The id of the organization
+                  required: true
+                  type: string
             responses:
-              404:
-                description: not found values
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                error:
-                                    type: string
-                                    example: Organization not found
-              200:
-                description: Organization Unsubscribed
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                message:
-                                    type: string
-                                    example: Unfollowed Successfully!
-              422:
-                description: This status is returned when the request is missing required fields or has an invalid values.
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ValidationError'
-              403:
-                description: This status is returned when the user is not authorized to perform the operation.
-              500:
-                description: Internal server error
+                404:
+                    description: not found values
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        example: Organization not found
+                200:
+                    description: Organization Unsubscribed
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Unfollowed Successfully!
+                422:
+                    description: This status is returned when the request is missing required fields or has an invalid values.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                403:
+                    description: This status is returned when the user is not authorized to perform the operation.
+                500:
+                    description: Internal server error
 
 components:
     schemas:
