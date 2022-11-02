@@ -841,6 +841,9 @@ components:
                 profileImage:
                     type: string
                     description: Url of the user profile image
+                __t:
+                    type: string
+                    example: User
                 fullName:
                     type: string
                     example: Sara Smith
@@ -1265,6 +1268,9 @@ components:
                 profileImage:
                     type: string
                     description: Url of the user profile image
+                __t:
+                    type: string
+                    example: User
                 fullName:
                     type: string
                     example: Sara Smith

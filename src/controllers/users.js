@@ -160,11 +160,15 @@ async function updateUserProfile(req, res) {
             'interests',
             'gender',
         ]);
-        const existingUser = await BaseUser.findOne({ email: newUser.email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Email already used' });
-        }
 
+        if (newUser.email) {
+            const existingUser = await BaseUser.findOne({
+                email: newUser.email,
+            });
+            if (existingUser) {
+                return res.status(400).json({ message: 'Email already used' });
+            }
+        }
         const updateUser = await User.findByIdAndUpdate(req.user.id, newUser, {
             new: true,
         }).select('-hashedPassword -provider -providerId -isVerified');

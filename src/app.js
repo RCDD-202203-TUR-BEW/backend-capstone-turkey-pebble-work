@@ -28,6 +28,7 @@ const whitelist = [
     'https://pebble-work.up.railway.app',
     // this url is an origin for front-end app
     'https://pebble-proj.netlify.app',
+    'https://pebble-proj.netlify.app',
 ];
 const corsOptions = {
     credentials: true,

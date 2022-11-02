@@ -323,7 +323,7 @@ const PUT_EVENT_VALIDATION_RULES = [
             return true;
         })
         .withMessage('coverImage must be an image less than 10MB'),
-    body('date').optional().isDate().withMessage('date is required'),
+    body('date').optional().isISO8601().withMessage('date is required'),
     body('categories')
         .optional()
         .isArray({ min: 1 })
@@ -430,7 +430,7 @@ const CREATE_EVENT_VALIDATION_RULES = [
             return true;
         })
         .withMessage('coverImage must be an image less than 10MB'),
-    body('date').exists().isDate().withMessage('date is required'),
+    body('date').exists().isISO8601().withMessage('date is required'),
     body('categories')
         .exists()
         .isArray({ min: 1 })

@@ -28,7 +28,7 @@ paths:
 
             responses:
                 201:
-                    description: Authenticated user succesfully created event.
+                    description: Authenticated user succesfully created an event.
                     content:
                         application/json:
                             schema:
@@ -57,8 +57,8 @@ paths:
         get:
             tags:
                 - Event
-            summary: Filter events
-            description: Filter events based on the given filters.
+            summary: Filter events based on a given criteria
+            description: Filter events based on categories, publishers, cities, dates and locations
             operationId: getEvents
             consumes:
                 - application/json
@@ -238,41 +238,41 @@ paths:
         get:
             tags:
                 - 'Event'
-            summary: 'Get event by id'
-            description: 'Returns a single event'
-            operationId: 'getEventById'
+            summary: Get a single event
+            description: Returns a single event by event id
+            operationId: getEventById
             produces:
-                - 'application/json'
+                - application/json
             parameters:
-                - name: 'id'
-                  in: 'path'
-                  description: 'ID of the event to return'
+                - name: id
+                  in: path
+                  description: ID of the event to return
                   required: true
-                  type: 'string'
+                  type: string
             responses:
-                '200':
+                200:
                     description: Returns a single event with the given id.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Event'
-                '422':
+                422:
                     description: 'This status is returned when the request is missing required fields or has an invalid values.'
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ValidationError'
-                '404':
-                    description: 'Event not found'
+                404:
+                    description: Event not found
                     content:
                         application/json:
                             schema:
                                 type: 'object'
                                 properties:
-                                    error:
+                                    message:
                                         type: string
                                         example: 'Event not found'
-                '500':
+                500:
                     description: 'Internal server error'
         delete:
             tags:
@@ -386,8 +386,8 @@ paths:
         post:
             tags:
                 - Event
-            summary: Add volunteer
-            description: Add volunteer to an event
+            summary: Add a volunteer to an event
+            description: Add a volunteer to an event
             operationId: addVolunteer
             consumes:
                 - application/json
@@ -398,14 +398,13 @@ paths:
             parameters:
                 - in: path
                   name: id
-                  description: event id that the user going to join
+                  description: event id that user goign to join
                   required: true
                   schema:
                       type: string
                       example: 62e297b6eb2bce7177c6fefc
-
             responses:
-                200:
+                201:
                     description: User joined Successfully to an event
                     content:
                         application/json:
@@ -449,9 +448,9 @@ paths:
         delete:
             tags:
                 - Event
-            summary: Remove volunteer
-            description: remove volunteer from an event
-            operationId: deleteVolunteer
+            summary: Remove a volunteer from an event
+            description: Remove a volunteer from an event
+            operationId: removeVolunteer
             consumes:
                 - application/json
             produces:
@@ -461,12 +460,11 @@ paths:
             parameters:
                 - in: path
                   name: id
-                  description: event id that the user is going to leave
+                  description: event id that user goign to join
                   required: true
                   schema:
                       type: string
                       example: 62e297b6eb2bce7177c6fefc
-
             responses:
                 200:
                     description: User unjoined Successfully from an event
@@ -497,24 +495,14 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ValidationError'
-                400:
-                    description: User already joined in the event
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-                                        example: User already joined
                 500:
                     description: Internal server error
     /api/event/{id}/invite-volunteer:
         post:
             tags:
                 - Event
-            summary: Invite Volunteer
-            description: Invite Volunteer that share the same interests
+            summary: Invite a list of volunteers to an event
+            description: Send email invitation to volunteers that share the same interests of the event
             security:
                 - auth_cookie: []
             consumes:
@@ -523,7 +511,7 @@ paths:
                 - application/json
             responses:
                 200:
-                    description: Authenticated user succesfully created event.
+                    description: An invitation email sent successfully to volunteers.
                 401:
                     description: user not sigend in
                     content:
