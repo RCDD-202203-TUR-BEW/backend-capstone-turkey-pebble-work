@@ -6,7 +6,7 @@ paths:
         put:
             tags:
                 - User
-            summery: Update a user profile
+            summary: Update a user profile
             description: Update information of a user
             operationId: updateUser
             consumes:
@@ -164,16 +164,88 @@ paths:
                 500:
                     description: Internal server error
     /api/user/{id}/sub:
+        post:
+            tags:
+                - User
+            summary: subscribe to a user
+            description: subscribe a the user
+            operationId: subscribe
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            security:
+                - auth_cookie: []
+            parameters:
+                - in: path
+                  name: id
+                  description: The id of the user to subscribe
+                  required: true
+                  type: string
+            responses:
+                200:
+                    description: User subscribed successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Subscribed Successfully
+                404:
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Page not found
+                422:
+                    description: This status is returned when the request is missing required fields or has an invalid values.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                401:
+                    description: user not sigend in
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: 'Invalid Token: No authorization token was found'
+                400:
+                    description: User already a follower
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: User already exist
+                500:
+                    description: Internal server error
         delete:
             tags:
                 - User
-            summary: Unfollow Users
-            description: Unfollow Users
+            summary: Delete user sub
+            description: Delete user sub
             operationId: unFollowUser
             consumes:
                 - application/json
             produces:
                 - application/json
+            security:
+                - auth_cookie: []
             parameters:
                 - in: path
                   name: id

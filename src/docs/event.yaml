@@ -628,10 +628,12 @@ components:
                     type: object
                     properties:
                         lat:
-                            type: float
+                            type: number
+                            format: float
                             example: 41.01
-                        lon:
-                            type: float
+                        log:
+                            type: number
+                            format: float
                             example: 28.97
         UpdateEvent:
             type: object
@@ -698,10 +700,12 @@ components:
                     type: object
                     properties:
                         lat:
-                            type: float
+                            type: number
+                            format: float
                             example: 41.01
-                        lon:
-                            type: float
+                        log:
+                            type: number
+                            format: float
                             example: 28.97
         EventNotPopulated:
             properties:
@@ -787,10 +791,12 @@ components:
                     type: object
                     properties:
                         lat:
-                            type: float
+                            type: number
+                            format: float
                             example: 41.01
-                        lon:
-                            type: float
+                        log:
+                            type: number
+                            format: float
                             example: 28.97
         newEvent:
             type: object
@@ -853,10 +859,12 @@ components:
                     type: object
                     properties:
                         lat:
-                            type: float
+                            type: number
+                            format: float
                             example: 41.01
-                        lon:
-                            type: float
+                        log:
+                            type: number
+                            format: float
                             example: 28.97
         ValidationError:
             type: object

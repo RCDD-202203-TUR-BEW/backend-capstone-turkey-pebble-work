@@ -390,6 +390,14 @@ const VOLUNTEERS_EVENT_VALIDATION_RULES = [
         .withMessage('A valid id is required'),
 ];
 
+const SUB_RULES = [
+    param('id')
+        .exists()
+        .isString()
+        .custom((value) => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('A valid id is required'),
+];
+
 const DONATE_VALIDATION_RULES = [
     param('id')
         .exists()
@@ -648,6 +656,7 @@ module.exports = {
     DELETE_EVENT_VALIDATION_RULES,
     PUT_EVENT_VALIDATION_RULES,
     VOLUNTEERS_EVENT_VALIDATION_RULES,
+    SUB_RULES,
     DONATE_VALIDATION_RULES,
     CREATE_EVENT_VALIDATION_RULES,
     PUT_USER_VALIDATION_RULES,

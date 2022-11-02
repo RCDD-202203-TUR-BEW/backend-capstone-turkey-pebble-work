@@ -37,6 +37,7 @@
 8. [Contact](#contact)
 
 ## About the Project
+
 The ideology behind Pebblework is creating significant outcome by gathering community members together to be a part of collective effort.
 
 This platform is for everyone who wants to bring something big to life by giving their time, energy or financial support whether they are an organization,a volunteer or a donor.
@@ -76,6 +77,7 @@ On Pebblework, you can create an event and find volunteers that want to be a par
 -   [![Passport-shield]][passport-link]
 -   [![Postman-shield]][postman-link]
 -   [![heroku-shield]][heroku-link]
+-   [![railway.app](https://img.shields.io/badge/railway.app-black?style=flat&logo=Railway&link=https://railway.app/)](https://railway.app/)
 -   [![yarn-shield]][yarn-link]
 -   [![nodemailer-shield]][nodemailer-link]
 -   [![google-shield]][google-link]
@@ -132,11 +134,15 @@ This is known as a UML diagram, and it shows the collections used in the databas
 
 ## Documentation
 
-Explore our interactive documentation API [here](https://pebble-work.herokuapp.com/api-docs/).
+Explore our interactive documentation API [here](https://pebble-work.up.railway.app/api-docs/).
 
 ![Swagger Documentation](src/assets/swagger-doc.png)
 
 ## Linked Frontend Application
+
+-   Check front-end application [here](https://github.com/ReCoded-Org/pebble-work-capstone-project)
+
+-   [![Pebble-work-website](https://img.shields.io/badge/Pebble--work--website-orange?style=flat-square&link=https://pebble-proj.netlify.app/)](https://pebble-proj.netlify.app/)
 
 ## Contributing Guide
 

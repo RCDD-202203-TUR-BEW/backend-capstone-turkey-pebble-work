@@ -25,6 +25,9 @@ const whitelist = [
     'http://localhost:3000',
     // this url is an origin for the swagger-ui
     'https://pebble-work.herokuapp.com',
+    'https://pebble-work.up.railway.app',
+    // this url is an origin for front-end app
+    'https://pebble-proj.netlify.app',
     'https://pebble-proj.netlify.app',
 ];
 const corsOptions = {

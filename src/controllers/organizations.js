@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const { default: mongoose } = require('mongoose');
@@ -287,6 +288,50 @@ async function updateOrgProfile(req, res) {
     }
 }
 
+async function followOrga(req, res) {
+    try {
+        const orga = await Organization.findById(req.params.id);
+
+        if (!orga) {
+            return res.status(404).json({ message: 'Page not found' });
+        }
+        // check if user already a follower
+        const existUser = await Organization.findOne({
+            $and: [
+                { _id: req.params.id },
+                {
+                    followers: { $in: req.user.id },
+                },
+            ],
+        });
+        if (existUser) {
+            return res.status(400).json({ message: 'User already exist' });
+        }
+
+        // sub for only users
+        const currentUser = await BaseUser.findById(req.user.id);
+        if (currentUser.__t !== 'User') {
+            return res.status(400).json({ error: 'Only users can follow' });
+        }
+        if (currentUser.__t === 'User') {
+            await User.findByIdAndUpdate(req.user.id, {
+                $addToSet: {
+                    followedOrganizations: req.params.id,
+                },
+            });
+            await Organization.findByIdAndUpdate(req.params.id, {
+                $addToSet: {
+                    followers: req.user.id,
+                },
+            });
+        }
+        return res.status(200).json({ message: 'Subscribed Successfully' });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 async function unFollowOrga(req, res) {
     try {
         const { id: orgaId } = req.params;
@@ -314,6 +359,7 @@ module.exports = {
     rate,
     deleteRate,
     updateOrgProfile,
+    followOrga,
     unFollowOrga,
     getOrgPublicProfile,
     getOrgPrivateProfile,

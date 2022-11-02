@@ -8,6 +8,7 @@ const {
     VERIFY_VALIDATION_FUNDSBYID,
     PUT_USER_VALIDATION_RULES,
     GET_USER_VALIDATION_RULES,
+    SUB_RULES,
     handleValidation,
 } = require('../utility/validation');
 
@@ -45,5 +46,7 @@ router.delete(
     handleValidation,
     userController.unFollowUser
 );
+
+router.post('/:id/sub', SUB_RULES, handleValidation, userController.followUser);
 
 module.exports = router;
